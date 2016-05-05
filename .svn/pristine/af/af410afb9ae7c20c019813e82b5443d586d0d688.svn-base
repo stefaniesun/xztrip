@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑联系人信息</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/login.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+    <link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+<body>
+    <header>
+        <a href="" class="pull-left back-inner" onclick="window.history.back();">
+            <i class="iconfont icon-fanhui"></i>
+        </a>
+        <h1 class="header-title">
+            编辑联系人信息
+        </h1>
+    </header>
+    <div class="content-wrapper proup-height">
+        <div class="edit-contact">
+            <p class="ts">提供准确有效的联系人信息对您订单的后续跟进服务非常重要，请务必仔细核对</p>
+        </div>
+        <div class="edit-contact-box">
+            <div class="contact-info">
+                <ul>
+                    <li>
+                        <span class="pull-left">联系人</span>
+                        <input type="text" placeholder="请输入联系人" class="pull-left"/>
+                        <div style="clear: both"></div>
+                    </li>
+                    <li>
+                        <span class="pull-left">联系电话</span>
+                        <input type="text" placeholder="请输入联系电话" class="pull-left"/>
+                        <div style="clear: both"></div>
+                    </li>
+                </ul>
+            </div>
+            <button class="save-btn">保存</button>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+</html>

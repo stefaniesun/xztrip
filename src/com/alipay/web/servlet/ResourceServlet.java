@@ -1,0 +1,188 @@
+/*
+ * 
+ */
+package com.alipay.web.servlet;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alipay.util.Utils;
+import com.alipay.web.model.Bill;
+import com.alipay.web.service.PayService;
+
+@SuppressWarnings("serial")
+public abstract class ResourceServlet extends HttpServlet {
+
+    protected final String     resourcePath;
+    
+    private PayService payService = PayService.getInstance();
+
+    public ResourceServlet(String resourcePath){
+        this.resourcePath = resourcePath;
+    }
+
+    public void init() throws ServletException {
+    }
+
+
+    protected String getFilePath(String fileName) {
+        return resourcePath + fileName;
+    }
+
+    protected void returnResourceFile(String fileName, String uri, HttpServletResponse response)
+                                                                                                throws ServletException,
+                                                                                                IOException {
+        String filePath = getFilePath(fileName);
+        if (fileName.endsWith(".jpg")) {
+            byte[] bytes = Utils.readByteArrayFromResource(filePath);
+            if (bytes != null) {
+                response.getOutputStream().write(bytes);
+            }
+            return;
+        }
+
+        String text = Utils.readFromResource(filePath);
+        if (text == null) {
+            response.sendRedirect(uri + "/index.html");
+            return;
+        }
+        if (fileName.endsWith(".css")) {
+            response.setContentType("text/css;charset=utf-8");
+        } else if (fileName.endsWith(".js")) {
+            response.setContentType("text/javascript;charset=utf-8");
+        }
+        response.getWriter().println(text);
+    }
+
+    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String contextPath = request.getContextPath();
+        String servletPath = request.getServletPath();
+        String requestURI = request.getRequestURI();
+        String requestURL = request.getRequestURL().toString();
+
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
+        
+
+        if (contextPath == null) { // root context
+            contextPath = "";
+        }
+        String uri = contextPath + servletPath;
+        String path = requestURI.substring(contextPath.length() + servletPath.length());
+        String urlPath = requestURL.substring(0,requestURL.length()-requestURI.length())+requestURI;
+
+        /************************统一支付入口******************************/
+        if ("".equals(path)||"/".equals(path)) {
+        	/**
+        	 * 步骤：
+        	 * 0.鉴权、验签、防重放
+        	 * 1.创建账单
+        	 * 2.返回trade页面,传递参数
+        	 * 3.trade页面组装支付参数
+        	 * */
+        	//重复进入trade
+        	if(request.getQueryString() != null && request.getQueryString().contains("bill_no")){
+        		String show_url = urlPath+"/trade.html?bill_no="+request.getParameter("bill_no") ;
+        		//进入支付trade页面
+                response.getWriter().print(show_url);
+                return;
+        	}
+        	
+        	/**
+        	 * 读取请求参数，生成账单
+        	 */
+        	//账单号
+        	String bill_no = String.valueOf(System.currentTimeMillis());
+    		// 服务器异步通知页面路径
+    		String notify_url = urlPath+"/notify.json";
+    		// 页面跳转同步通知页面路径
+    		String return_url = urlPath+"/return.json";
+    		
+    		//返回商城地址
+    		String back_url = request.getParameter("back_url");
+    		//返回成功地址
+    		String success_url = request.getParameter("success_url");
+    		//返回失败地址
+    		String fail_url = request.getParameter("fail_url");
+
+    		// 商户订单号
+    		String order_no = request
+    				.getParameter("order_no");
+
+    		// 订单名称
+    		String order_subject = request.getParameter("order_subject");
+    		// 必填
+
+    		// 付款金额
+    		String order_amount = request.getParameter("order_amount");
+    		// 必填
+
+    		// 支付确认页面地址
+    		String show_url = urlPath+"/trade.html?bill_no="+bill_no;
+    		// 必填，需以http://开头的完整路径，例如：http://www.商户网址.com/myorder.html
+
+    		// 订单描述
+    		String order_body = request.getParameter("order_body");
+    		// 选填
+
+    		Bill bill = new Bill();
+        	//账单号
+        	bill.setBill_no(bill_no);
+        	//支付类型
+        	bill.setPay_type("01");
+        	bill.setOrder_no(order_no);
+        	bill.setOrder_amount(order_amount);
+        	bill.setOrder_subject(order_subject);
+        	bill.setOrder_body(order_body);
+        	bill.setBill_status("0");
+        	bill.setBill_create_time(new Date());
+        	bill.setBack_url(back_url);
+        	bill.setReturn_url(return_url);
+        	bill.setNotify_url(notify_url);
+        	bill.setShow_url(show_url);
+        	bill.setSuccess_url(success_url);
+        	bill.setFail_url(fail_url);
+        	
+        	payService.createBill(bill);
+    		
+        	//进入支付trade页面
+            response.getWriter().print(show_url);
+            return;
+        }
+
+        /************************统一支付入口******************************/
+
+        if (path.contains(".json")) {
+            String fullUrl = path;
+            if (request.getQueryString() != null && request.getQueryString().length() > 0) {
+                fullUrl += "?" + request.getQueryString();
+            }
+            if(path.contains("alipayMobile.json")){
+            	response.setContentType("application/json;charset=utf-8");
+            }else{
+            	response.setContentType("text/html;charset=utf-8");
+            }
+            
+            response.getWriter().print(process(fullUrl,request,response));
+            return;
+        }
+
+        // find file in resources path
+        returnResourceFile(path, uri, response);
+    }
+
+    /**
+     * 
+     * @param url
+     * @param params
+     * @return
+     * @throws UnsupportedEncodingException 
+     */
+    protected abstract String process(String url,HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException;
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>我的订单</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/order.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="../css/weui.min.css"/>
+<link href="../css/dropload.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/order.js"></script>
+</head>
+<body>
+<div class="myorder">
+    <header class="tibet-header">
+        <div class="back-left icon-left">
+            <img src="../images/icon-left.png"/>
+        </div>
+        <div class="center-name icon-left">
+            <h2>我的订单</h2>
+        </div>
+        <div class="go-right icon-right">
+        </div>
+    </header>
+    <div class="prop-height"></div>
+    <div class="myorder-main">
+        <div class="myorder-item">
+            <ul id="chooseTab">
+                <li class="item-active" data-ext="-1">全部订单</li>
+                <li class="" data-ext="0">未付款</li>
+                <li class="" data-ext="1">已付款</li>
+            </ul>
+        </div>
+
+        <!-- 全部订单 -->
+        <div class="all-order">
+        <div class="myorder-list"   id="orderList" >
+ <!--            <ul class="myorder-list-item">
+                <li>
+                    <p class="order-num">订单号：P1452115499</p>
+                    <span class="order-struts color-danger">未付款</span>
+                </li>
+                <li>
+                    <a href="#" class="list-item-link">
+                        <div class="order-img">
+                            <img src="../images/hotel.jpg">
+                        </div>
+                        <div class="order-inner">
+                           <div class="order-title-row">
+                                <div class="order-title">
+                                    拉萨圣地天堂洲际大饭店
+                                </div>
+                                <div class="order-title-after">¥2088</div>
+                            </div>
+                           <div class="subtitle">
+                               入住时间：<time>2016-01-08</time>
+                           </div>
+                           <div class="subtitle">
+                               退房时间：<time>2016-01-09</time>
+                           </div>
+                        </div>
+                        <img class="icon-more" src="../images/i-list-chevron-right.png" />
+                    </a>
+                </li>
+                <li>
+                    <p class="order-bz"><span style="color: #b31e23;">备&nbsp;注</span>：暂无备注</p>
+                </li>
+                <li>
+                    <div class="order-btn">
+                        <button class="btn-reset">取消订单</button>
+                        <button class="orderpay-btn">立即付款</button>
+                    </div>
+
+                </li>
+            </ul>
+            <ul class="myorder-list-item">
+                <li>
+                    <p class="order-num">订单号：P1452115486</p>
+                    <span class="order-struts color-success">已付款</span>
+                </li>
+                <li>
+                    <a href="#" class="list-item-link">
+                        <div class="order-img">
+                            <img src="../images/hotel.jpg">
+                        </div>
+                        <div class="order-inner">
+                            <div class="order-title-row">
+                                <div class="order-title">
+                                     拉萨圣地天堂洲际大饭店
+                                </div>
+                                <div class="order-title-after">¥2088</div>
+                            </div>
+                            <div class="subtitle">
+                                入住时间：<time>2016-01-04</time>
+                            </div>
+                            <div class="subtitle">
+                                退房时间：<time>2016-01-05</time>
+                            </div>
+                        </div>
+                        <img class="icon-more" src="../images/i-list-chevron-right.png" />
+                    </a>
+                </li>
+                <li>
+                    <p class="order-bz"><span style="color: #b31e23;">备&nbsp;注</span>：暂无备注</p>
+                </li>
+                <li>
+                    <div class="order-btn">
+                        <button class="orderpay-btn">去评价</button>
+                    </div>
+                </li>
+            </ul> -->
+        </div>
+        </div>
+
+        <!--未付款订单
+        <div class="non-payment-order" style="display: none">
+            <div class="myorder-list">
+                <ul class="myorder-list-item">
+                    <li>
+                        <p class="order-num">订单号：P1452115499</p>
+                        <span class="order-struts color-danger">未付款</span>
+                    </li>
+                    <li>
+                        <a href="#" class="list-item-link">
+                            <div class="order-img">
+                                <img src="../images/hotel.jpg">
+                            </div>
+                            <div class="order-inner">
+                                <div class="order-title-row">
+                                    <div class="order-title">
+                                        拉萨圣地天堂洲际大饭店
+                                    </div>
+                                    <div class="order-title-after">¥2088</div>
+                                </div>
+                                <div class="subtitle">
+                                    入住时间：<time>2016-01-06</time>
+                                </div>
+                                <div class="subtitle">
+                                    退房时间：<time>2016-01-07</time>
+                                </div>
+                            </div>
+                            <img class="icon-more" src="../images/i-list-chevron-right.png" />
+                        </a>
+                    </li>
+                    <li>
+                        <p class="order-bz"><span style="color: #b31e23;">备&nbsp;注</span>：暂无备注</p>
+                    </li>
+                    <li>
+                        <div class="order-btn">
+                            <button class="btn-reset">取消订单</button>
+                            <button class="orderpay-btn">立即付款</button>
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+-->
+        <!-- 已付款订单 
+        <div class="have-pay-order" style="display: none">
+            <div class="myorder-list">
+                <ul class="myorder-list-item">
+                    <li>
+                        <p class="order-num">订单号：P1452115486</p>
+                        <span class="order-struts color-success">已付款</span>
+                    </li>
+                    <li>
+                        <a href="#" class="list-item-link">
+                            <div class="order-img">
+                                <img src="../images/hotel.jpg">
+                            </div>
+                            <div class="order-inner">
+                                <div class="order-title-row">
+                                    <div class="order-title">
+                                        拉萨圣地天堂洲际大饭店
+                                    </div>
+                                    <div class="order-title-after">¥2088</div>
+                                </div>
+                                <div class="subtitle">
+                                    入住时间：<time>2016-01-04</time>
+                                </div>
+                                <div class="subtitle">
+                                    退房时间：<time>2016-01-05</time>
+                                </div>
+                            </div>
+                            <img class="icon-more" src="../images/i-list-chevron-right.png" />
+                        </a>
+                    </li>
+                    <li>
+                        <p class="order-bz"><span style="color: #b31e23;">备&nbsp;注</span>：暂无备注</p>
+                    </li>
+                    <li>
+                        <div class="order-btn">
+                            <button class="orderpay-btn">去评价</button>
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+        -->
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/weui.js"></script>
+</html>

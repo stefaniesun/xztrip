@@ -1,0 +1,51 @@
+package xyz.model.member;
+
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name="customer_usertag")
+public class CustomerUserTag {
+	@Id
+	@Column(name="iidd",unique=true,nullable=false)
+	@GeneratedValue(generator = "paymentableGenerator")       
+    @GenericGenerator(name = "paymentableGenerator", strategy = "uuid")
+	private String iidd;
+	
+	@Column(name="customer")
+	private String customer;//客户编号
+	
+	@Column(name="usertag")
+	private String userTag;//用户标签编号
+
+	public String getIidd() {
+		return iidd;
+	}
+
+	public void setIidd(String iidd) {
+		this.iidd = iidd;
+	}
+
+	public String getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(String customer) {
+		this.customer = customer;
+	}
+
+	public String getUserTag() {
+		return userTag;
+	}
+
+	public void setUserTag(String userTag) {
+		this.userTag = userTag;
+	}
+	
+}

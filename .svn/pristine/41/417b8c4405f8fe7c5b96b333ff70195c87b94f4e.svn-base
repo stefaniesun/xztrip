@@ -1,0 +1,15 @@
+package xyz.svc.buyer;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface BuyerHotelSvc {
+
+	public Map<String, Object> queryHotelList(String nameCn, String provider,
+			int offset, int pagesize);
+
+	public Map<String, Object> getHotelProduct(String numberCode);
+
+}

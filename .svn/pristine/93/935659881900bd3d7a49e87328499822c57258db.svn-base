@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>首页</title>
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="stylesheet" href="css/iconfont.css"/>
+<link rel="stylesheet" href="css/base.css"/>
+<link rel="stylesheet" href="css/weui.min.css"/>
+<link rel="stylesheet" href="css/dropload.css"/>
+<link rel="stylesheet" href="css/providerList.css"/>
+</head>
+
+<body>
+    <header>
+        <div class="header-item pull-left">
+            <a href="" class="pull-item ">
+                <i class="iconfont icon-jingdian"></i>
+                门票
+            </a>
+            <a href="" class="pull-item pull-active">
+                <i class="iconfont icon-jiudian"></i>
+                酒店
+            </a>
+            <a href="" class="pull-item ">
+                <i class="iconfont icon-chuzuche"></i>
+                租车
+            </a>
+        </div>
+        <i class="pull-right iconfont icon-sousuo"></i>
+    </header>
+    <footer>
+        <a href="javascript:void(0);" data-ext="index.html" class="footer-item footer-item-active">
+            <i class="iconfont icon-shouyeshouye"></i>
+            <span class="footer-title">首页</span>
+        </a>
+        <a href="javascript:void(0);" data-ext="page/orderList.html" class="footer-item">
+            <i class="iconfont icon-liebiao"></i>
+            <span class="footer-title">订单</span>
+        </a>
+        <a href="javascript:void(0);" data-ext="page/userCenter.html" class="footer-item">
+            <i class="iconfont icon-gerenzhongxin"></i>
+            <span class="footer-title">我的</span>
+        </a>
+    </footer>
+
+    <div class="content-wrapper proup-height">
+        <!-- 搜索框 -->
+        <div class="search-show">
+            <form action="" class="con-search-box">
+                <i class="iconfont icon-sousuo"></i>
+                <input class="con-search-input" type="text" placeholder="请输入酒店名称">
+            </form>
+        </div>
+
+        <!-- 产品列表 -->
+        <div class="home-list">
+            <ul>
+                <li class="home-list-item">
+                    <a href="productList.html" class="dk">
+                        <div class="item-img">
+                            <img src="http://file.duanyi.com.cn/accessory/xztirp/20160411/small_201604111019004764812.png" />
+                        </div>
+                        <div class="item-info">
+                            <h3>香格里拉酒店</h3>
+                            <p class="home-item-decr">
+                                酒店属于新加坡华裔青年不能就发给你的开发的反馈
+                            </p>
+                        </div>
+                        <div class="item-price">
+                            <span>
+                                <label class="peice-icon org-color">¥</label><label  class="peice-num org-color">128.00</label><label class="peice-icon grey-color">起</label>
+                            </span><br>
+                            <label class="peice-icon grey-color">已定120121</label>
+                        </div>
+                    </a>
+                </li>
+                <li class="home-list-item">
+                    <a href="productList.html" class="dk">
+                        <div class="item-img">
+                            <img src="http://file.duanyi.com.cn/accessory/xztirp/20160411/small_201604111019004764812.png" />
+                        </div>
+                        <div class="item-info">
+                            <h3>香格里拉酒店</h3>
+                            <p class="home-item-decr">
+                                酒店属于新加坡华裔青年不能就发给你的开发的反馈
+                            </p>
+                        </div>
+                        <div class="item-price">
+                            <span>
+                                <label class="peice-icon org-color">¥</label><label  class="peice-num org-color">128.00</label><label class="peice-icon grey-color">起</label>
+                            </span><br>
+                            <label class="peice-icon grey-color">已定120121</label>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/weui.js"></script>
+<script type="text/javascript" src="js/xyzCommon.js"></script>
+<script type="text/javascript" src="js/dropload.min.js"></script>
+<script>
+$(document).ready(function(){
+    $(".pull-right.icon-sousuo").click(function(){
+        $(".search-show").slideToggle(100);
+    });
+});
+
+document.querySelector('footer').addEventListener('touchstart', function(e){
+	var target = 'A'===e.target.nodeName?e.target:e.target.parentNode;
+	var url = target.getAttribute('data-ext');
+	if(!xyz.isNull(url)){
+		weui.loading(-1);
+		window.location.href=xyz.getFullurl(url);
+	}
+},false);
+</script>
+</html>

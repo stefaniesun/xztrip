@@ -1,0 +1,49 @@
+
+@font-face {
+  font-family: 'iconfont';
+  src: url('//at.alicdn.com/t/font_1458889514_8893933.eot'); /* IE9*/
+  src: url('//at.alicdn.com/t/font_1458889514_8893933.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('//at.alicdn.com/t/font_1458889514_8893933.woff') format('woff'), /* chrome、firefox */
+  url('//at.alicdn.com/t/font_1458889514_8893933.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url('//at.alicdn.com/t/font_1458889514_8893933.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+                    
+
+.iconfont{font-family:"iconfont";
+font-size:16px;font-style:normal;}
+
+.mui-bar{
+	background-color:#099fde;
+}
+
+.mui-title {
+	color:#fff;
+}
+
+.mui-segmented-control{
+	border: 1px solid #fff;
+}
+.mui-segmented-control .mui-control-item{
+	color: #fff;
+	border-color: #ffffff;
+	border-left: 1px solid #ffffff;
+}
+.mui-segmented-control .mui-control-item.mui-active {
+	color: #099fde;
+	background-color: #ffffff;
+}
+
+a {
+	color: #fff;
+}
+a:active {
+color: #fff;
+}
+
+.mui-bar-tab{
+	background-color:#fff;
+}
+
+.mui-bar-tab .mui-tab-item.mui-active {
+	color: #099fde;
+}

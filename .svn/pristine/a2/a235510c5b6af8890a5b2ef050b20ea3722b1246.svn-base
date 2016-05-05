@@ -1,0 +1,7 @@
+package xyz.svc.pay.imp;
+
+import xyz.svc.pay.WxPaySvc;
+
+public class WxPaySvcImp implements WxPaySvc {
+
+}

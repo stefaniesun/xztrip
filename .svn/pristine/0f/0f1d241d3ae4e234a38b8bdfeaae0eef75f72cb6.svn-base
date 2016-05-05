@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>productDetail</title>
+<link href="../css/mui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+<link rel="stylesheet" href="../css/customer.mui.theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/weui.min.css"/>
+<style>
+.mui-bar-nav~.mui-content .mui-pull-top-pocket {
+	top: 0px;
+}
+.mui-input-group:after{
+	height: 0px;
+}
+.mui-table-view:after{
+	height:0px;
+}
+li#form .mui-slider .mui-slider-group .mui-slider-item{
+	border-bottom:0;
+}
+.iconfont{
+float:left;
+font-size:19px;
+padding:0 8px;
+color: #8f8f94;;
+margin-top:-5px;
+}
+.mui-table-view-cell{
+padding:11px;
+background-color: #f5f5f5;
+border-bottom: 1px solid #dcdcdc;
+}
+.mui-slider{
+background-color: #efeff4;
+}
+
+
+</style>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	<h1 class="mui-title">门票</h1>
+</header>
+
+<div class="mui-content">
+
+	<div class="pic">
+		<a class="topImg tcTraObj">
+	      		<img class="showImg" src="" onerror="javascript:this.src='../images/default.png';" style="display: inline;">
+	       		<img class="hideImg" src="../images/default.png" style="display: none;">
+      	</a>
+      	<div class="pic_mask">
+ 					<h3 id="title"></h3>
+		  </div>
+	</div>
+
+
+		<div class="mui-scroll">
+			<!--数据列表-->
+			<ul class="mui-table-view">
+				<li id="container" >
+					
+				</li>
+				<li id="form">
+					<div id="slider" class="mui-slider">
+						<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+							<a class="mui-control-item" href="#formDiv">产品预定</a>
+							<a class="mui-control-item" href="#remark">景点介绍</a>
+						</div>
+						<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
+						<div class="mui-slider-group">
+							<div id="formDiv" class="mui-slider-item mui-control-content mui-active">
+								
+								<dl class="ticket tcTraObj return" id="productList">
+								
+								                                                             
+								 </dl>
+							
+							
+							</div>
+							<div id="remark" class="mui-slider-item mui-control-content">
+							
+							<!-- <div class="bottomBox_contain">
+						            <div class="bottomBox">
+						                <a><i class="iconfont">&#xe626</i><span class="a_address"></span></a>
+						            </div>
+						             <div class="bottomBox">
+						                <a><i class="iconfont">&#xe62a</i><span class="a_phone"></span></a>
+						            </div>
+    						</div> -->
+    						
+    							<ul class="mui-table-view mui-table-view-chevron">
+									<li class="mui-table-view-cell">
+										<a class="mui-navigate-right">	<i class="iconfont">&#xe626</i><span class="a_address"></span></a>
+									</li>
+									<li class="mui-table-view-cell">
+										<a class="mui-navigate-right"><i class="iconfont">&#xe62a</i><span class="a_phone"></span></a>
+									</li>
+								</ul>
+    						
+							
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+</div>
+<script src="../js/mui_20151228.min.js"></script>
+<script src="../js/mui.picker.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript">
+
+mui.init({
+	swipeBack: false,
+});
+
+
+var o = xyz.getUrlparam();
+xyz.ajax({
+	url:'BuyerProviderWS/getProvider.app',
+	data:{
+		numberCode:o.numberCode
+	},
+	success:function(data){
+		if(data.status==1){
+			document.querySelector('.mui-title').innerText = data.content.nameCn;
+			document.querySelector('.showImg').src = data.content.imageUrl;
+			document.querySelector('#title').innerText = data.content.nameCn;
+			document.querySelector('.a_address').innerText = data.content.address;
+			document.querySelector('.a_phone').innerText = data.content.phone;
+		}else{
+			weui.alert(data.msg);
+		}
+	}
+});
+
+
+if(mui.os.plus){
+	mui.plusReady(function(){
+		setTimeout(function(){
+			pageInit();
+		}, 100);
+	});
+}else{
+	mui.ready(function(){
+		pageInit();
+	});
+}
+
+function pageInit(){
+	
+	
+	xyz.ajax({
+		url:'BuyerScenicWS/queryScenicList.app',
+		data:{
+			apikey:window.localStorage.apikey,
+			provider:o.numberCode,
+			page:1,
+			rows:5,
+		},
+		success:function(data){
+			if(data.status==1){
+				var rows=data.content.rows;
+				var html="";
+				for(var i=0;i<rows.length;i++){
+					if(rows[i].price!=""){
+							html+='<dd>';
+							html+=    '<a><h4 class="h4">'+rows[i].nameCn+'</h4></a>';
+							html+=    '<p class="other_detail"><span class="tc-price">¥'+new Number(rows[i].price).toFixed(2)+'</span></p>';
+							html+=    '<p class="lbl"><span class="today">'+rows[i].remark+'</span></p>';
+							html+=    '<ul class="btn-box">';
+							html+=    	'<li><a class="btn btn-top line_btn tcTraObj" data-numbercode='+rows[i].numberCode+' data-price='+rows[i].price+'>预订</a></li>';
+							html+=    '</ul>';
+							html+='</dd>';
+					}
+				}
+				document.querySelector('#productList').innerHTML=html;
+			}else{
+				weui.alert(data.msg);
+			}
+		}
+	});
+	
+	setTimeout(function(){
+		mui('#pullrefresh_productDetail').pullRefresh().endPulldownToRefresh();
+	},500);
+}
+
+
+//预定按钮点击事件
+//主列表触摸事件
+mui('#productList').on('tap', '.line_btn', function() {
+	
+	var numberCode=mui(this)[0].dataset.numbercode;
+	var price=mui(this)[0].dataset.price;
+	
+	mui.openWindow({
+		id:  'page/productScenicOrder',
+		url:  '../page/productScenicOrder.html?numberCode='+numberCode+'&price='+price, 
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+});
+
+
+</script>
+</body>
+</html>

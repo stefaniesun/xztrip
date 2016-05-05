@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>西藏旅游数据中心</title>
+<meta name="Keywords" content=""/>
+<meta name="Description" content=""/>
+<link href="../../css/bootstrap.min.css" rel="stylesheet"/>
+<link href="../../css/css_seller/font-awesome.css" rel="stylesheet"/>
+<link href="../../css/css_seller/animate.css" rel="stylesheet"/>
+<link href="../../css/css_seller/bootstrap-table.css" rel="stylesheet"/>
+<link href="../../css/css_seller/style.css" rel="stylesheet"/>
+
+<script type="text/javascript" src="../../js/library/jquery-1.7.2.js"></script>	
+<script type="text/javascript" src="../../js/js_seller/scenic/bootstrap-table.min.js"></script>	
+
+</head>
+<body class="gray-bg">
+
+<div class="wrapper wrapper-content animated fadeInRight">
+	<div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>景点产品库存管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+
+                    <div class="col-sm-12">
+                        <!-- Example Events -->
+                        <div class="example-wrap">
+                            <div class="example">
+                                <div class="alert alert-success" id="examplebtTableEventsResult" role="alert">Event: page-change.bs.table</div>
+                                
+                                <div class="bootstrap-table"><div class="fixed-table-toolbar"><div class="bars pull-left"><div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+                                    <button type="button" class="btn btn-outline btn-default">
+                                        <i class="icon-edit glyphicon-plus" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline btn-default">
+                                        <i class="glyphicon glyphicon-heart" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline btn-default">
+                                        <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+                                    </button>
+                                </div></div><div class="columns columns-right btn-group pull-right"><button class="btn btn-default btn-outline" type="button" name="refresh" title="刷新"><i class="glyphicon glyphicon-repeat"></i></button><button class="btn btn-default btn-outline" type="button" name="toggle" title="切换"><i class="glyphicon glyphicon-list-alt"></i></button><div class="keep-open btn-group" title="列"><button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="glyphicon glyphicon-list"></i> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li><label><input type="checkbox" data-field="id" value="1" checked="checked"> ID</label></li><li><label><input type="checkbox" data-field="name" value="2" checked="checked"> 名称</label></li><li><label><input type="checkbox" data-field="price" value="3" checked="checked"> 价格</label></li></ul></div></div><div class="pull-right search"><input class="form-control input-outline" type="text" placeholder="搜索"></div></div><div class="fixed-table-container" style="height: 282px; padding-bottom: 36px;"><div class="fixed-table-header" style="margin-right: 0px; display: block;"><table class="table table-hover" style="width: 1606px;"><thead style="display: table-header-group;"><tr><th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0"><div class="th-inner "><input name="btSelectAll" type="checkbox"></div><div class="fht-cell" style="width: 36px;"></div></th><th style="" data-field="id" tabindex="0"><div class="th-inner ">ID</div><div class="fht-cell" style="width: 367px;"></div></th><th style="" data-field="name" tabindex="0"><div class="th-inner ">名称</div><div class="fht-cell" style="width: 677px;"></div></th><th style="" data-field="price" tabindex="0"><div class="th-inner ">价格</div><div class="fht-cell" style="width: 523px;"></div></th></tr></thead></table></div><div class="fixed-table-body"><div class="fixed-table-loading" style="top: 37px; display: none;">正在努力地加载数据中，请稍候……</div><table id="exampleTableEvents" data-height="400" data-mobile-responsive="true" class="table table-hover" style="margin-top: -36px;">
+                                    <thead style="display: table-header-group;"><tr><th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0"><div class="th-inner "><input name="btSelectAll" type="checkbox"></div><div class="fht-cell"></div></th><th style="" data-field="id" tabindex="0"><div class="th-inner ">ID</div><div class="fht-cell"></div></th><th style="" data-field="name" tabindex="0"><div class="th-inner ">名称</div><div class="fht-cell"></div></th><th style="" data-field="price" tabindex="0"><div class="th-inner ">价格</div><div class="fht-cell"></div></th></tr></thead>
+                                <tbody><tr data-index="0"><td class="bs-checkbox"><input data-index="0" name="btSelectItem" type="checkbox"></td><td style="">0</td><td style="">测试0</td><td style="">¥0</td></tr><tr data-index="1"><td class="bs-checkbox"><input data-index="1" name="btSelectItem" type="checkbox"></td><td style="">1</td><td style="">测试1</td><td style="">¥1</td></tr><tr data-index="2"><td class="bs-checkbox"><input data-index="2" name="btSelectItem" type="checkbox"></td><td style="">2</td><td style="">测试2</td><td style="">¥2</td></tr><tr data-index="3"><td class="bs-checkbox"><input data-index="3" name="btSelectItem" type="checkbox"></td><td style="">3</td><td style="">测试3</td><td style="">¥3</td></tr><tr data-index="4"><td class="bs-checkbox"><input data-index="4" name="btSelectItem" type="checkbox"></td><td style="">4</td><td style="">测试4</td><td style="">¥4</td></tr><tr data-index="5"><td class="bs-checkbox"><input data-index="5" name="btSelectItem" type="checkbox"></td><td style="">5</td><td style="">测试5</td><td style="">¥5</td></tr><tr data-index="6"><td class="bs-checkbox"><input data-index="6" name="btSelectItem" type="checkbox"></td><td style="">6</td><td style="">测试6</td><td style="">¥6</td></tr><tr data-index="7"><td class="bs-checkbox"><input data-index="7" name="btSelectItem" type="checkbox"></td><td style="">7</td><td style="">测试7</td><td style="">¥7</td></tr><tr data-index="8"><td class="bs-checkbox"><input data-index="8" name="btSelectItem" type="checkbox"></td><td style="">8</td><td style="">测试8</td><td style="">¥8</td></tr><tr data-index="9"><td class="bs-checkbox"><input data-index="9" name="btSelectItem" type="checkbox"></td><td style="">9</td><td style="">测试9</td><td style="">¥9</td></tr><tr data-index="10"><td class="bs-checkbox"><input data-index="10" name="btSelectItem" type="checkbox"></td><td style="">10</td><td style="">测试10</td><td style="">¥10</td></tr><tr data-index="11"><td class="bs-checkbox"><input data-index="11" name="btSelectItem" type="checkbox"></td><td style="">11</td><td style="">测试11</td><td style="">¥11</td></tr><tr data-index="12"><td class="bs-checkbox"><input data-index="12" name="btSelectItem" type="checkbox"></td><td style="">12</td><td style="">测试12</td><td style="">¥12</td></tr><tr data-index="13"><td class="bs-checkbox"><input data-index="13" name="btSelectItem" type="checkbox"></td><td style="">13</td><td style="">测试13</td><td style="">¥13</td></tr><tr data-index="14"><td class="bs-checkbox"><input data-index="14" name="btSelectItem" type="checkbox"></td><td style="">14</td><td style="">测试14</td><td style="">¥14</td></tr><tr data-index="15"><td class="bs-checkbox"><input data-index="15" name="btSelectItem" type="checkbox"></td><td style="">15</td><td style="">测试15</td><td style="">¥15</td></tr><tr data-index="16"><td class="bs-checkbox"><input data-index="16" name="btSelectItem" type="checkbox"></td><td style="">16</td><td style="">测试16</td><td style="">¥16</td></tr><tr data-index="17"><td class="bs-checkbox"><input data-index="17" name="btSelectItem" type="checkbox"></td><td style="">17</td><td style="">测试17</td><td style="">¥17</td></tr><tr data-index="18"><td class="bs-checkbox"><input data-index="18" name="btSelectItem" type="checkbox"></td><td style="">18</td><td style="">测试18</td><td style="">¥18</td></tr><tr data-index="19"><td class="bs-checkbox"><input data-index="19" name="btSelectItem" type="checkbox"></td><td style="">19</td><td style="">测试19</td><td style="">¥19</td></tr><tr data-index="20"><td class="bs-checkbox"><input data-index="20" name="btSelectItem" type="checkbox"></td><td style="">20</td><td style="">测试20</td><td style="">¥20</td></tr></tbody></table></div><div class="fixed-table-footer" style="display: none;"><table><tbody><tr></tr></tbody></table></div><div class="fixed-table-pagination" style="display: block;"><div class="pull-left pagination-detail"><span class="pagination-info">显示第 1 到第 21 条记录，总共 21 条记录</span><span class="page-list">每页显示 <span class="btn-group dropup"><button type="button" class="btn btn-default  btn-outline dropdown-toggle" data-toggle="dropdown"><span class="page-size">25</span> <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li><a href="javascript:void(0)">10</a></li><li class="active"><a href="javascript:void(0)">25</a></li></ul></span> 条记录</span></div><div class="pull-right pagination" style="display: none;"><ul class="pagination pagination-outline"><li class="page-first disabled"><a href="javascript:void(0)">«</a></li><li class="page-pre disabled"><a href="javascript:void(0)">‹</a></li><li class="page-number active"><a href="javascript:void(0)">1</a></li><li class="page-next disabled"><a href="javascript:void(0)">›</a></li><li class="page-last disabled"><a href="javascript:void(0)">»</a></li></ul></div></div></div></div><div class="clearfix"></div>
+                            </div>
+                        </div>
+                        <!-- End Example Events -->
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+package xyz.svc.config;
+
+import xyz.util.SysPropertyTool;
+
+public class ConstantPms {
+
+	public static final String pms_getHotelList =  SysPropertyTool.getValue("pmsip")+"/XZWS/getHotelList.api";
+	
+	public static final String pms_getHotelRoomTypeByhotelid =  SysPropertyTool.getValue("pmsip")+"/XZWS/getHotelRoomTypeByhotelid.api";
+
+	public static final String pms_getStockByDate=  SysPropertyTool.getValue("pmsip")+"/XZWS/getStockByDate.api";
+}

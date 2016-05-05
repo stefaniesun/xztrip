@@ -1,0 +1,19 @@
+package xyz.model.wechat.request;
+/**
+ * 自定义菜单
+ * @author Administrator
+ *
+ */
+public class Menu {
+	
+	private Button[] menu;
+
+	public Button[] getMenu() {
+		return menu;
+	}
+
+	public void setMenu(Button[] menu) {
+		this.menu = menu;
+	}
+	
+}

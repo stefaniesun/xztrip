@@ -1,0 +1,21 @@
+package xyz.svc.buyer;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface CustomerSvc {
+
+	Map<String, Object> getRegisterCode(String phone);
+
+	Map<String, Object> registerOper(String phone, String randCode, String password);
+
+	Map<String, Object> loginOper(String username, String password);
+
+	Map<String, Object> alterPasswordOper(String username, String oldPassword,
+			String newPassword);
+
+	Map<String, Object> customerExit();
+
+}

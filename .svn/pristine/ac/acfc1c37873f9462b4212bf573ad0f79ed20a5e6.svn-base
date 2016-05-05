@@ -1,0 +1,109 @@
+package xyz.svc.main.imp;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.ReturnUtil;
+import xyz.model.base.Region;
+import xyz.model.main.ProductHotel;
+import xyz.model.main.ProductScenic;
+import xyz.model.main.Station;
+import xyz.svc.main.StationSvc;
+import xyz.util.StringTool;
+import xyz.util.StringUtil;
+import xyz.util.UUIDUtil;
+
+@Service
+public class StationSvcImp implements StationSvc {
+
+	@Autowired
+	CommonDao commonDao;
+	
+	
+	@Override
+	public Map<String, Object> queryStationList(int offset, int pagesize) {
+
+		String hql=" from Station";
+		
+		String countHql = "select count(numberCode) "+hql;
+		Query countQuery = commonDao.getQuery(countHql);
+		Number countTemp = (Number)countQuery.uniqueResult();
+		int count = countTemp==null?0:countTemp.intValue();
+		
+		Query query = commonDao.getQuery(hql);
+		query.setMaxResults(pagesize);
+		query.setFirstResult(offset);
+		@SuppressWarnings("unchecked")
+		List<Station> stations=query.list();
+		
+		
+		Map<String,Object> mapContent=new HashMap<String, Object>();
+		mapContent.put("total", count);
+		mapContent.put("rows",stations);
+		return ReturnUtil.returnMap(1, mapContent);
+	}
+
+
+	@Override
+	public Map<String, Object> addStation(String nameCn, String phone,
+			String linkman, String address, String remark, String lat,String lng) {
+
+		Station station=new Station();
+		station.setNumberCode(UUIDUtil.getUUIDStringFor32());
+		station.setNameCn(nameCn);
+		station.setPhone(phone);
+		station.setLinkman(linkman);
+		station.setAddress(address);
+		station.setRemark(remark);
+		station.setLat(new BigDecimal(lat));
+		station.setLng(new BigDecimal(lng));
+		
+		commonDao.save(station);
+		
+		return ReturnUtil.returnMap(1, null);
+	}
+
+
+	@Override
+	public Map<String, Object> editStation(String numberCode, String nameCn,
+			String phone, String linkman, String address, String remark,
+			String lat, String lng) {
+		
+		Station station=(Station) commonDao.getObjectByUniqueCode("Station", "numberCode", numberCode);
+		if(station==null){
+			return ReturnUtil.returnMap(0, "对象不存在");
+		}
+		station.setNameCn(nameCn);
+		station.setPhone(phone);
+		station.setLinkman(linkman);
+		station.setAddress(address);
+		station.setRemark(remark);
+		station.setLat(new BigDecimal(lat));
+		station.setLng(new BigDecimal(lng));
+		
+		commonDao.update(station);
+		
+		return ReturnUtil.returnMap(1, null);
+	}
+
+
+	@Override
+	public Map<String, Object> deleteStation(String numberCodes) {
+		
+		if(!"".equals(numberCodes)&&numberCodes!=null){
+			String sql = "delete from station where number_code in ("+StringTool.StrToSqlString(numberCodes)+")";
+			commonDao.getSqlQuery(sql).executeUpdate();
+			return ReturnUtil.returnMap(1, null);
+		}else{
+			return ReturnUtil.returnMap(0, "请先选中需要删除的对象！");
+		}
+	}
+
+}

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/orderDetail.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+<body>
+<header>
+    <a href="javascript:void(0);" class="pull-left back-inner" onclick="window.location.href=xyz.getFullurl('page/orderList.html');">
+        <i class="iconfont icon-fanhui"></i>
+    </a>
+    <h1 class="header-title">
+        订单详情
+    </h1>
+</header>
+<footer style="height: auto;padding-bottom: 6px;padding-top: 6px; background-color: #f2f3f4; display: none;">
+    <p class="pay-ts">目前仅支持支付宝、微信支付，后续将开通其它支付通道</p>
+    <a href="javascript:void(0);" class="pay-immediately" id="payBtn">
+        立即支付
+    </a>
+</footer>
+<div class="content-wrapper proup-height" style="padding-bottom: 100px">
+	<p style="display: none;" id="orderInfo"></p>
+    <div class="orderDetail-list">
+        <ul>
+            <li>
+                <span class="pull-left">订单编号</span>
+                <span class="pull-right color-grey" id="orderNumShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">供应商</span>
+                <span class="pull-right color-grey" id="providerNameCnShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">下单时间</span>
+                <span class="pull-right color-grey" id="addDateShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left" id="dateInfoStartLabelShow">出行日期</span>
+                <span class="pull-right color-grey" id="dateInfoStartShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li id="dateInfoEndItem">
+                <span class="pull-left">离店日期</span>
+                <span class="pull-right color-grey" id="dateInfoEndShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <span class="pull-left">产品</span>
+                <span class="pull-right color-grey" id="productNameCnShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">数量</span>
+                <span class="pull-right color-grey" id="countShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">总金额</span>
+                <span class="pull-right color-org">¥<span id="moneyShow"></span></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">支付状态</span>
+                <span class="pull-right" id="flagStatusShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li style="display: none;" id="exceptionItem">
+                <span class="pull-left">异常状态</span>
+                <span class="pull-right" id="remarkExceptionShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li id="clientNumItem" style="display: none;">
+                <span class="pull-left">客户码</span>
+                <span class="pull-right" id="clientNumShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li id="flagOverItem" style="display: none;">
+                <span class="pull-left">冻结/关闭状态</span>
+                <span class="pull-right color-red" id="flagOverShow">订单已冻结/关闭</span>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <span class="pull-left">联系人</span>
+                <span class="pull-right color-grey" id="linkmanShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">联系电话</span>
+                <span class="pull-right color-grey" id="linkPhoneShow"></span>
+                <div style="clear:both;"></div>
+            </li>
+            <li id="editLinkmanItem">
+                <a href="javascript:void(0);" class="dk">
+                    <span href="" class="pull-left xg-inner">修改</span>
+                    <i class="iconfont icon-you pull-right color-grey"></i>
+                    <div style="clear:both;"></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="UTF-8" ></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript">
+var o = xyz.getUrlparam();
+var orderNum = o?o.orderNum:o;
+
+$(document).ready(function(){
+	getOrder();
+});
+
+xyz.id('clientNumItem').addEventListener('touchend', function(e){
+	
+});
+
+xyz.id('editLinkmanItem').addEventListener('touchend', function(e){
+	
+});
+
+xyz.id('payBtn').addEventListener('touchend', function(e){
+	checkPayOrder();
+});
+
+function getOrder(){
+	if(!orderNum){
+		weui.toast('缺少必要参数，刷新列表后重试', function(){
+			window.history.back();
+		});
+		return;
+	}
+	xyz.ajax({
+		url:'BuyerOrderWS/getOrder.cus',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNum:orderNum
+		},
+		success:function(data){
+			if(data.status==1){
+				var o = data.content.orderContentForm;
+				var rows = data.content.orderContentList;
+				console.log(o);
+				xyz.id('orderInfo').innerText = JSON.stringify(o); 
+				xyz.id('orderNumShow').innerHTML = o.orderNum;
+				xyz.id('addDateShow').innerHTML = new Date(o.addDate.replace(/-/g,"/")).format('yyyy年MM月dd日hh时mm分');
+				xyz.id('moneyShow').innerHTML = new Number(o.money).toFixed(2);
+				xyz.id('providerNameCnShow').innerHTML = o.providerNameCn;
+				xyz.id('productNameCnShow').innerHTML = o.productNameCn;
+				
+				xyz.id('linkmanShow').innerText = o.linkman;
+				xyz.id('linkPhoneShow').innerText = o.linkPhone;
+				
+				if(o.flagPay==0){
+					document.querySelector('footer').style.display = 'block';
+					//xyz.id('payTips').style.display = 'block';
+					//xyz.id('payBtnDiv').style.display = 'block';
+					xyz.id('flagStatusShow').innerHTML = '<span style="color:red;">【未付款】</span>';
+				}else{
+					document.querySelector('footer').style.display = 'none';
+					//xyz.id('payTips').style.display = 'none';
+					//xyz.id('payBtnDiv').style.display = 'none';
+					xyz.id('flagStatusShow').innerHTML = '<span style="color:green;">【已支付】</span>';
+				}
+				
+				if(o.isException==1){
+					xyz.id('exceptionItem').style.display = 'block';
+					xyz.id('remarkExceptionShow').innerHTML = '<span class="color-red">'+o.remarkException+'</span><br/><span>我们将尽快为您处理，请保持联系电话畅通。</span>';
+					weui.alert('<span class="color-red">'+o.remarkException+'</span><br/><span>我们将尽快为您处理，请保持联系电话畅通。</span>');
+				}
+				
+ 				if(o.flagClient==1){
+					xyz.id('clientNumItem').style.display = 'block';
+					xyz.id('clientNumShow').innerHTML = o.clientNum; 
+				}else{
+					xyz.id('clientNumItem').style.display = 'none';
+				}
+ 				
+ 				if(o.flagOver==1){
+ 					document.querySelector('footer').style.display = 'none';
+ 					xyz.id('flagOverItem').style.display = 'block';
+ 				}
+				
+ 				var dateInfoStart = new Date(o.dateInfoStart.split(' ')[0].replace(/-/g,"/")).format('yyyy年MM月dd日');
+ 				xyz.id('dateInfoStartShow').innerHTML = dateInfoStart;
+				var product = o.product;
+				if(product.indexOf('SC')>-1){
+					xyz.id('countShow').innerHTML = o.count+'张';
+					xyz.id('dateInfoStartLabelShow').innerHTML = '出行日期';
+				}else if(product.indexOf('HO')>-1){
+					var dateInfoEnd = new Date(new Date(o.dateInfoEnd.split(' ')[0].replace(/-/g,"/")).getTime()+86400000).format('yyyy年MM月dd日');
+					xyz.id('countShow').innerHTML = o.count+'间'+rows.length+'天';
+					xyz.id('dateInfoStartLabelShow').innerHTML ='入住日期';
+					xyz.id('dateInfoEndShow').innerHTML = dateInfoEnd;
+				}
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					var go = xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {orderNum : orderNum});
+					window.location.href=xyz.setUrlparam(xyz.getFullurl('page/login.html'), {'go': go});
+				}else{
+					weui.alert(data.msg);
+				}
+			}
+		}
+	});
+}
+
+function checkPayOrder(){
+	var o = JSON.parse(xyz.id('orderInfo').innerText);
+	var productNameCn = o.productNameCn;
+	var money = xyz.id('moneyShow').innerText;
+	if(xyz.isNull(orderNum)){
+		weui.alert('订单编号不存在无法发起支付');
+		return;
+	}
+	if(xyz.isNull(money) || money<=new Number(0)){
+		weui.alert('订单金额异常无法发起支付');
+		return;
+	}
+
+	xyz.ajax({
+		url:'BuyerOrderWS/decideOrder.cus',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNum:orderNum,
+			money:money
+		},
+		success:function(data){
+			if(data.status==1){
+				if(window.plus){
+					appPay(orderNum, money, productNameCn);
+				}else{
+					wxJsPay(orderNum, money, productNameCn);
+				}
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					var go = xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {orderNum : orderNum});
+					window.location.href=xyz.setUrlparam(xyz.getFullurl('page/login.html'), {'go': go});
+				}else{
+					weui.alert(data.msg);
+				}
+			}
+		}
+	});
+}
+
+function appPay(orderNum, money, productNameCn){
+	// 获取支付通道
+	plus.payment.getChannels(function(channels){
+		var menu1 = {
+				html:'<img src="../images/alipay_icon.png" style="width:18px;height:18px;"/><span>支付宝</span>',
+				click:function(){
+					aliPay(orderNum, money, productNameCn, channels);
+				}
+			};
+			var menu2 = {
+				html:'<img src="../images/wxpay_icon.png" style="width:18px;height:18px;"/><span>微信支付</span>',
+				click:function(){
+					wxPay(orderNum, money, productNameCn, channels);
+				}
+			};
+			weui.actionSheet(menu1, menu2);
+	});
+}
+
+registerWxPay();
+var wxready = false;
+wx.ready(function(){
+	wxready = true;
+});
+function registerWxPay(){
+	xyz.ajax({
+		url:'PayWS/registerWxJs.xyz',
+		progress:false,
+		data : {},
+		success : function(data) {
+			if(data.status==1){
+				wx.config({
+				    debug: false,
+				    appId: data.content.appId,
+				    timestamp: data.content.timestamp, 
+				    nonceStr: data.content.nonceStr,
+				    signature: data.content.signature,
+				    jsApiList: ['chooseWXPay']
+				});
+			}else{
+				alert(data.msg);
+			}
+		}
+	});
+}
+function wxJsPay(orderNum, money, productNameCn){
+	xyz.ajax({
+		url:'PayWS/getWxJsPayOrderInfo.xyz',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNo:orderNum,
+			totalFee:money,
+			body:productNameCn
+		},
+		success:function(data){
+			if(data.status==1){
+				//alert(JSON.stringify(data));
+				wx.chooseWXPay({    
+					timestamp: data.content.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+					nonceStr: data.content.nonceStr, // 支付签名随机串，不长于 32 位
+					package: data.content.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+					signType: data.content.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+					paySign: data.content.paySign, // 支付签名
+					success: function (res) {
+						if('chooseWXPay:ok'==res.errMsg){
+							weui.toast('恭喜您，支付成功！', function(){
+								window.location.reload();
+							});
+						}else{
+							weui.toast('未完成支付', function(){
+								window.location.reload();
+							});
+						}
+//						alert(JSON.stringify(res));
+					}
+				});
+			}else{
+				weui.alert(data.msg);
+			}
+		}
+	});
+}
+
+function wxPay(orderNum, money, productNameCn, channels){
+	xyz.ajax({
+		url:'PayWS/getWxPayOrderInfo.cus',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNo:orderNum,
+			totalFee:money,
+			body:productNameCn
+		},
+		success:function(data){
+			if(data.status==1){
+				var order = data.content;
+				plus.payment.request(channels[1],order,function(result){//根据支付通道调用对应客户端
+					weui.loading(5000, function(){
+						weui.alert("支付成功！");
+						getOrder();
+					});
+				},function(e){
+					weui.toast('未完成支付');
+					getOrder();
+				});
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					var go = xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {orderNum : orderNum});
+					window.location.href=xyz.setUrlparam(xyz.getFullurl('page/login.html'), {'go': go});
+				}else{
+					weui.alert(data.msg);
+				}
+			}
+		}
+	});
+}
+
+function aliPay(orderNum, money, productNameCn, channels){
+	xyz.ajax({
+		url:'PayWS/getAliPayOrderInfo.cus',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNo:orderNum,
+			totalFee:money,
+			body:productNameCn
+		},
+		success:function(data){
+			if(data.status==1){
+				var order = data.content;
+				plus.payment.request(channels[0],order,function(result){//根据支付通道调用对应客户端
+					weui.loading(5000, function(){
+						weui.alert("支付成功！");
+						getOrder();
+					});
+				},function(e){
+					weui.toast('未完成支付');
+					getOrder();
+				});
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					var go = xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {orderNum : orderNum});
+					window.location.href=xyz.setUrlparam(xyz.getFullurl('page/login.html'), {'go': go});
+				}else{
+					weui.alert(data.msg);
+				}
+			}
+		}
+	});
+}
+
+</script>
+</html>

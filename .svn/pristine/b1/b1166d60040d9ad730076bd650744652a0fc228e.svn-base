@@ -1,0 +1,9 @@
+package xyz.svc.buyer;
+
+import java.util.Map;
+
+public interface CustermerSvc {
+
+	Map<String, Object> getRegisterCode(String phone);
+
+}

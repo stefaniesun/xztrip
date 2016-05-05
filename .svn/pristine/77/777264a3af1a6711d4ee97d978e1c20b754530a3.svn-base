@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ME</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<link rel="stylesheet" href="../css/customer.mui.theme.css">
+<style>
+	html,
+	body {
+		background-color: #efeff4;
+	}
+	.title {
+		padding: 20px 15px 10px;
+		color: #6d6d72;
+		font-size: 15px;
+		background-color: #fff;
+	}
+	.mui-scroll-wrapper{
+		top:44px;
+	}
+	.mui-table-view{
+		margin-top: 20px;
+	}
+	/**顶部图块**/
+.user-top{
+	width: 100%;
+	height:6rem;
+	position: relative;
+}
+.user-top-box{
+	position: absolute;
+	width: 4rem;
+	height: 4rem;
+	background: #fff;
+	left: 50%;
+	margin-left: -2rem;
+	top:1rem;
+	border-radius: 50%;
+	text-align: center;
+	box-shadow: 0 0 1rem #666;
+}
+.user-top-box a{
+	line-height:4rem;
+	color:#cc9966;
+	font-size: 0.7rem;
+	display: block;
+}
+.user-top-box img{
+	width: 4rem;
+	height: 4rem;
+	border-radius: 50%;
+}
+</style>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+	<h1 class="mui-title">我的</h1>
+</header>
+<div class="mui-content">
+	<div class="mui-scroll-wrapper">
+		<div class="mui-scroll">
+			<!-- 头部图块 -->
+		    <div class="user-top">
+		        <img src="../images/lbg2-min.jpg" alt="" style=" width:100%; height:7rem">
+		        <div id="circleBox" class="user-top-box">
+		            <a id="noLoginInfo" href="javascript:void(0);" style="display:none;font-size:18px;">登录</a>
+		            <div id="hasLoginInfo" style="display:none;">
+		            <img src="../images/default-header-img-min.jpg"/>
+		            </div>
+		        </div>
+		    </div>
+		    <!-- 列表 -->
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell mui-media">
+					<a id="usernameItem" class="mui-navigate-right" href="javascript:void(0);">
+						<!-- <img class="mui-media-object mui-pull-left head-img" id="head-img" src=""> -->
+						<div class="mui-media-body">
+							西藏旅游
+							<p id="usernameText" class='mui-ellipsis'>--未登录--</p>
+						</div>
+					</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell">
+					<a id="editDefaultLinkInfo" href="javascript:void(0);" class="mui-navigate-right">常用联系人</a>
+				</li>
+			</ul>
+			<!-- <ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell">
+					<a href="#notifications" class="mui-navigate-right">新消息通知</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#privacy" class="mui-navigate-right">隐私</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a href="#general" class="mui-navigate-right">通用</a>
+				</li>
+			</ul> -->
+			<ul class="mui-table-view mui-table-view-chevron">
+				<li class="mui-table-view-cell">
+					<a href="tel:400000000" class="mui-navigate-right">联系我们 <i class="mui-pull-right update">400-000-000</i></a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">关于 <i class="mui-pull-right update">V1.0.1</i></a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell" style="text-align: center;">
+					<a id="logoutBtn">退出登录</a>
+				</li>
+			</ul>
+		    
+		</div>
+	</div>
+</div>
+<script type="text/javascript"  src="../js/mui_20151228.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script>
+
+mui('.mui-scroll-wrapper').scroll();
+var localLoginInfo;
+mui.ready(function(){
+	initPage();
+});
+function initPage(){
+	console.log("333----------"+window.localStorage.apikey);
+	try{
+		localLoginInfo = xyz.isNull(window.localStorage.localLoginInfo)?false:JSON.parse(window.localStorage.localLoginInfo);
+	}catch(e){
+	}
+	if(localLoginInfo){
+		xyz.id('noLoginInfo').style.display='none';
+		xyz.id('hasLoginInfo').style.display='block';
+		xyz.id('usernameText').innerText='账号：'+localLoginInfo.username;
+	}else{
+		xyz.id('noLoginInfo').style.display='block';
+		xyz.id('hasLoginInfo').style.display='none';
+		xyz.id('usernameText').innerText='--未登录--';
+	}
+}
+
+
+//退出登录
+xyz.id('logoutBtn').addEventListener('tap', function() {
+	if(!localLoginInfo){
+		return mui.toast('您还没有登录~');
+	}
+	mui.confirm('您要退出当前登录账号吗？', '退出登录', ['确定', '取消'], function(e){
+		if(e.index==0){
+			xyz.ajax({
+				url:'CustomerWS/exit.app',
+				data:{
+					apikey:window.localStorage.apikey
+				},
+				success:function(data){
+					if(data.status==1){
+						window.localStorage.localLoginInfo='';
+						window.localStorage.apikey = '';
+						window.localStorage.loginInfo = '';
+						window.localStorage.username = '';
+						window.location.reload();
+					}else{
+						mui.toast(data.msg);
+					}
+				}
+			});
+		}
+	});
+});
+
+
+xyz.id('circleBox').addEventListener('tap', function() {
+	openLoginPage();
+});
+
+xyz.id('usernameItem').addEventListener('tap', function() {
+	openLoginPage();
+});
+
+xyz.id('editDefaultLinkInfo').addEventListener('tap', function() {
+	mui.openWindow({
+		id: 'page/editDefaultLinkmanInfo.html',
+		url: xyz.getFullurl('page/editDefaultLinkmanInfo.html'),
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+});
+
+function openLoginPage(){
+	if(localLoginInfo){
+		return ;
+	}
+	if(window.plus){
+		var loginWebview = plus.webview.getWebviewById('page/login.html');
+		console.log(loginWebview);
+		loginWebview.evalJS('webviewId="page/me.html";method="initPage()"');
+		loginWebview.show("slide-in-right", 300);
+	}else{
+		alert('该功能需要下载APP才能使用哦！^_^');
+	}
+}
+
+</script>
+</body>
+</html>

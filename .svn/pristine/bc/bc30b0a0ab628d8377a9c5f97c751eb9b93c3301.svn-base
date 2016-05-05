@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>编辑常用联系人</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../css/weui.min.css"/>
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/login.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+</head>
+<body>
+<div class="register-wrap">
+    <header class="tibet-header">
+        <div class="back-left icon-left">
+            <img src="../images/icon-left.png"/>
+        </div>
+        <div class="center-name icon-left">
+            <h2>编辑常用联系人</h2>
+        </div>
+        <div class="go-right icon-right">
+
+        </div>
+    </header>
+    <div class="register">
+        <div  class="list-block">
+        	<ul style="margin-bottom: 1rem;">
+        		<li>
+        			<p style="padding: 0.6rem 0.5rem; border-bottom: 0; font-size: 13px; margin: 0;">温馨提示</p>
+        			<p style="padding: 0.4rem; font-size: 12px; color: gray;">提供准确有效的联系人信息对您订单的后续跟进服务非常重要，请务必仔细核对。</p>
+        		</li>
+        	</ul>
+            <ul>
+                <li>
+                    <div class="item-title">
+                        联系人
+                    </div>
+                    <div class="item-inner">
+                        <input  id='linkmanForm'  type="text" placeholder="请输入联系人姓名"/>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-title">
+                        联系电话
+                    </div>
+                    <div class="item-inner">
+                        <input  id='linkPhoneForm'  type="tel" placeholder="请输入联系人电话"/>
+                    </div>
+                </li>
+            </ul>
+            <button  id='saveBtn'  class="button">保存</button>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript">
+var info = window.localStorage.localLoginInfo;
+$(function(){
+	$('.back-left').click(function(){
+		xyz.back();
+	});
+	
+	if(!xyz.isNull(info)){
+		info = JSON.parse(info);
+		if(!xyz.isNull(info.linkman)){
+			xyz.id('linkmanForm').value=info.linkman;
+		}
+		if(!xyz.isNull(info.linkPhone)){
+			xyz.id('linkPhoneForm').value=info.linkPhone;
+		}
+	}
+	//注册
+	xyz.id('saveBtn').addEventListener('click', function() {
+		var linkman = xyz.id('linkmanForm').value;
+		var linkPhone = xyz.id('linkPhoneForm').value;
+		if(xyz.isNull(linkman)){
+			weui.toast('请填写联系人');
+			return ;
+		}
+		if(xyz.isNull(linkPhone)){
+			weui.toast('请填写联系电话');
+			return ;
+		}
+		if(!xyz.isPhone(linkPhone)){
+			weui.toast('请填写11位正确的手机号码（仅支持中国大陆手机号）');
+			return ;
+		}
+		xyz.ajax({
+			url:'CustomerWS/editCustomerLinkInfo.cus',
+			data:{
+				apikey:window.localStorage.apikey,
+				linkman:linkman,
+				linkPhone:linkPhone
+			},
+			success:function(data){
+				if(data.status==1){
+					info.linkman = linkman;
+					info.linkPhone = linkPhone;
+					window.localStorage.localLoginInfo = JSON.stringify(info);
+					weui.toast('保存成功',function(){
+						xyz.back();
+					});
+				}else{
+					if(data.msg.indexOf('重新登录')>-1){
+						window.location.href=xyz.getFullurl('page/login.html');
+					}else{
+						weui.alert(data.msg);
+					}
+				}
+			}
+		});
+	});
+});
+</script>
+</html>

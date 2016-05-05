@@ -1,0 +1,170 @@
+package xyz.svc.sql.imp;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+import org.hibernate.SQLQuery;
+import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.MyRequestUtil;
+import xyz.filter.ReturnUtil;
+import xyz.model.sql.SystemSql;
+import xyz.svc.sql.SystemSqlSvc;
+import xyz.util.StringTool;
+import xyz.util.UUIDUtil;
+
+@Service
+public class SystemSqlSvcImp implements SystemSqlSvc{
+	
+	@Autowired
+	CommonDao commonDao;
+
+	@Override
+	public Map<String, Object> querySystemSqlList(
+			int offset,
+			int pagesize,
+			String sqlTitle,
+			String nameCn) {
+		
+		String username = MyRequestUtil.getSecurityLogin().getUsername();
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT s.number_code AS numberCode, s.name_cn AS nameCn, s.sql_title AS sqlTitle,s.sql_type AS sqlType,");
+		sql.append(" s.sql_content AS sqlContent, s.username_add AS usernameAdd, s.username_role AS usernameRole, ");
+		sql.append(" s.use_count as useCount,s.source AS source, s.add_date AS addDate, s.alter_date AS alterDate FROM system_sql s");
+		sql.append(" WHERE 1 = 1");
+		sql.append(" AND CONCAT(',',s.username_add, ',',IFNULL(s.username_role,''),'') LIKE '%,"+username+",%'");
+		if(nameCn != null && !"".equals(nameCn)){
+			sql.append(" AND s.name_cn LIKE '%"+nameCn+"%' ");
+		}
+		if(sqlTitle != null && !"".equals(sqlTitle)){
+			sql.append("AND s.sql_title LIKE '%"+sqlTitle+"%'");
+		}
+		sql.append(" ORDER BY s.use_count desc");
+		
+		String countHql = "select count(ttt.numberCode) from ("+sql.toString()+") ttt";
+		SQLQuery countQuery = commonDao.getSqlQuery(countHql);
+		Number countTemp = (Number)countQuery.uniqueResult();
+		int count = countTemp==null?0:countTemp.intValue();
+		
+		SQLQuery query = commonDao.getSqlQuery(sql.toString());
+		query.addScalar("numberCode")
+		.addScalar("nameCn")
+		.addScalar("sqlTitle")
+		.addScalar("sqlType")
+		.addScalar("sqlContent")
+		.addScalar("usernameAdd")
+		.addScalar("usernameRole")
+		.addScalar("useCount")
+		.addScalar("source")
+		.addScalar("addDate")
+		.addScalar("alterDate")
+		.setResultTransformer(Transformers.aliasToBean(SystemSql.class));
+		
+		query.setMaxResults(pagesize);
+		query.setFirstResult(offset);
+		
+		@SuppressWarnings("unchecked")
+		List<SystemSql> systemSqlList = query.list();
+		
+		Map<String,Object> mapContent = new HashMap<String, Object>();
+		mapContent.put("total",count);
+		mapContent.put("rows",systemSqlList);
+
+		return ReturnUtil.returnMap(1,mapContent);
+	}
+	
+	@Override
+	public Map<String, Object> getSystemSql(String numberCode) {
+		if(numberCode == null || "".equals(numberCode)){
+			return ReturnUtil.returnMap(0,"参数错误003!");
+		}
+		SystemSql systemSql = (SystemSql) commonDao.getObjectByUniqueCode("SystemSql", "numberCode", numberCode);
+		
+		return ReturnUtil.returnMap(1,systemSql);
+	}
+	
+	@Override
+	public Map<String, Object> addSystemSql(
+			String nameCn,
+			String source,
+			String sqlTitle, 
+			String sqlType,
+			String sqlContent,
+			String usernameRole) {
+		String username = MyRequestUtil.getSecurityLogin().getUsername();
+		Date date = new Date();
+		SystemSql systemSql = new SystemSql();
+		systemSql.setNumberCode(UUIDUtil.getUUIDStringFor32());
+		systemSql.setNameCn(nameCn);
+		systemSql.setSource(source);
+		systemSql.setSqlTitle(sqlTitle);
+		systemSql.setSqlType(sqlType);
+		systemSql.setSqlContent(sqlContent);
+		systemSql.setUsernameAdd(username);
+		systemSql.setUsernameRole(usernameRole);
+		systemSql.setUseCount(0);
+		systemSql.setAddDate(date);
+		systemSql.setAlterDate(date);
+		
+		commonDao.save(systemSql);
+		
+		return ReturnUtil.returnMap(1,null);
+	}
+
+	@Override
+	public Map<String, Object> editSystemSql(
+			String numberCode,
+			String nameCn,
+			String source,
+			String sqlTitle,
+			String sqlType,
+			String sqlContent,
+			String usernameRole) {
+		String username = MyRequestUtil.getSecurityLogin().getUsername();
+		SystemSql systemSql = (SystemSql) commonDao.getObjectByUniqueCode("SystemSql", "numberCode", numberCode);
+		systemSql.setNameCn(nameCn);
+		systemSql.setSource(source);
+		systemSql.setSqlTitle(sqlTitle);
+		systemSql.setSqlType(sqlType);
+		systemSql.setSqlContent(sqlContent);
+		systemSql.setUsernameAdd(username);
+		systemSql.setUsernameRole(usernameRole);
+		systemSql.setAlterDate(new Date());
+		
+		commonDao.update(systemSql);
+		
+		return ReturnUtil.returnMap(1,null);
+	}
+
+	@Override
+	public Map<String, Object> deleteSystemSql(String numberCodes) {
+
+		if(numberCodes == null || "".equals(numberCodes)){
+			return ReturnUtil.returnMap(0,"请选择需要删除的对象!");
+		}
+		
+		String sql = "delete from system_sql where 1 = 1 and number_code in ("+StringTool.StrToSqlString(numberCodes)+")";
+		
+		commonDao.getSqlQuery(sql).executeUpdate();
+		
+		return ReturnUtil.returnMap(1,null);
+	}
+
+	@Override
+	public Map<String ,Object> addUseCountForSystemSql(String numberCode){
+		SystemSql systemSql = (SystemSql) commonDao.getObjectByUniqueCode("SystemSql", "numberCode", numberCode);
+		//使用次数+1
+		int useCount = systemSql.getUseCount()==null?0:systemSql.getUseCount();
+		systemSql.setUseCount(useCount+1);
+		commonDao.update(systemSql);
+		
+		return ReturnUtil.returnMap(1,null);
+	}
+}

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<function groupCn="签证业务" numberCode="visaManager" nameCn="审核签证" url="/jsp_core/visaManager.html">
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150429175001" nameCn="修改用户提交的签证状态" url="/VisaWS/editVisaFlag.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150429175002" nameCn="修改用户提交的签证详细状态" url="/VisaWS/editVisaContentFlag.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20150429175003" nameCn="查询用户提交的签证详细" url="/VisaWS/queryVisaContent.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20150429175004" nameCn="查询用户提交的签证" url="/VisaWS/queryVisa.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20150623120101" nameCn="查询erp订单详情" url="/VisaWS/queryOrderContentList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_s20150729093301" nameCn="打包下载签证资料" url="/VisaWS/downloadVisaInfo.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150813175725" nameCn="查询审核状态" url="/VisaWS/queryVisaState.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150821111401" nameCn="修改标记(旗子)颜色" url="/VisaWS/updateFlagColor.do"/>
+	</function>
+	
+		
+	<function groupCn="签证配置" numberCode="tkviewManager" nameCn="单品" url="/jsp_core/tkviewManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150812111524" nameCn="查询单品" url="/TkviewWS/queryTkviewList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150812111719" nameCn="添加单品" url="/TkviewWS/addTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150812111826" nameCn="编辑单品" url="/TkviewWS/editTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150812112325" nameCn="删除单品" url="/TkviewWS/deleteTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_s20150625102901" nameCn="重设密码" url="/AdminUserWS/editUserPassword.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150813095822" nameCn="查询组内信息" url="/TkviewWS/queryVisaTypeTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150813095823" nameCn="查询组外信息" url="/TkviewWS/queryVisaTypeFalseList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150813095824" nameCn="添加组内信息" url="/TkviewWS/addTkviewVisaType.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150813095825" nameCn="删除组内信息" url="/TkviewWS/deleteTkviewVisaType.do"/>
+	</function>
+	
+	<function groupCn="签证配置" numberCode="visaTypeManager" nameCn="签证类型" url="/jsp_core/visaTypeManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20150427115201" nameCn="查询签证" url="/VisaTypeWS/queryVisaTypeList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150427115202" nameCn="创建签证" url="/VisaTypeWS/addVisaType.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150427115203" nameCn="修改签证" url="/VisaTypeWS/editVisaType.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150427115204" nameCn="删除签证" url="/VisaTypeWS/deleteVisaType.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20150427181501" nameCn="查询组内信息" url="/VisaTypeWS/queryVisaFieldTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20150427181502" nameCn="查询组外信息" url="/VisaTypeWS/queryVisaFieldFalseList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150427181503" nameCn="添加组内信息" url="/VisaTypeWS/addVisaField.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150427181504" nameCn="删除组内信息" url="/VisaTypeWS/deleteVisaField.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150428120501" nameCn="交换优先度(向上)" url="/VisaTypeWS/editVisaFieldUp.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20150428120502" nameCn="交换优先度(向下)" url="/VisaTypeWS/editVisaFieldDown.do"/>
+	</function>
+
+	<function groupCn="签证配置" numberCode="visaFieldManager" nameCn="签证类型详细" url="/jsp_core/visaFieldManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_o20150427105801" nameCn="查询签证详细" url="/VisaFieldWS/queryVisaFieldList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_o20150427115201" nameCn="添加签证详细" url="/VisaFieldWS/addVisaField.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_o20150427144701" nameCn="编辑签证详细" url="/VisaFieldWS/editVisaField.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_o20150427144702" nameCn="删除签证详细" url="/VisaFieldWS/deleteVisaField.do"/>
+	</function>
+	
+	<function groupCn="淘宝预约业务" numberCode="orderYueForHandleManager" nameCn="审核预约" url="/jsp_core/orderYueForHandleManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150902121900" nameCn="查询预约信息" url="/OrderYueForHandleWS/queryOrderYueList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150902121800" nameCn="Excel下载" url="/OrderYueForHandleWS/getOrderYueExcel.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151103175201" nameCn="南航风格Excel下载" url="/OrderYueForHandleWS/getOrderYueExcelForNanhang.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151107163801" nameCn="万达风格Excel下载" url="/OrderYueForHandleWS/getOrderYueExcelForWanda.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150902121700" nameCn="获取关联商品组信息" url="/GroupTitleWS/getGroupTitleByNumberCode.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907103201" nameCn="查看预约详细" url="/OrderYueForHandleWS/getOrderYueDetail.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907103202" nameCn="重新尝试对接" url="/OrderYueForHandleWS/reJoint.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151102122001" nameCn="重新尝试录单" url="/OrderYueForHandleWS/reErp.do"/>
+			
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151026150401" nameCn="获得该预约的旗帜标记" url="/OrderYueForHandleWS/updateFlagColor.do"/>
+					
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150914122900" nameCn="预约审核" url="/OrderYueForHandleWS/setOrderYueFlag.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150914122906" nameCn="修改预约联系人" url="/OrderYueForHandleWS/editOrderYueLinkman.do"/>
+		
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150906143901" nameCn="查看短信" url="/OrderYueForHandleWS/getSmsListByOrderYue.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150906143903" nameCn="重新审核" url="/OrderYueForHandleWS/reviewOrderYueFlagOper.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150906143902" nameCn="重发短信" url="/OrderYueForHandleWS/reSendSms.do"/>
+		
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151102122002" nameCn="修改处理备注" url="/OrderYueForHandleWS/editOrderYueRemarkFlag.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150906143904" nameCn="修改淘码" url="/OrderYueForHandleWS/editOrderYue_OrderTb_taoma.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150906143905" nameCn="修改实名信息" url="/OrderYueForHandleWS/editOrderYueCustomer.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_z20151020162801" nameCn="出票确认" url="/OrderYueForHandleWS/setOrderYueContentFlag.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_z20151020162801" nameCn="修改出票备注" url="/OrderYueForHandleWS/setOrderYueContentRemark.do"/>
+	</function>
+	
+	<function groupCn="淘宝预约业务" numberCode="systemOrderYueManager" nameCn="代预约" url="/jsp_core/systemOrderYueManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_hy20151014152801" nameCn="查询代预约信息" url="/OrderYueForProxyWS/queryOrderYueListForProxy.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151014152802" nameCn="新增代预约" url="/OrderYueForProxyWS/addOrderYue.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151014152803" nameCn="添加补差价" url="/OrderYueForProxyWS/addOrderTbForBuchajia.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151014152804" nameCn="删除补差价" url="/OrderYueForProxyWS/deleteBuchajia.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151014152805" nameCn="追加代预约" url="/OrderYueForProxyWS/mergeOrderYue.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151014152806" nameCn="改变代预约的状态" url="/OrderYueForProxyWS/setOrderYueConfirmFlag.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151014152807" nameCn="查看预约详情" url="/OrderYueForProxyWS/getOrderYueInfo.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151014152808" nameCn="查询订单可预约数量" url="/OrderYueForProxyWS/getOrderTb.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151014152809" nameCn="查询库存" url="/OrderYueForProxyWS/queryOrderTkviewStock.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_z20151201171701" nameCn="删除代预约" url="/OrderYueForProxyWS/deleteProxyOrderYue.do"/>
+	</function>
+	<function groupCn="淘宝预约业务" numberCode="smsManager" nameCn="短信查看" url="/jsp_core/smsManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101407" nameCn="短信池列表" url="/SmsWS/querySmsList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101408" nameCn="查询短信剩余条数" url="/SmsWS/querySmsCount.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150105115301" nameCn="发短信" url="/SmsWS/addSms.do"/>
+	</function>
+	
+	<function groupCn="淘宝预约配置" numberCode="orderTkviewManager" nameCn="单品配置" url="/jsp_main/orderTkviewManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907113900" nameCn="查询预约单品" url="/OrderTkviewWS/queryOrderTkviewList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907113901" nameCn="添加单品" url="/OrderTkviewWS/addOrderTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907113902" nameCn="编辑单品" url="/OrderTkviewWS/editOrderTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907113903" nameCn="删除单品" url="/OrderTkviewWS/deleteOrderTkview.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907113904" nameCn="查询单品库存日志" url="/OrderTkviewWS/queryLogOrderTkviewStock.do"/>
+		
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907113905" nameCn="查询库存管理信息" url="/OrderTkviewWS/queryOrderTkviewStockList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907113905" nameCn="查询某单品所有库存" url="/OrderTkviewWS/queryOrderTkviewStockAllList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907113906" nameCn="新建天库存" url="/OrderTkviewWS/addOrderTkviewStock.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907113909" nameCn="删除库存1" url="/OrderTkviewWS/deleteOrderTkviewStock.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907113909" nameCn="删除库存2" url="/OrderTkviewWS/deleteOrderTkviewStock2.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_hy20151104102101" nameCn="设置预约倍数" url="/OrderTkviewWS/editOrderTkviewFlagCount.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151110102001" nameCn="设置补充类型" url="/OrderTkviewWS/setOrderTkviewTypeAppend.do"/>
+	</function>
+	<function groupCn="淘宝预约配置" numberCode="groupTitleManager" nameCn="预约商品配置" url="/jsp_main/groupTitleManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907152500" nameCn="预约商品配置" url="/GroupTitleWS/queryGroupTitleList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907152501" nameCn="添加可预约商品" url="/GroupTitleWS/addGroupTitle.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907152502" nameCn="编辑可预约商品" url="/GroupTitleWS/editGroupTitle.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907152503" nameCn="删除可预约商品" url="/GroupTitleWS/deleteGroupTitle.do"/>
+		
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907152504" nameCn="淘宝宝贝管理" url="/GroupTitleWS/queryTitleListByGroupTitle.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907152505" nameCn="追加淘宝宝贝" url="/GroupTitleWS/addGroupTitle_Title.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20151022091601" nameCn="设置淘宝宝贝的金额忽略属性" url="/GroupTitleWS/setGroupTitle_TitleIgnoreMoney.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907152506" nameCn="删除淘宝宝贝" url="/GroupTitleWS/deleteGroupTitle_Title.do"/>
+		
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907152507" nameCn="设置预约基本信息" url="/GroupTitleWS/setYuYueMode.do"/>
+		
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20150923105601" nameCn="依靠预约标题查询行程" url="/GroupTitleWS/getGroupTypeListByGroupTitle.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="添加行程" url="/GroupTitleWS/addGroupType.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="编辑行程" url="/GroupTitleWS/editGroupType.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="删除行程" url="/GroupTitleWS/deleteGroupType.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="移动行程的顺序" url="/GroupTitleWS/editGroupTypePriority.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20150923105601" nameCn="依靠预约标题查询行程的关联规则" url="/GroupTitleWS/getGroupTypeRelateListByGroupTitle.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="添加行程的关联规则" url="/GroupTitleWS/addGroupTypeRelate.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="添加联运类型的关联规则" url="/GroupTitleWS/addGroupTypeRelateLy.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="删除行程的关联规则" url="/GroupTitleWS/deleteGroupTypeRelate.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="编辑行程关联时间间隔" url="/GroupTitleWS/editGroupTypeRelateMinCountAndMaxCount.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20150923105601" nameCn="设置单品关联约束" url="/GroupTitleWS/setGroupTypeRelateTkviewRule.do"/>
+		
+		
+		
+		
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907152512" nameCn="查询行程内单品" url="/GroupTitleWS/queryOrderTkviewListForGroupType.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907152513" nameCn="添加单品" url="/GroupTitleWS/addGroupType_orderTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907152514" nameCn="删除单品" url="/GroupTitleWS/deleteGroupType_orderTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907152515" nameCn="关闭可预约商品" url="/GroupTitleWS/alterIsYyCheck.do"/>
+		
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907152516" nameCn="获取淘宝宝贝" url="/GroupTitleWS/loadTitle.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_z20151015110301" nameCn="添加ERP资源" url="/GroupTitleWS/addErpResource.do"/>
+	</function>
+	
+	<function groupCn="淘宝预约配置" numberCode="stockTempManager" nameCn="库存临时占位" url="/jsp_main/orderTkviewStockTempManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_l20150907170100" nameCn="库存临时占位" url="/OrderTkviewWS/queryOrderTkviewStockTempList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907170101" nameCn="新增库存占位" url="/OrderTkviewWS/addOrderTkviewStockTemp.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_l20150907170102" nameCn="取消临时占位" url="/OrderTkviewWS/deleteOrderTkviewStockTemp.do"/>
+	</function>
+	<function groupCn="淘宝预约配置" numberCode="channelManager" nameCn="渠道" url="/jsp_main/channelManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_z20150925144201" nameCn="查询渠道" url="/ChannelWS/queryChannelList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_z20150925144202" nameCn="新增渠道" url="/ChannelWS/addChannel.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_z20150925144203" nameCn="编辑渠道" url="/ChannelWS/editChannel.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_z20150925144204" nameCn="删除渠道" url="/ChannelWS/deleteChannel.do"/>
+	</function>
+	<function groupCn="淘宝预约配置" numberCode="stockModelManager" nameCn="特殊库存规则" url="/jsp_main/stockModelManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20151108133801" nameCn="查询特殊库存规则" url="/StockModelWS/queryStockModelList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151108133802" nameCn="新增特殊库存规则" url="/StockModelWS/addStockModel.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151108133803" nameCn="编辑特殊库存规则" url="/StockModelWS/editStockModel.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151108133804" nameCn="删除特殊库存规则" url="/StockModelWS/deleteStockModel.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20151108133805" nameCn="查询规则内单品" url="/StockModelWS/queryStockModelOrderTkviewTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20151108133805" nameCn="查询规则外单品" url="/StockModelWS/queryStockModelOrderTkviewFalseList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151108133805" nameCn="删除规则内单品" url="/StockModelWS/deleteStockModelOrderTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151108133805" nameCn="添加规则内单品" url="/StockModelWS/addStockModelOrderTkview.do"/>
+	</function>
+	
+	<function groupCn="对外接口" numberCode="jointManager" nameCn="平台" url="/jsp_core/jointManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20151003151201" nameCn="查询接口" url="/JointWS/queryJointList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20151003151202" nameCn="新增接口" url="/JointWS/addJoint.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20151003151203" nameCn="编辑接口" url="/JointWS/editJoint.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20151003151204" nameCn="删除接口" url="/JointWS/deleteJoint.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20151003151205" nameCn="查询接口内预约商品" url="/JointWS/queryJointGroupTitleTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20151003151205" nameCn="查询接口外预约商品" url="/JointWS/queryJointGroupTitleFalseList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20151003151206" nameCn="删除接口内预约商品" url="/JointWS/deleteJointGroupTitle.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20151003151207" nameCn="添加接口内预约商品" url="/JointWS/addJointGroupTitle.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_q20151003151208" nameCn="编辑接口内预约商品" url="/JointWS/editJointGroupTitle.do"/>
+	</function>
+	<function groupCn="对外接口" numberCode="orderYuejointManager" nameCn="对接跟踪" url="/jsp_main/orderYueJointManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_z20151006103601" nameCn="查询接口" url="/OrderYueJointWS/queryOrderYueJointList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_hy20151013162601" nameCn="删除该对接" url="/OrderYueJointWS/deleteOrderYueJoint.do"/>
+	</function>
+	
+	<list>
+		<api flagServer="0" isWork="0" nameCn="获取审核状态" url="/VisaWS/getVisaStateList.do"/>
+		<api flagServer="0" isWork="0" nameCn="获取单品列表" url="/ListWS/getOrderTkviewList.do"/>
+		<api flagServer="0" isWork="0" nameCn="获取商品列表" url="/ListWS/getGroupTitleList.do"/>
+		<api flagServer="0" isWork="0" nameCn="依靠渠道获取淘宝宝贝" url="/ListWS/getTitleListByChannel.do"/>
+		<api flagServer="0" isWork="0" nameCn="单品日期选择" url="/ListWS/getDateInfoAndStickList.do"/>
+		<api flagServer="0" isWork="0" nameCn="淘宝代预约查询订单详情" url="/ListWS/getTkviewListByGroupType.do"/>
+		<api flagServer="0" isWork="0" nameCn="查询三字代码表" url="/ListWS/getAilPortCode.do"/>
+		<api flagServer="0" isWork="0" nameCn="查询所有签证类型" url="/ListWS/getVisaTypeList.do"/>
+		<api flagServer="0" isWork="0" nameCn="查询所有单品" url="/ListWS/getTkviewList.do"/>
+		<api flagServer="0" isWork="0" nameCn="依靠名称获取渠道" url="/ListWS/getChannel.do"/>
+		<api flagServer="0" isWork="0" nameCn="获取淘宝渠道列表" url="/ListWS/getChannelListForTaobao.do"/>
+		<api flagServer="0" isWork="0" nameCn="依靠商品组获取类型" url="/ListWS/getGroupTypeListForGroupTitle.do"/>
+		<api flagServer="0" isWork="0" nameCn="获取库存列表(针对临时占位)" url="/ListWS/getOrderTkviewStockListByOrderTkview.do"/>
+		<api flagServer="0" isWork="0" nameCn="获取ERP渠道" url="/ListWS/getChannelListForErp.do"/>
+		<api flagServer="0" isWork="0" nameCn="获取ERP产品" url="/ListWS/getPtviewForErpChannel.do"/>
+		<api flagServer="0" isWork="0" nameCn="获取ERP单品" url="/ListWS/getTkviewForErpPtview.do"/>
+		<api flagServer="0" isWork="0" nameCn="获取ERP供应商" url="/ListWS/getProviderListForErp.do"/>
+	</list>
+	
+	<function groupCn="管理员" numberCode="a_userManager" nameCn="用户管理" url="/xyzsecurity/a_userManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101614" nameCn="查询用户列表" url="/AdminUserWS/queryUserList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20141225153101" nameCn="新增用户" url="/AdminUserWS/addUser.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20141225153102" nameCn="编辑用户" url="/AdminUserWS/editUser.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20141225153103" nameCn="删除用户" url="/AdminUserWS/deleteUser.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20141225153104" nameCn="开关用户" url="/AdminUserWS/editUserEnabled.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20141225153105" nameCn="设置用户岗位" url="/AdminUserWS/setUserPosition.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20141225153106" nameCn="设置用户令牌" url="/AdminUserWS/setUserOtp.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141225153105" nameCn="获取岗位" url="/AdminUserWS/getAllPosition.do"/>
+		
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_s20150819095001" nameCn="给用户设置资源组" url="/AdminUserWS/setUserPossessor.do"/>
+	</function>
+	<function groupCn="管理员" numberCode="otpManager" nameCn="令牌管理" url="/xyzsecurity/a_otpManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101618" nameCn="动态令牌列表" url="/AdminOptWS/queryOtpList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20141227103304" nameCn="新增令牌" url="/AdminOptWS/addOtp.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_q20141227103305" nameCn="删除令牌" url="/AdminOptWS/deleteOtp.do"/>
+	</function>
+	<function groupCn="管理员" numberCode="positionManager" nameCn="岗位管理" url="/xyzsecurity/a_positionManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="查询岗位列表" url="/AdminPositionWS/queryPositionList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="新增岗位" url="/AdminPositionWS/addPosition.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="编辑岗位" url="/AdminPositionWS/editPosition.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="删除岗位" url="/AdminPositionWS/deletePosition.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="查询岗位内功能" url="/AdminPositionWS/queryPositionFunctionTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="查询岗位外功能" url="/AdminPositionWS/queryPositionFunctionFalseList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="添加功能进岗位" url="/AdminPositionWS/addPositionFunction.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="删除岗位内功能" url="/AdminPositionWS/deletePositionFunction.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="查询岗位内操作" url="/AdminPositionWS/queryPositionButtonTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="查询岗位外操作" url="/AdminPositionWS/queryPositionButtonFalseList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="添加操作进岗位" url="/AdminPositionWS/addPositionButton.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20141231101619" nameCn="删除岗位内操作" url="/AdminPositionWS/deletePositionButton.do"/>
+	</function>
+	<function groupCn="管理员" numberCode="possessorManager" nameCn="资源组" url="/jsp_base/possessorManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_s20150708143401" nameCn="查询资源组列表" url="/PossessorWS/queryPossessorList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_s20150708143402" nameCn="添加资源组" url="/PossessorWS/addPossessor.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_s20150708143403" nameCn="修改资源组" url="/PossessorWS/editPossessor.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_s20150708143404" nameCn="删除资源组" url="/PossessorWS/deletePossessor.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_s20150709091401" nameCn="查询资源组有的资源" url="/PossessorWS/getPossessor.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_s20150709091401" nameCn="设置资源组资源受限" url="/PossessorWS/setPossessorResourceFlag.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_s20150709091401" nameCn="查询资源组已有渠道" url="/ChannelWS/queryPossessorChannelTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_s20150709091401" nameCn="查询资源组没有的渠道" url="/ChannelWS/queryPossessorChannelFalseList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_s20150709091401" nameCn="添加渠道给资源组" url="/PossessorWS/addPossessorChannel.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_s20150709091401" nameCn="从资源组删除渠道" url="/PossessorWS/deletePossessorChannel.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20151021145601" nameCn="查询资源组已有预约商品" url="/GroupTitleWS/queryPossessorGroupTitleTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20151021145601" nameCn="查询资源组没有的预约商品" url="/GroupTitleWS/queryPossessorGroupTitleFalseList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151021145601" nameCn="添加预约商品给资源组" url="/PossessorWS/addPossessorGroupTitle.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151021145601" nameCn="从资源组删除预约商品" url="/PossessorWS/deletePossessorGroupTitle.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20151116151001" nameCn="查询资源组已有的单品" url="/OrderTkviewWS/queryPossessorOrderTkviewTrueList.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_y20151116151001" nameCn="查询资源组没有的单品" url="/OrderTkviewWS/queryPossessorOrderTkviewFalseList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151116151001" nameCn="添加单品给资源组" url="/PossessorWS/addPossessorOrderTkview.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_y20151116151001" nameCn="从资源组删除单品"  url="/PossessorWS/deletePossessorOrderTkview.do"/>
+	</function>
+	<function groupCn="管理员" numberCode="systemSqlManager" nameCn="sql管理" url="/jsp_sql/systemSqlManager.html">
+		<api flagServer="1" isWork="0" buttonCode="buttonCode_s20151118171301" nameCn="查询系统SQL列表" url="/SystemSqlWS/querySystemSqlList.do"/>
+		<api flagServer="1" isWork="0" buttonCode="buttonCode_s20151118171301" nameCn="获取系统SQL" url="/SystemSqlWS/getSystemSql.do"/>
+		<api flagServer="1" isWork="1" buttonCode="buttonCode_s20151118171302" nameCn="查询系统SQL执行后的数据" url="/SystemSqlWS/queryDataBySystemSql.do"/>
+		<api flagServer="1" isWork="1" buttonCode="buttonCode_s20151118171303" nameCn="以Excel的形式导出系统SQL执行后的数据" url="/SystemSqlWS/downloadExcelForSystemSql.do"/>
+		<api flagServer="1" isWork="1" buttonCode="buttonCode_s20151118171304" nameCn="新增系统SQL" url="/SystemSqlWS/addSystemSql.do"/>
+		<api flagServer="1" isWork="1" buttonCode="buttonCode_s20151118171305" nameCn="修改系统SQL" url="/SystemSqlWS/editSystemSql.do"/>
+		<api flagServer="1" isWork="1" buttonCode="buttonCode_s20151118171306" nameCn="删除系统SQL" url="/SystemSqlWS/deleteSystemSql.do"/>
+	</function>
+	
+	<list>
+		<api flagServer="0" isWork="0" nameCn="下拉框--获取所有商户用户" url="/AdminUserWS/getSecurityUserList.do"/>
+		<api flagServer="0" isWork="0" nameCn="查询最后一次修改密码的时间" url="/LoginWS/getDateForAlterPassword.do"/>
+		<api flagServer="0" isWork="1" nameCn="修改密码" url="/LoginWS/alterPassword.do"/>
+		<api flagServer="0" isWork="1" nameCn="安全退出" url="/LoginWS/safeQuit.do"/>
+		<api flagServer="0" isWork="1" nameCn="登录验证" url="/LoginWS/decideLogin.do"/>
+		<api flagServer="0" isWork="0" nameCn="下拉框--获取资源组列表" url="/PossessorWS/getPossessorList.do"/>
+		<api flagServer="0" isWork="0" nameCn="南航验座接口" url="/FlightInterfacesWS/getFlightSeat.do"/>
+	</list>
+	
+</root>

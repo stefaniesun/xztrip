@@ -1,0 +1,131 @@
+package com.alipay.web.servlet;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.alipay.web.model.Bill;
+import com.alipay.web.service.PayService;
+
+/**
+ * Servlet implementation class AlipayServlet
+ */
+public class AlipayServlet extends ResourceServlet {
+	private static final long serialVersionUID = 1L;
+
+	private PayService payService = PayService.getInstance();
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public AlipayServlet() {
+		super("support/http/resources");
+	}
+
+	@Override
+	protected String process(String url, HttpServletRequest request,
+			HttpServletResponse response) throws UnsupportedEncodingException {
+		Map<String, String> params = getParameters(url);
+		// 进入交易trade页面后，加载数据
+		if (url.startsWith("/trade.json")) {
+			String bill_no = params.get("bill_no");
+			Bill bill = payService.viewBill(bill_no);
+			Map<String, Object> resultMap = new HashMap<String, Object>(3);
+			if (null != bill) {
+				resultMap.put("order_subject", bill.getOrder_subject());
+				resultMap.put("order_amount", bill.getOrder_amount());
+				resultMap.put("back_url", bill.getBack_url());
+			}
+
+			return returnJSONResult(1, resultMap);
+		}
+
+		// 点击支付后，获取支付宝form参数
+		if (url.startsWith("/pay.json")) {
+			String bill_no = params.get("bill_no");
+			String alipay = payService.getAlipayForm(bill_no);
+
+			return returnJSONResult(1, alipay);
+		}
+
+		// 异步通知
+		if (url.startsWith("/notify.json")) {
+			return payService.doNotify(request);
+		}
+
+		// 同步通知
+		if (url.startsWith("/return.json")) {
+			try {
+				response.sendRedirect(payService.doReturn(request));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// 查询订单
+		if (url.startsWith("/query.json")) {
+			String bill_no = request.getParameter("bill_no");
+			if (null == bill_no || bill_no.trim().equals("")) {
+				return returnJSONResult(0, "参数错误");
+			}
+
+			Bill bill = payService.viewBill(bill_no);
+			if (null == bill) {
+				return returnJSONResult(0, "未查询到该订单");
+			}
+			Map<String, Object> resultMap = new HashMap<String, Object>(5);
+			resultMap.put("bill_no", bill.getBill_no());
+			resultMap.put("bill_status", bill.getBill_status());
+			resultMap.put("pay_time", bill.getBill_pay_time());
+			resultMap.put("notify_status", bill.getNotify_status());
+			resultMap.put("notify_msg", bill.getNotify_msg());
+
+			return returnJSONResult(1, resultMap);
+		}
+
+		return null;
+	}
+
+	public static String returnJSONResult(int resultCode, Object content) {
+		Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+		dataMap.put("ResultCode", resultCode);
+		dataMap.put("Content", content);
+		return com.alipay.util.json.JSONUtils.toJSONString(dataMap);
+	}
+
+	public static Map<String, String> getParameters(String url) {
+		if (url == null || (url = url.trim()).length() == 0) {
+			return Collections.<String, String> emptyMap();
+		}
+
+		String parametersStr = com.alipay.util.StringUtils.subString(url, "?",
+				null);
+		if (parametersStr == null || parametersStr.length() == 0) {
+			return Collections.<String, String> emptyMap();
+		}
+
+		String[] parametersArray = parametersStr.split("&");
+		Map<String, String> parameters = new LinkedHashMap<String, String>();
+
+		for (String parameterStr : parametersArray) {
+			int index = parameterStr.indexOf("=");
+			if (index <= 0) {
+				continue;
+			}
+
+			String name = parameterStr.substring(0, index);
+			String value = parameterStr.substring(index + 1);
+			parameters.put(name, value);
+		}
+		return parameters;
+	}
+
+}

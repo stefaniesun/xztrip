@@ -1,0 +1,316 @@
+(function(win){
+	//日期格式化
+	Date.prototype.xyzFormat = function(fmt) { // author: meizz
+		var o = {
+			"M+" : this.getMonth() + 1, // 月份
+			"d+" : this.getDate(), // 日
+			"h+" : this.getHours(), // 小时
+			"m+" : this.getMinutes(), // 分
+			"s+" : this.getSeconds(), // 秒
+			"q+" : Math.floor((this.getMonth() + 3) / 3), // 季度
+			"S" : this.getMilliseconds()
+		// 毫秒
+		};
+		if (/(y+)/.test(fmt)){
+			fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+		}
+		for (var k in o){
+			if (new RegExp("(" + k + ")").test(fmt)){
+				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			}
+		}
+		return fmt;
+	};
+	Date.prototype.xyzNextMonth = function(){
+		this.setMonth(this.getMonth()+1)
+		return this;
+	};
+	var today = new Date();
+	var headerTemplate = '<header class="date-header" >'
+							+'<div class="header-title">'
+								+'<div class="back-left icon-left" onclick="document.querySelector(\'.fullbg\').style.display=\'none\';">'
+									+'<img class="icon-back" src="data:img/jpg;base64,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"/>'
+								+'</div>'
+								+'<div class="center-name icon-left">'
+									+'<h2>选择日期</h2>'
+								+'</div>'
+								+'<div class="go-right icon-right confirmBtn">'
+									+'<span class="confirm">确认</span>'
+								+'</div>'
+							+'</div>'
+							+'<table class="calendar" cellspacing="0" cellpadding="0">'
+								+'<tr>'
+									+'<td>日</td>'
+									+'<td>一</td>'
+									+'<td>二</td>'
+									+'<td>三</td>'
+									+'<td>四</td>'
+									+'<td>五</td>'
+									+'<td>六</td>'
+								+'</tr>'
+							+'</table>'
+						+'</header>';
+	var reg = /[1-2]{1}[0-9]{3}[-]{1}[0-1]{1}[0-9]{1}[-]{1}[0-3]{1}[0-9]{1}/g;
+	var comboMode = false;//是否启用连选模式
+
+	/**
+	 * get weeks data.
+	 */
+	function getData(year, month){
+		var dates = [];
+		var lastDay = new Date(year, month, 0).getDate();
+		for(var i=1; i<=lastDay; i++) dates.push([year,month,i]);
+		
+		// group date by week
+		var weeks = [], week = [];
+		var memoDay = -1;
+		while(dates.length > 0){
+			var date = dates.shift();
+			week.push(date);
+			var day = new Date(date[0],date[1]-1,date[2]).getDay();
+			if (memoDay == day){
+				day = 0;
+				//opts_1_2
+			} else if (day == 7 - 1){
+				weeks.push(week);
+				week = [];
+			}
+			memoDay = day;
+		}
+		if (week.length){
+			weeks.push(week);
+		}
+		
+		var firstWeek = weeks[0];
+		if (firstWeek.length < 7){
+			while(firstWeek.length < 7){
+				var firstDate = firstWeek[0];
+				var date = new Date(firstDate[0],firstDate[1]-1,firstDate[2]-1);
+				firstWeek.unshift([date.getFullYear(), date.getMonth()+1, date.getDate()]);
+			}
+		} else {
+			var firstDate = firstWeek[0];
+			var week = [];
+			for(var i=1; i<=7; i++){
+				var date = new Date(firstDate[0], firstDate[1]-1, firstDate[2]-i);
+				week.unshift([date.getFullYear(), date.getMonth()+1, date.getDate()]);
+			}
+			weeks.unshift(week);
+		}
+		
+		var lastWeek = weeks[weeks.length-1];
+		while(lastWeek.length < 7){
+			var lastDate = lastWeek[lastWeek.length-1];
+			var date = new Date(lastDate[0], lastDate[1]-1, lastDate[2]+1);
+			lastWeek.push([date.getFullYear(), date.getMonth()+1, date.getDate()]);
+		}
+		if (weeks.length < 6){
+			var lastDate = lastWeek[lastWeek.length-1];
+			var week = [];
+			for(var i=1; i<=7; i++){
+				var date = new Date(lastDate[0], lastDate[1]-1, lastDate[2]+i);
+				week.push([date.getFullYear(), date.getMonth()+1, date.getDate()]);
+			}
+			weeks.push(week);
+		}
+		
+		return weeks;
+	}
+
+	function render(year, month){
+		var data = getData(year, month);
+		//var cube = document.querySelectorAll('.month2 .cube');
+		var html = new Array();
+		html.push('<table class="date-tab" cellpadding="0" cellspacing="0">');
+		html.push('<tr><td colspan="7" class="title-td"><p class="date-title">'+year+'年'+(month<10?('0'+month):month)+'月</p></td></tr>');
+		var t = 0;
+		for(var i=0;i<data.length;i++){
+			html.push('<tr>');
+			for(var k=0;k<data[i].length;k++){
+				var day = data[i][k];
+				if(!(year == day[0] && month == day[1])){
+					html.push('<td></td>');
+				}else{
+					html.push('<td class="enable colo-grey" title="'+day[0]+'-'+(day[1]<10?('0'+day[1]):day[1])+'-'+(day[2]<10?('0'+day[2]):day[2])+'">'+day[2]+'</td>');
+				}
+				t++;
+			}
+			html.push('</tr>');
+		}
+		html.push('</table>');
+		return html.join('');
+	};
+
+	function xyzCalendar(start, end, selected, combo){
+		xyzCalendar.prototype.version = '0.0.1';
+		comboMode = combo;
+		var html = new Array();
+		html.push(headerTemplate);
+		html.push('<div style="height: 3.3rem"></div>');
+		html.push('<div class="xyzCalenderContent">');
+
+		start = new Date(start.getFullYear()+'/'+(start.getMonth()+1)+'/01');
+		end = new Date(end.getFullYear()+'/'+(end.getMonth()+1)+'/01');
+		
+		while(start<=end){
+			html.push(render(start.getFullYear(), start.getMonth()+1));
+			start = start.xyzNextMonth();
+		}
+		html.push('</div>');
+		var div = document.createElement('div');
+		div.className = 'xyzCalendar';
+		var fullbg = document.createElement('div');
+		fullbg.className = 'fullbg';
+		fullbg.innerHTML = html.join('');
+		div.appendChild(fullbg);
+		document.body.appendChild(div);
+		
+		var confirmBtn = document.querySelector('.xyzCalendar .date-header  .confirmBtn .confirm');
+		
+		if(confirmBtn){
+			if(comboMode){
+				confirmBtn.style.display = 'block';
+				confirmBtn.addEventListener('click', function(e){
+					var tdArr = document.querySelectorAll('.xyzCalenderContent .check-in');
+					var len = tdArr.length;
+					var mData = new Array();
+					for(var i=0;i<len;i++){
+						var data = tdArr[i].getAttribute('data-ext');
+						if(data){
+							data = JSON.parse(data);
+						}
+						var date =  new Date(tdArr[i].title.replace(/-/g, "/"));
+						mData.push({
+							date:date,
+							data:data
+						});
+					}
+					selected(mData);
+				});
+			}else{
+				confirmBtn.style.display = 'none';
+			}
+			
+		}
+		
+		document.querySelector('.xyzCalenderContent').addEventListener('click', function(e){
+			var t = e.target.title;
+			if(e.target.className.indexOf('colo-grey')==-1 && t.match(reg)){
+				var date = new Date(t.replace(/-/g, "/"));
+				if(comboMode){
+					var tdArr = document.querySelectorAll('.xyzCalenderContent .check-in');
+					if(tdArr.length<1){
+						e.target.className = e.target.className+' check-in';
+					}else if(tdArr.length==1){
+						var selTargetDate = new Date(tdArr[0].title.replace(/-/g, "/"));
+						if(selTargetDate.getTime() == date.getTime()){
+							e.target.className = e.target.className.replace('check-in','');
+							return;
+						}
+						while(selTargetDate.getTime()<=date.getTime()){
+							var mtarget = document.querySelector('.xyzCalenderContent td[title="'+selTargetDate.xyzFormat('yyyy-MM-dd')+'"]');
+							mtarget.className = mtarget.className+' check-in';
+							if(selTargetDate.getTime() == date.getTime()){
+								mtarget.className = mtarget.className+' check-out';
+							}
+							selTargetDate.setDate(selTargetDate.getDate()+1);
+						}
+					}else{
+						for(var i=0;i<tdArr.length;i++){
+							var target = tdArr[i];
+							target.className = 'enable';
+						}
+					}
+				}else{
+					var data = e.target.getAttribute('data-ext');
+					if(data){
+						data = JSON.parse(data);
+					}
+					selected(date, data);
+				}
+			}
+		});
+	};
+	xyzCalendar.prototype.show = function(selectDate, selectDate2){
+		var fullbg = document.querySelector('.fullbg');
+		fullbg.style.width = document.body.clientWidth+'px';
+		fullbg.style.display = 'block';
+		
+		if(comboMode){
+			if(selectDate instanceof Date && selectDate2 instanceof Date){
+				while(selectDate.getTime()<=selectDate2.getTime()){
+					var mtarget = document.querySelector('.xyzCalenderContent td[title="'+selectDate.xyzFormat('yyyy-MM-dd')+'"]');
+					mtarget.className = mtarget.className+' check-in';
+					if(selectDate.getTime() == selectDate2.getTime()){
+						mtarget.className = mtarget.className+' check-out';
+					}
+					selectDate.setDate(selectDate.getDate()+1);
+				}
+			}
+		}else{
+			if(selectDate instanceof Date){
+				selectDate = selectDate.xyzFormat('yyyy-MM-dd');
+			}
+			var target = document.querySelector('.xyzCalenderContent td[title="'+selectDate+'"]');
+			if(target){
+				if(target.className.indexOf('check-in')<=-1){
+					target.className = target.className+' check-in';
+				}
+			}
+		}
+	};
+	xyzCalendar.prototype.hide = function(){
+		document.querySelector('.fullbg').style.display='none';
+		var tdArr = document.querySelectorAll('.xyzCalenderContent .check-in');
+		for(var i=0;i<tdArr.length;i++){
+			var target = tdArr[i];
+			target.className = 'enable';
+		}
+	};
+	xyzCalendar.prototype.bindData = function(date, data, html){
+		if(date instanceof Date){
+			date = date.xyzFormat('yyyy-MM-dd');
+		}
+		var target = document.querySelector('.xyzCalenderContent td[title="'+date+'"]');
+		if(target){
+			target.setAttribute('data-ext',JSON.stringify(data));
+			target.className = target.className.replace('colo-grey','');
+			var title = target.getAttribute('title');
+			var days = title?title.split('-'):[];
+			var day = days.length==3?days[2]:'';
+			target.innerHTML = day+'<span>'+html+'</span>';
+		}
+	};
+	xyzCalendar.prototype.removeData = function(date){
+		if(date instanceof Date){
+			date = date.xyzFormat('yyyy-MM-dd');
+		}
+		var target = document.querySelector('.xyzCalenderContent td[title="'+date+'"]');
+		if(target){
+			target.removeAttribute('data-ext');
+			var title = target.getAttribute('title');
+			var days = title?title.split('-'):[];
+			var day = days.length==3?days[2]:'';
+			if(day!='' && !isNaN(day)){
+				target.innerHTML = day;
+			}
+		}
+	};
+	xyzCalendar.prototype.removeAllData = function(){
+		var tdArr = document.querySelectorAll('.xyzCalenderContent td');
+		var len = tdArr.length;
+		for(var i=0;i<len;i++){
+			var target = tdArr[i];
+			if(target){
+				target.removeAttribute('data-ext');
+				var title = target.getAttribute('title');
+				var days = title?title.split('-'):[];
+				var day = days.length==3?days[2]:'';
+				if(day!='' && !isNaN(day)){
+					target.innerHTML = day;
+				}
+			}
+		}
+	};
+	win.xyzCalendar = xyzCalendar;
+})(window);

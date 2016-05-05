@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绑定畅行账号到微信</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/login.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+    <link rel="stylesheet" href="../css/weui.min.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+<body>
+<header>
+    <!-- <a href="javascript:void(0);" class="pull-left back-inner" onclick="window.history.back();">
+        <i class="iconfont icon-fanhui"></i>
+    </a> -->
+    <h1 class="header-title">
+        绑定畅行账号到微信
+    </h1>
+    <a href="javascript:window.location.href=xyz.getFullurl('index.html');" class="pull-right back-inner">
+        <i class="iconfont icon-shouyeshouye" style="color: #fff;font-size: 21px;position: relative;top: 0.4rem;"></i>
+    </a>
+</header>
+<div class="content-wrapper proup-height">
+    <div class="item-box">
+        <ul>
+            <li >
+                <span class="pull-left">账号</span>
+                <input type="tel" placeholder="请输入账号" class="pull-left" id='username'/>
+                <div style="clear:both;"></div>
+            </li>
+            <li >
+                <span class="pull-left">密码</span>
+                <input type="password" placeholder="请输入登陆密码" class="pull-left" id='password'/>
+                <i class="iconfont icon-yanjing" id="showPasswordBtn"></i>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="item-box">
+        <button class="login-btn" id="bindBtn">立即绑定</button>
+        <div class="login-inner">
+            <a href="javascript:window.location.href=xyz.getFullurl('page/register.html');" class="dk pull-left">注册账号</a>
+            <a href="javascript:window.location.href=xyz.getFullurl('page/forgetPassword.html');" class="dk pull-left">忘记密码</a>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/jquery.md5.js"></script>
+<script type="text/javascript">
+
+xyz.id('showPasswordBtn').addEventListener('touchstart', function(e){
+	var className = e.target.className;
+	if(className.indexOf('icon-yj')>-1){
+		e.target.className = className.replace(' icon-yj', '');
+		xyz.id('password').setAttribute('type', 'password');
+	}else{
+		e.target.className = className+' icon-yj';
+		xyz.id('password').setAttribute('type', 'text');
+	}
+}, false);
+
+xyz.id('bindBtn').addEventListener('touchstart', function(e){
+	bind();
+},false);
+
+function bind(){
+	var username = xyz.id("username").value;
+	var password = xyz.id("password").value;
+	if(xyz.isNull(username) || xyz.isNull(password)){
+		weui.toast('用户名和密码不能为空');
+		return;
+	}
+	if(username.length<3 || username.length>16){
+		weui.toast('用户名需要3到16为字符');
+		return;
+	}
+	if(password.length<3 || password.length>16){
+		weui.toast('密码需要3到16为字符');
+		return;
+	}
+	var md5password = $.md5(password).substr(8,16);
+	xyz.ajax({
+		url:'WeixinUserInfoWS/bindOpenid.app',
+		async:true,
+		data:{
+			openid : window.localStorage.openid,
+			username:username,
+			password:md5password
+		},
+		success:function(data){
+			if(data.status==1){
+				xyz.id("password").value='';
+				window.location.href=xyz.setUrlparam(xyz.getFullurl('index.html'), {"openid":(window.localStorage.openid?window.localStorage.openid:'')});
+			}else{
+				weui.alert(data.msg);
+			}
+		}
+	});
+}
+</script>
+</html>

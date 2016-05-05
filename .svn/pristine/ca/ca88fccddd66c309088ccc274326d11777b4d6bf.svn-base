@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Home</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<link rel="stylesheet" href="../css/customer.mui.theme.css">
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<style>
+		html,
+		body {
+			background-color: #efeff4;
+		}
+		.title {
+			padding: 5px 10px;
+			background-color: #fff;
+		}
+	/**定制 mui-control-item **/
+	.mui-bar .mui-segmented-control {
+		top: 7px;
+		margin: 0 auto;
+	}
+	.mui-segmented-control .mui-control-item {
+		line-height: 28px;
+	}
+	.hotSceneryList_img {
+		float: left;
+		width: 110px;
+		height: 80px;
+		margin-right: 10px;
+		background-image: url("../images/default.png");
+		background-size: 100% 100%;
+	}
+	.infoPanel {
+		overflow: hidden;
+	}
+	.infoPanel h3 {
+		font-size: 16px;
+		line-height: 16px;
+		font-weight: normal;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		margin: 2px 0 6px;
+	}
+	.pricePanel {
+		width: 85px;
+		position: absolute;
+		top: 26px;
+		right: 10px;
+		text-align: right;
+		color: #999;
+	}
+	.pricePanel .tcPrice {
+		display: block;
+		width: 85px;
+		font-size: 21px;
+		color: #f63;
+	}
+	.pricePanel .tcPrice .orange {
+		font-size: 13px;
+		color: #f63;
+	}
+	.pricePanel .tcPrice .gray {
+		font-size: 13px;
+		color: #999;
+	}
+</style>
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav">
+	<a class="mui-button mui-icon mui-icon-search mui-pull-right" ></a>
+		<div style="width:80%;margin:0px 15px;" class="mui-pull-left">
+			<div id="segmentedControl_home" class="mui-segmented-control" >
+		<!-- 		<a id="all" class="mui-control-item" href="javascript:void(0);">精品推荐</a> -->
+				<a id="scenic" class="mui-control-item mui-active" href="javascript:void(0);">
+				<i class="iconfont">&#xe61a</i>门票</a>
+				<a id="hotel" class="mui-control-item" href="javascript:void(0);">
+				<i class="iconfont">&#xe60a</i>酒店</a>
+				<a id="cars" class="mui-control-item" href="javascript:void(0);">
+				<i class="iconfont">&#xe609</i>租车</a>
+			</div>
+		</div>
+	</header>
+	<div id="pullrefresh_home" class="mui-content mui-scroll-wrapper">
+		<div class="mui-scroll">
+			<ul id="tableList" class="mui-table-view mui-table-view-chevron ">
+			
+			</ul>
+		</div>
+	</div>
+	<script src="../js/mui_20151228.min.js"></script>
+	<script src="../js/xyzCommon.js"></script>
+	<script type="text/javascript" src="../js/weui.js"></script>
+	<script>
+	mui.init({
+	swipeBack: false,
+	pullRefresh: {
+		container: '#pullrefresh_home',
+		down: {
+			callback: pulldown
+		},
+		up: {
+			contentrefresh: '正在加载...',
+			callback: pullup
+		}
+	}
+});
+
+if(mui.os.plus){
+	mui.plusReady(function() {
+		setTimeout(function() {
+			pageInit();
+		}, 100);
+
+	});
+}else{
+	mui.ready(function() {
+		pageInit();
+	});
+}
+
+function pageInit(){
+	mui('#pullrefresh_home').pullRefresh().pullupLoading();
+	mui.each(document.querySelectorAll('#segmentedControl_home a'), function(index, ele) {
+		ele.addEventListener('tap',function () {
+			queryList(page=1, ele.id);
+		});
+	});
+}
+
+/**
+ * 下拉刷新具体业务实现
+ */
+function pulldown() {
+	queryList(page=1);
+}
+var page = 0;
+/**
+ * 上拉加载具体业务实现
+ */
+function pullup() {
+	queryList(++page);
+}
+		
+(function(thiz){
+	var total = 0;
+	var rows = 30;
+	var apikey = window.localStorage.apikey;
+	thiz.queryList = function(page, flag){
+		var type="SC";
+		flag = flag?flag:mui('#segmentedControl_home .mui-active')[0].id;
+		flag = flag=='all'?'':flag;
+		var ttturl = '';
+		if(flag=='hotel'){
+			type="HO";
+		}else if(flag=='scenic'){
+			type="SC";
+		}else{
+			weui.alert('功能正在加急开发中...');
+			window.event.stopPropagation();
+			return;
+		}
+		xyz.ajax({
+			url:'BuyerProviderWS/queryProviderList.app',
+			progress:false,
+			data:{
+				page : page,
+				rows : rows,
+				providerType : type
+			},
+			success:function(data){
+				if(page==1){
+					mui('#pullrefresh_home').pullRefresh().endPulldownToRefresh(); //refresh completed
+				}
+				var flag = true;//true代表需要显示：没有更多数据了
+				if(data.status==1){
+					flag = data.content.rows.length<=0?true:false;
+				}
+				mui('#pullrefresh_home').pullRefresh().endPullupToRefresh(flag);
+				if(data.status==1){
+					var list = data.content.rows;
+					var table = document.body.querySelector('#tableList');
+					if(page==1){
+						table.innerHTML = '';
+					}
+					for(var i=0; i<list.length; i++){
+						var o = list[i];
+						var li = document.createElement('li');
+						li.className = 'mui-table-view-cell';
+						li.id=o.numberCode;
+						li.type=o.type;
+						var html = '<img src="'+xyz.getSmallImageUrl(o.imageUrl)+'" class="hotSceneryList_img" />';
+						html += '<div class="infoPanel"><h3>'+o.nameCn+'</h3></div>';
+						html += '<div class="pricePanel"><span class="tcPrice"><em class="orange">¥</em>'+o.price+'<em class="gray">起</em></span></div>';
+	
+						li.innerHTML = html;
+						table.appendChild(li);
+					}
+					
+				}else{
+					mui.toast(data.msg);
+				}
+			}
+		});
+	};
+})(this);
+		
+		
+//主列表触摸事件
+mui('#tableList').on('tap', 'li', function() {
+	var urlTarget = 'page/providerScenicDetail.html';
+	if(this.type=="HO"){//酒店
+		urlTarget = 'page/providerHotelDetail.html';
+	}else if(this.type=="SC"){//门票
+		urlTarget = 'page/providerScenicDetail.html';
+	}
+	 mui.openWindow({
+		id: urlTarget,
+		url: xyz.setUrlparam(xyz.getFullurl(urlTarget), {'numberCode':this.id}),
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	}); 
+});
+	</script>
+</body>
+</html>

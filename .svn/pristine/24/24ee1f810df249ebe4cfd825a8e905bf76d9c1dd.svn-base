@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>productDetail</title>
+<link href="../css/mui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+<link rel="stylesheet" href="../css/customer.mui.theme.css">
+<style>
+.mui-bar-nav~.mui-content .mui-pull-top-pocket {
+	top: 0px;
+}
+.mui-input-group:after{
+	height: 0px;
+}
+.mui-table-view:after{
+	height:0px;
+}
+li#form .mui-slider .mui-slider-group .mui-slider-item{
+	border-bottom:0;
+}
+.pic {
+display: block;
+position: relative;
+}
+.pic a {
+display: block;
+min-height: 150px;
+}
+.pic img {
+width: 100%;
+}
+.pic_mask {
+width: 100%;
+position: absolute;
+left: 0;
+bottom: 0;
+color: #fff;
+background: linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+background: -moz-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+background: -webkit-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+background: -o-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+background: -ms-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+box-sizing: border-box;
+padding: 10px;
+}
+.pic_mask h3 {
+font-size: 18px;
+}
+.mui-scroll-wrapper{
+position:inherit;
+}
+.ticket {
+position: relative;
+background-color: #f5f5f5;
+font-size: 14px;
+}
+.ticket dd {
+padding: 10px 10px 10px 0;
+margin-left: 10px;
+border-bottom: 1px solid #dcdcdc;
+background: #f5f5f5;
+position: relative;
+display: none;
+}
+.ticket.return dd {
+display: block;
+}
+.ticket:last-child dd:last-child {
+border-bottom: 1px solid #C7D2DC;
+}
+.ticket h4 {
+color: #333;
+font-size: 15px;
+max-height: 45px;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.ticket .other_detail {
+position: absolute;
+right: 82px;
+bottom: 9%;
+}
+.ticket .tc-price {
+color: #f63;
+font-size: 20px;
+}
+.ticket .other_detail span {
+display: block;
+text-align: right;
+line-height: 20px;
+}
+.lbl {
+padding-bottom: 0;
+}
+.lbl .today {
+color: #999;
+line-height: 16px;
+height: 16px;
+font-size: 12px;
+border-radius: 2px;
+display: inline-block;
+}
+.btn-box {
+position: absolute;
+right: 10px;
+bottom: 10%;
+margin-top: -27px;
+height: 40px;
+display: table;
+}
+.btn-box li {
+display: table-cell;
+vertical-align: middle;
+height: 40px;
+}
+.ticket .btn {
+display: block;
+border-radius: 3px;
+color: #fff;
+width: 54px;
+font-size: 16px;
+line-height: 23px;
+height: 22px;
+text-align: center;
+overflow: hidden;
+}
+.ticket .line_btn {
+background: #FF6D4F;
+}
+.bottomBox_contain {
+background: #fff;
+border-bottom: 1px solid #dcdcdc;
+}
+.bottomBox {
+padding: 12px 15px 12px 2px;
+clear: both;
+font-size: 14px;
+line-height: 18px;
+position: relative;
+border-bottom: 1px solid #dcdcdc;
+background: #fff;
+margin-left: 15px;
+}
+.bottomBox a {
+color: #434d59;
+display: inline;
+width: 90%;
+display: block;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+background-repeat: no-repeat;
+padding: 0 0 0 25px;
+}
+.bottomBox .a_phone {
+background-image: url(http://img1.40017.cn/cn/s/touch/2014/final/d_dw.png);
+background-size: 18px 17px;
+}
+.bottomBox .a_address {
+background-image: url(http://img1.40017.cn/cn/s/touch/2014/final/d_dw.png);
+background-size: 18px 17px;
+}
+</style>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	<h1 class="mui-title">拉萨门票</h1>
+</header>
+
+<div class="mui-content">
+
+	<div class="pic">
+		<a class="topImg tcTraObj">
+	      		<img class="showImg" src="" onerror="javascript:this.src='http://img1.40017.cn/cn/s/touch/2014/final/d_errorNew.png';" style="display: inline;">
+	       		<img class="hideImg" src="http://img1.40017.cn/cn/s/touch/2014/final/d_errorNew.png" style="display: none;">
+      	</a>
+      	<div class="pic_mask">
+ 					<h3 id="title"></h3>
+		  </div>
+	</div>
+	<!--下拉刷新容器-->
+	<div id="pullrefresh_productDetail" class="mui-scroll-wrapper contentScrollWrapper">
+		<div class="mui-scroll">
+			<!--数据列表-->
+			<ul class="mui-table-view">
+				<li id="container" >
+					
+				</li>
+				<li id="form">
+					<div id="slider" class="mui-slider">
+						<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+							<a class="mui-control-item" href="#formDiv">产品预定</a>
+							<a class="mui-control-item" href="#remark">景点介绍</a>
+						</div>
+						<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
+						<div class="mui-slider-group">
+							<div id="formDiv" class="mui-slider-item mui-control-content mui-active">
+								
+								<dl class="ticket tcTraObj return" id="productList">
+								
+								                                                             
+								 </dl>
+							
+							
+							</div>
+							<div id="remark" class="mui-slider-item mui-control-content">
+							
+							<div class="bottomBox_contain">
+						            <div class="bottomBox">
+						                <a class="a_address tcTraObj"><em class="gray-ico"></em></a>
+						            </div>
+						             <div class="bottomBox">
+						                <a class="a_phone tcTraObj"><em class="gray-ico"></em></a>
+						            </div>
+     
+    						</div>
+							
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<script src="../js/mui_20151228.min.js"></script>
+<script src="../js/mui.picker.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript">
+document.querySelector('.mui-scroll-wrapper').style.top='45px';
+document.querySelector('.mui-scroll-wrapper').style.bottom='45px';
+
+mui.init({
+	swipeBack: false,
+	pullRefresh: {
+		container: '#pullrefresh_productDetail',
+		down: {
+			callback: pulldown
+		}
+	}
+});
+
+
+var o = xyz.getUrlparam();
+xyz.ajax({
+	url:'BuyerProviderWS/getProvider.app',
+	data:{
+		numberCode:o.numberCode
+	},
+	success:function(data){
+		if(data.status==1){
+			document.querySelector('.mui-title').innerText = data.content.nameCn;
+			document.querySelector('.showImg').src = data.content.imageUrl;
+			document.querySelector('#title').innerText = data.content.nameCn;
+			document.querySelector('.a_address').innerText = data.content.address;
+			document.querySelector('.a_phone').innerText = data.content.phone;
+		}else{
+			alert(data.msg);
+		}
+	}
+});
+
+
+if(mui.os.plus){
+	mui.plusReady(function(){
+		setTimeout(function(){
+			pageInit();
+		}, 100);
+	});
+}else{
+	mui.ready(function(){
+		pageInit();
+	});
+}
+
+
+/**
+ * 下拉刷新具体业务实现
+ */
+function pulldown() {
+	pageInit();
+}
+
+function pageInit(){
+	
+	
+	xyz.ajax({
+		url:'BuyerScenicWS/queryScenicList.app',
+		data:{
+			provider:o.numberCode,
+			page:1,
+			rows:5,
+		},
+		success:function(data){
+			if(data.status==1){
+				var rows=data.content.rows;
+				var html="";
+				for(var i=0;i<rows.length;i++){
+					if(rows[i].price!=""){
+							html+='<dd>';
+							html+=    '<a><h4 class="h4">'+rows[i].nameCn+'</h4></a>';
+							html+=    '<p class="other_detail"><span class="tc-price">¥'+parseInt(rows[i].price)+'</span></p>';
+							html+=    '<p class="lbl"><span class="today">需游玩<span>前2天18:00前</span>预订</span></p>';
+							html+=    '<ul class="btn-box">';
+							html+=    	'<li><a class="btn btn-top line_btn tcTraObj">预订</a></li>';
+							html+=    '</ul>';
+							html+='</dd>';
+					}
+				}
+				document.querySelector('#productList').innerHTML=html;
+			}else{
+				alert(data.msg);
+			}
+		}
+	});
+	
+	setTimeout(function(){
+		mui('#pullrefresh_productDetail').pullRefresh().endPulldownToRefresh();
+	},500);
+}
+
+function getProductStock(){
+	var dateInfo = xyz.id('dateInfoForm').innerText;
+	var dateInfoTime = new Date(dateInfo.replace(/-/g,"/")).getTime();
+	var currentTime = new Date(new Date().Format('yyyy-MM-dd 00:00:00').replace(/-/g,"/")).getTime();
+	if(dateInfoTime<currentTime){
+		alert('您选择了一个过去时');
+		xyz.id('showResult').innerHTML='<p style="color:red;">您选择了一个已经过去的时间 -_-！</p>';
+		xyz.id('showTotal').innerHTML='';
+		return ;
+	}
+	
+}
+
+function calcTotal(){
+	var price = xyz.id('productPrice').innerText;//单价
+	var allowCount = xyz.id('allowCount').innerText;//可用库存
+	var count = xyz.id('countForm').value;//购买数量
+	var dateInfo = xyz.id('dateInfoForm').innerText;//出行日期
+	
+	var showTotal = xyz.id('showTotal');
+	if(xyz.isNull(price) || isNaN(allowCount)){
+		showTotal.innerHTML='';
+		return ;
+	}
+	if(isNaN(count) || count<1){
+		showTotal.innerHTML='<span style="color:red;">请选择正确的购买数量！</span>';
+		return ;
+	}
+	count = new Number(count);
+	allowCount = new Number(allowCount);
+	
+	var stockTip = '';
+	if(allowCount<=0){
+		stockTop = '【<span style="color:red;">已售罄</span>】';
+	}else if(allowCount<count){
+		stockTop = '【<span style="color:red;">库存不足，仅剩'+allowCount+'张</span>】';
+	}else if(allowCount>count*2){
+		stockTop = '【库存充足】';
+	}else{
+		stockTop = '【还有<span style="color:red;">'+allowCount+'</span>张】';
+	}
+	xyz.id('showResult').innerHTML='<p style="color:black;">'+dateInfo+'门票价格：<span style="color:red;">'+new Number(price).toFixed(2)+'</span><span style="color:red;">元</span>'+stockTop+'</p>';
+	
+	var totalPrice = new Number(price * parseInt(count)).toFixed(2);
+	showTotal.innerHTML = '<p style="color:black;">金额合计：<span style="color:red;font-size:20px;">'+totalPrice+'</span><span style="color:red;">元</span></p>';
+}
+
+//预定按钮点击事件
+//主列表触摸事件
+mui('.line_btn').on('tap', '.mtarget', function() {
+	
+	alert("xxx");
+	
+	mui.openWindow({
+		id:  'productScenicOrder',
+		url:  'page/productScenicOrder.html', 
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+});
+
+
+</script>
+</body>
+</html>

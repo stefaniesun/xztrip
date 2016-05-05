@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>productDetail</title>
+<link href="../css/mui.min.css" rel="stylesheet" />
+<link href="../css/dropload.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="../css/customer.mui.theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/weui.min.css"/>
+<style>
+.mui-bar-nav~.mui-content .mui-pull-top-pocket {
+	top: 0px;
+}
+.mui-input-group:after{
+	height: 0px;
+}
+.mui-table-view:after{
+	height:0px;
+}
+li#form .mui-slider .mui-slider-group .mui-slider-item{
+	border-bottom:0;
+}
+.iconfont{
+float:left;
+font-size:19px;
+padding:0 8px;
+color: #8f8f94;;
+margin-top:-5px;
+}
+.mui-table-view-cell{
+padding:11px;
+background-color: #f5f5f5;
+border-bottom: 1px solid #dcdcdc;
+}
+.mui-slider{
+background-color: #efeff4;
+}
+
+.home-block-list ul{
+		background-color: #efeff4;
+	}
+	.book-list-item{
+		background-color: #fff;
+		height: auto;
+		border-bottom: 1px solid #f2f3f4;
+		padding: 13px 10px;
+		width: 100%;
+		position: relative;
+		font-family: 黑体;
+	}
+	.book-list-item .book-item-img ,
+	.book-list-item .book-item-img img{
+		width: 72px;
+		height: 72px;
+		float: left;
+	}
+	.book-item-info{
+		height: auto;
+		padding: 0 10px;
+		width: 50%;
+		float: left;
+	}
+	.book-item-info h3{
+		font-size: 17px;
+		height: 30px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		line-height: 1.7;
+		margin: 0;
+	}
+	.book-item-info .book-sp-decr{
+		font-size: 12px;
+		padding-top: 7px;
+		margin: 0;
+		height: 20px;
+		color: #999;
+	}
+	.book-list-item .book-price{
+		float: right;
+		padding: 0;
+		color: #ff9a14;
+		padding-right: 8px;
+	}
+	.book-list-item .book-price span{
+		display: block;
+		margin-top: 5px;
+	}
+	.book-list-item .book-price button{
+		margin-top: 8px;
+		background-color: #ff9a14;
+		color: #fff;
+		border: 1px solid #ff9a14;
+		padding: 3px 9px;
+		border-radius: 3px;
+		font-size: 13px;;
+	}
+</style>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	<h1 class="mui-title">门票</h1>
+</header>
+
+<div class="mui-content">
+
+	<div class="pic">
+		<a class="topImg tcTraObj">
+	      		<img class="showImg" src="" onerror="javascript:this.src='../images/default.png';" style="display: inline;">
+	       		<img class="hideImg" src="../images/default.png" style="display: none;">
+      	</a>
+      	<div class="pic_mask">
+ 					<h3 id="title"></h3>
+		  </div>
+	</div>
+
+		<div class="mui-scroll">
+			<!--数据列表-->
+			<ul class="mui-table-view">
+				<li id="container" >
+					
+				</li>
+				<li id="form">
+					<div id="slider" class="mui-slider">
+						<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+							<a class="mui-control-item" href="#formDiv">购买门票</a>
+							<a class="mui-control-item" href="#remark">景点介绍</a>
+						</div>
+						<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
+						<div class="mui-slider-group">
+							<div id="formDiv" class="mui-slider-item mui-control-content mui-active home-block-list">
+								<ul  id="productList">
+								 </ul>
+							</div>
+							<div id="remark" class="mui-slider-item mui-control-content">
+    							<ul class="mui-table-view mui-table-view-chevron">
+									<li class="mui-table-view-cell" id="loLa">
+										<a class="mui-navigate-right"><i class="iconfont">&#xe626</i><span class="a_address"></span></a>
+									</li>
+									<li class="mui-table-view-cell" id="phoneTab">
+										<a  class="mui-navigate-right"><i class="iconfont">&#xe62a</i><span class="a_phone"></span></a>
+										<a href="#" id="phone" style="display:none"></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+</div>
+<script src="../js/mui_20151228.min.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript">
+/* 
+mui.init({
+	swipeBack: false,
+});
+
+ */
+var o = xyz.getUrlparam();
+function getProvider(){
+	xyz.ajax({
+		url:'BuyerProviderWS/getProvider.app',
+		data:{
+			numberCode:o.numberCode
+		},
+		success:function(data){
+			if(data.status==1){
+				xyz.class('.mui-title').innerText = data.content.nameCn;
+				xyz.class('.showImg').src = xyz.getMiddleImageUrl(data.content.imageUrl);
+				xyz.id('title').innerText = data.content.nameCn;
+				xyz.class('.a_address').innerText = data.content.address;
+				xyz.class('.a_phone').innerText = data.content.phone;
+				xyz.id('phone').href ="tel:"+data.content.phone;
+				xyz.id('loLa').setAttribute('data-ext',data.content.longitudeLatitude);// ="tel:"+data.content.phone;
+			}else{
+				mui.toast(data.msg);
+			}
+		}
+	});
+}
+
+function queryList(page,dropload){
+	xyz.ajax({
+		url:'BuyerScenicWS/queryScenicList.app',
+		data:{
+			apikey:window.localStorage.apikey,
+			provider:o.numberCode,
+			page:1,
+			rows:5,
+		},
+		success:function(data){
+			if(data.status==1){
+				var list=data.content.rows;
+				var productList = xyz.id('productList');
+				if(page==1){
+					productList.innerHTML = '';
+				}
+				
+				var html="";
+				for(var i=0;i<list.length;i++){
+					var o = list[i];
+					if(!xyz.isNull(o.price)){
+						var li = document.createElement('li');
+						li.className = 'book-list-item';
+						li.id=o.numberCode;
+						li.setAttribute('data-price',new Number(o.price).toFixed(2));
+						var html = '<div class="book-item-img">'
+							+'<img src="'+xyz.getSmallImageUrl(o.imageUrl)+'" class="hotSceneryList_img">'
+							+'</div>'
+							+'<div class="book-item-info">'
+							+'<h3>'+o.nameCn+'</h3>'
+							+'<p class="book-sp-decr">'+o.remark+'</p>'
+							+'</div>'
+							+'<div class="book-price">'
+							+'<span>¥'+new Number(o.price).toFixed(2)+'</span>'
+							+'<button>购 票</button>'
+							+'</div>'
+							+'<div style="clear: both"></div>';
+							li.innerHTML = html;
+							productList.appendChild(li);
+					}
+				}
+				
+				
+				//重置
+				if(dropload){
+					dropload.resetload();
+					if(page==1){
+						dropload.unlock();
+						dropload.noData(false);
+					}
+					if(data.content.rows.length<5){
+						dropload.lock('down');
+						dropload.noData(true);
+					}
+				}
+			}else{
+				if(dropload){
+					dropload.lock();
+					dropload.noData();
+					dropload.resetload();
+				}
+				mui.toast(data.msg);
+			}
+		},error: function(xhr, type){
+            mui.toast('无法访问服务器啦');
+            if(dropload){
+            	dropload.lock();
+				dropload.noData();
+				dropload.resetload();
+			}
+        }
+	});
+}
+
+if(mui.os.plus){
+	mui.plusReady(function(){
+		setTimeout(function(){
+			pageInit();
+		}, 100);
+	});
+}else{
+	mui.ready(function(){
+		pageInit();
+	});
+}
+var page=0;
+function pageInit(){
+	getProvider();
+	queryList(page=1);
+}
+
+ xyz.id("phoneTab").addEventListener('tap', function() {
+	plus.nativeUI.confirm(xyz.class('.a_phone').innerHTML, function(e){
+		if(e.index==0){
+			var tel = xyz.id("phone");
+			mui.trigger(tel,'click');
+		}
+	}, "呼叫", ["呼叫","取消"] );
+}); 
+ xyz.id('loLa').addEventListener('tap', function() {
+	 var lola = this.getAttribute('data-ext');
+	 if(xyz.isNull(lola)){
+		 mui.toast('未设置位置，无法在地图中查看');
+		 return ;
+	 }
+	 lola = lola.split(',');
+	mui.openWindow({
+		id:  'page/map.html',
+		url:  xyz.setUrlparam(xyz.getFullurl('page/map.html'),{la:lola[0], lo:lola[1]}), 
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+}); 
+
+
+//预定按钮点击事件
+//主列表触摸事件
+mui('#productList').on('tap', 'li', function() {
+	//var numberCode=mui(this)[0].dataset.numbercode;
+	//var price=mui(this)[0].dataset.price;
+	var numberCode=this.id;
+	var price = this.getAttribute('data-price');
+	mui.openWindow({
+		id:  'page/productScenicOrder',
+		url:  xyz.setUrlparam(xyz.getFullurl('page/productScenicOrder.html'),{numberCode:numberCode, price:price}), 
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+});
+
+
+</script>
+</body>
+</html>

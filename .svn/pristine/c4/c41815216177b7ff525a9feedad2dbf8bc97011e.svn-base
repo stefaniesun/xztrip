@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title> 首页 </title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<link href="css/index.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/tibet-wx.js"></script>
+
+</head>
+
+<body>
+<div class="tibet-index">
+    <header class="tibet-header">
+        <div class="tibet-index-logo icon-left">
+            <a>西藏旅游</a>
+        </div>
+        <div class="tibet-index-logo icon-right">
+            <img class="icon-menu" src="images/menu.png"/>
+        </div>
+        <div class="menu-show">
+            <ul>
+                <li class="menu-show-list"><a href="#">我的订单</a></li>
+                <li class="menu-show-list"><a href="#">个人中心</a></li>
+                <li class="menu-show-list"><a href="#">登录</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="prop-height" ></div>
+    <nav class="nav-box card">
+        <ul class="nav-box-ul">
+            <li>
+                <a class="nav-a" href="#">热门</a>
+            </li>
+            <li>
+                <a class="nav-a" href="#">酒店</a>
+            </li>
+            <li>
+                <a class="nav-a" href="#">门票</a>
+            </li>
+            <li>
+                <a class="nav-a" href="#">租车</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="index-content ">
+        <div class="cont-search">
+           <form class="cont-search-box">
+               <img class="icon-search" src="images/search-icon-black.png"  />
+               <input class="cont-search-input" type="text" placeholder="请输入酒店或景点名称"/>
+           </form>
+        </div>
+        <div class="category-choice">
+            <div class="category-choice-box">
+                <a class="category-choice-hotel category-choice-active" >热门酒店</a>
+                <a class="category-choice-ticket" >热门景点</a>
+            </div>
+        </div>
+
+        <!-- 热门内容列表 -->
+        <div class="content-list-wrap">
+            <!--热门酒店列表-->
+            <div class="index-hotel-card">
+                <ul>
+                    <li class="index-hotel-list">
+                        <div class="index-hotel-img">
+                            <a href="#" title=""><img src="images/hotel.jpg" alt=""/></a>
+                        </div>
+                        <div class="index-hotel-info">
+                            <p class="index-hotel-name">
+                                <a href="">酒店酒店酒店酒店酒店酒店酒店酒店酒店</a>
+                            </p>
+                            <p class="index-hotel-price">
+                                <i>¥1008</i>起
+                            </p>
+                        </div>
+                    </li>
+                    <li class="index-hotel-list">
+                        <div class="index-hotel-img">
+                            <a href="#" title=""><img src="images/hotel.jpg" alt=""/></a>
+                        </div>
+                        <div class="index-hotel-info">
+                            <p class="index-hotel-name">
+                                <a href="">酒店酒店酒店酒店酒店酒店</a>
+                            </p>
+                            <p class="index-hotel-price">
+                                <i>¥100008</i>起
+                            </p>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            <!--热门门票列表-->
+            <div class="index-ticket-card" style="display: none">
+                <ul>
+                    <li class="index-ticket-list">
+                        <div class="index-ticket-img">
+                            <a href="#" title=""><img src="images/ticket.jpg" alt=""/></a>
+                        </div>
+                        <div class="index-ticket-info">
+                            <p class="index-ticket-name">
+                                <a href="">酒店酒店酒店门票门票门票</a>
+                            </p>
+                            <p class="index-ticket-price">
+                                <i>¥1008</i>起
+                            </p>
+                        </div>
+                    </li>
+                    <li class="index-ticket-list">
+                        <div class="index-ticket-img">
+                            <a href="#" title=""><img src="images/ticket.jpg" alt=""/></a>
+                        </div>
+                        <div class="index-ticket-info">
+                            <p class="index-ticket-name">
+                                <a href="">门票门票门票</a>
+                            </p>
+                            <p class="index-ticket-price">
+                                <i>¥109238</i>起
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+</html>

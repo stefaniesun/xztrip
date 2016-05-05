@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>绑定账号</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="../css/weui.min.css"/>
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/login.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/jquery.md5.js"></script>
+<script type="text/javascript" src="../js/bind.js"></script>
+</head>
+<body>
+<div class="login-wrap">
+<header class="tibet-header">
+    <div class="back-left icon-left">
+        <img src="../images/icon-left.png"/>
+    </div>
+    <div class="center-name icon-left">
+        <h2>绑定畅行账号</h2>
+    </div>
+    <div class="go-right icon-right">
+    	<img class="icon-house" src="../images/icon-house.png" alt=""/>
+    </div>
+</header>
+<div class="login">
+    <div class="head-box">
+        <div class="head-img-box">
+            <img src="../images/default-header-img.jpg"  alt="">
+        </div>
+    </div>
+    <div class="list-block">
+        <ul>
+            <li>
+                <div class="item-title">
+                    <img src="../images/user.png" alt="">
+                </div>
+                <div class="item-inner">
+                    <input id="username" type="tel" placeholder="您注册畅行西藏的手机号"/>
+                </div>
+            </li>
+            <li>
+                <div class="item-title">
+                    <img src="../images/pwd.png" alt="">
+                </div>
+                <div class="item-inner">
+                    <input id="password" type="password" placeholder="请输入登陆密码" style="border-bottom: 0;"/>
+                </div>
+            </li>
+        </ul>
+        <button id="loginBtn" class="button">立即绑定</button>
+        <div class="forget-pwd">
+            <a href="javascript:void(0);" onclick="window.location.href=xyz.getFullurl('page/forgetPassword.html')" style="float: left;">忘记密码？</a>
+            <a href="javascript:void(0);" onclick="window.location.href=xyz.getFullurl('page/register.html')" style="float: right;">立即注册 &gt;&gt;</a>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<script type="text/javascript" src="../js/weui.js"></script>
+</html>

@@ -1,0 +1,21 @@
+package xyz.ctrl.scheduled;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import xyz.model.core.OrderContent;
+import xyz.svc.core.OrderContentSvc;
+
+@Component
+public class OrderST {
+
+	@Autowired
+	OrderContentSvc orderContentSvc;
+	
+	/**
+	 * 自动同步更新当天的价格信息到产品上
+	 */
+	public int pushOrdertoErp(){
+		return orderContentSvc.pushOrdertoErp();
+	}
+}

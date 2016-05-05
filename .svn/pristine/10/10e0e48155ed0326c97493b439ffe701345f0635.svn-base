@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>门票列表</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/productList.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+
+<body>
+    <header>
+        <a href="javascript:window.history.back();" class="pull-left back-inner" >
+            <i class="iconfont icon-fanhui"></i>
+        </a>
+        <h1 class="header-title" id="title">
+            门票
+        </h1>
+    </header>
+    <div class="content-wrapper proup-height">
+        <div class="product-banner">
+            <img src="../images/default.png" id="providerImg"/>
+            <p class="product-name" id="providerNamecn"></p>
+        </div>
+        <div class="list-block">
+            <div class="block-title" id="chooseTab">
+                <a href="javascript:void(0);" class="title-active" data-ext="list">门票购买</a>
+                <a href="javascript:void(0);" class="" data-ext="desc">景点介绍</a>
+            </div>
+        </div>
+        <div class="product-yd-list" id="listContianer">
+            <ul id="tableList">
+
+            </ul>
+            <img src="../images/empty.png" alt="empty" style="width: 100%;display: none;" class="dataEmpty"/>
+        </div>
+        <div class="product-ms-block" id="descContianer">
+            <ul>
+                <li class="product-ms-item" id="loLa">
+                    <i class="iconfont icon-address pull-left"></i>
+                    <p class="address-con pull-left" id="showAddress">-商家未填写地址-</p>
+                    <i class="iconfont icon-you pull-right"></i>
+                    <div style="clear: both;"></div>
+                </li>
+                <li class="product-ms-item" id="phoneTab">
+                    <i class="iconfont icon-dianhua pull-left"></i>
+                    <p class="address-con pull-left" id="showPhone">-商家未填写电话-</p>
+                    <i class="iconfont icon-you pull-right"></i>
+                    <div style="clear: both;"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript">
+
+var o = xyz.getUrlparam();
+var page = 0;
+$(document).ready(function(){
+	loadData();
+	$('#listContianer').dropload({
+		scrollArea : window,
+		loadUpFn : function(me){
+			queryList(page=1,me);
+		},
+		loadDownFn : function(me){
+			queryList(++page,me);
+		}
+	});
+});
+
+xyz.id('chooseTab').addEventListener('touchend', function(e){
+	if('A'!=e.target.nodeName){
+		return  ;
+	}
+	var tab = e.target.getAttribute('data-ext');
+	xyz.id('chooseTab').querySelector('.title-active').className = '';
+	e.target.className = 'title-active';
+	if('list'==tab){
+		xyz.id('listContianer').style.display = 'block';
+		xyz.id('descContianer').style.display = 'none';
+	}else if('desc'==tab){
+		xyz.id('listContianer').style.display = 'none';
+		xyz.id('descContianer').style.display = 'block';
+	}
+}, false);
+
+xyz.id('phoneTab').addEventListener('touchend', function(e){
+	var phone = this.getAttribute('data-ext');
+	if(xyz.isNull(phone)){
+	 	weui.toast('商家未填写联系电话');
+	 	return ;
+	 }
+	weui.confirm('提示', '拨打电话'+phone, function(){
+		window.location.href = 'tel:'+phone;
+	});
+}, false);
+
+xyz.id('loLa').addEventListener('touchend', function(e){
+	 var lola = this.getAttribute('data-ext');
+	 if(xyz.isNull(lola)){
+		 weui.toast('未设置位置，无法在地图中查看');
+		 return ;
+	 }
+	 lola = lola.split(',');
+	 window.location.href = xyz.setUrlparam(xyz.getFullurl('page/map.html'),{la:lola[0], lo:lola[1]});
+}, false);
+
+//xyz.id('chooseTab').addEventListener('touchend', function(e){}, false);
+
+function loadData(){
+	xyz.ajax({
+		url:'BuyerProviderWS/getProvider.app',
+		data:{
+			numberCode:o.numberCode
+		},
+		success:function(data){
+			if(data.status==1){
+				xyz.id('providerImg').src = xyz.isNull(data.content.imageUrl)?'../images/default.png':data.content.imageUrl;
+				xyz.id('title').innerHTML = data.content.nameCn;
+				xyz.id('providerNamecn').innerHTML = data.content.nameCn;
+				if(!xyz.isNull(data.content.phone)){
+					xyz.id('showPhone').innerHTML = data.content.phone;
+					xyz.id('phoneTab').setAttribute('data-ext', data.content.phone);
+				}
+				if(!xyz.isNull(data.content.address)){
+					xyz.id('showAddress').innerHTML = data.content.address;
+				}
+				if(!xyz.isNull(data.content.longitudeLatitude)){
+					xyz.id('loLa').setAttribute('data-ext',data.content.longitudeLatitude);
+				}
+			}else{
+				weui.toast(data.msg);
+			}
+		}
+	});
+}
+
+function queryList(page,dropload){
+	xyz.ajax({
+		url:'BuyerScenicWS/queryScenicList.app',
+		data:{
+			/* apikey:window.localStorage.apikey, */
+			provider:o.numberCode,
+			page:1,
+			rows:10,
+		},
+		success : function(data) {
+			if(data.status==1){
+				var result = data.content;//当前数据条数
+				var table = document.body.querySelector('#tableList');
+				if(page==1){
+					table.innerHTML = '';
+				}
+				if(data.content.total<=0){
+					document.querySelector('.dataEmpty').style.display='block';
+				}else{
+					document.querySelector('.dataEmpty').style.display='none';
+				}
+				createHtml(table , result.rows);
+				//重置
+				if(dropload){
+					dropload.resetload();
+					if(page==1){
+						dropload.unlock();
+						dropload.noData(false);
+					}
+					if(result.rows.length<10){
+						dropload.lock('down');
+						dropload.noData();
+					}
+				}
+			}else{
+				if(dropload){
+					dropload.lock();
+					dropload.noData();
+					dropload.resetload();
+				}
+				if(data.msg.indexOf('重新登录')>-1){
+					window.location.href=xyz.setUrlparam(xyz.getFullurl('page/login.html'), {'go': xyz.getFullurl('page/orderList.html')});
+				}else{
+					weui.toast(data.msg);
+				}
+			}
+		},
+		error: function(xhr, type){
+            weui.toast('无法访问服务器啦');
+            if(dropload){
+            	dropload.lock();
+				dropload.noData();
+				dropload.resetload();
+			}
+        }
+	});
+}
+
+
+
+
+
+
+/**
+<li class="book-list-item">
+<div class="book-item-img">
+    <img src="http://file.duanyi.com.cn/accessory/xztirp/20160411/small_201604111019004764812.png">
+</div>
+<div class="book-item-info">
+    <h3>仙女山一日游</h3>
+    <p class="book-sp-decr">促销票紧张</p>
+</div>
+<div class="book-price">
+    <span>¥98.00</span>
+    <a href="order.html"><button>预 订</button></a>
+</div>
+<div style="clear: both"></div>
+</li>
+**/
+function createHtml(table, list){
+	for(var i=0; i<list.length; i++){
+		var o = list[i];
+		var li = document.createElement('li');
+		li.className = 'book-list-item';
+		var url = xyz.setUrlparam(xyz.getFullurl('page/scenicOrder.html'),{numberCode:o.numberCode});
+		var imgUrl = xyz.getSmallImageUrl(o.imageUrl);
+		var price = new Number(o.price).toFixed(2);
+		var html ='<a href="'+url+'" >'
+			+'<div class="book-item-img">'
+			+'<img src="'+imgUrl+'" />'
+			+'</div>'
+			+'<div class="book-item-info">'
+			+'<h3>'+o.nameCn+'</h3>'
+			+'<p class="book-sp-decr">'+o.remark+'</p>'
+			+'</div>'
+			+'<div class="book-price">'
+			+'<span>¥'+price+'</span>'
+			+'<button>购  票</button>'
+			+'</div>'
+			+'<div style="clear: both"></div>'
+			+'</a>';
+		li.innerHTML = html;
+		table.appendChild(li);
+	}
+}
+
+</script>
+</html>

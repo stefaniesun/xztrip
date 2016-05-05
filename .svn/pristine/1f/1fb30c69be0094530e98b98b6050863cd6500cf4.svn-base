@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>酒店预订</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/myorder.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/tibet-wx.js"></script>
+
+</head>
+
+<body>
+<div class="hotel-reservation">
+<header class="tibet-header">
+    <div class="back-left icon-left">
+        <img src="../images/icon-left.png"/>
+    </div>
+    <div class="center-name icon-left">
+        <h2>酒店预订</h2>
+    </div>
+    <div class="go-right icon-right">
+
+    </div>
+</header>
+    <div class="prop-height"></div>
+<main>
+    <div class="hotel-reservation-main">
+        <ul>
+            <li>
+                <p class="order-num-m bold" style="font-size: 16px">酒店酒店</p>
+            </li>
+            <li>
+                <p class="order-num-m">标准双人间</p>
+            </li>
+            <li  onclick="showBg();">
+                <p class="order-num-m">入住日期：<span class="color-danger">2016-03-07</span></p>
+                <img class="icon-more" src="../images/more.png" alt="" />
+            </li>
+            <li onclick="showBg();" />
+                <p class="order-num-m">退房日期：<span class="color-danger">2016-03-07</span></p>
+                <img class="icon-more" src="../images/more.png" alt=""/>
+            </li>
+            <li>
+                <p class="order-num-m">房间数量：</p>
+                <div class="num-box" >
+                    <i class="num-reduce">
+                        <img class="icon-reduce" src="../images/icon-reduce.png" alt="">
+                    </i>
+                    <input class="num-input" type="text" value="1" readonly />
+                    <i class="num-add">
+                        <img class="icon-add" src="../images/icon-add.png" alt=""/>
+                    </i>
+                </div>
+            </li>
+            <li>
+                <p class="order-num-m">房费：<span class="color-danger">1600元</span></p>
+            </li>
+        </ul>
+
+        <ul>
+            <li>
+                <p class="order-num-m bold">预订人信息</p>
+                <p class="order-num-m">预订人姓名：<input class="yd-info" type="text" placeholder="请输入预订人姓名"></p>
+            </li>
+            <li>
+                <p class="order-num-m">预订人手机号：<input class="yd-info" type="tel" placeholder="请输入预订人手机号"></p>
+            </li>
+            <li>
+                <p class="order-num-m">备注说明：<input class="yd-info"  placeholder="无特殊说明可不填" /></p>
+            </li>
+        </ul>
+
+        <ul>
+            <li>
+                <p class="order-num-m bold">温馨提醒</p>
+                <p class="order-num-m color-success">取消规则：订单提交需支付全部房费，如订单不确认将全额退款至您的付款账户。
+                    订单确认后不可取消修改，如未入住或取消修改及提前离店，我们将收取您¥194支付酒店
+                </p>
+            </li>
+        </ul>
+
+        <div class="yd-btn-box" >
+            <buttom class="yd-btn" >确认订单并支付</buttom>
+        </div>
+    </div>
+
+    <!-- 日期选择 -->
+    <div class="fullbg">
+       <header class="date-header" >
+            <div class="header-title">
+                <div class="back-left icon-left" onclick="closeBg();">
+                    <img class="icon-back" src="../images/icon-left.png"/>
+                </div>
+                <div class="center-name icon-left">
+                    <h2>选择日期</h2>
+                </div>
+                <div class="go-right icon-right">
+
+                </div>
+            </div>
+           <!-- 星期 -->
+           <table class="calendar" cellspacing="0" cellpadding="0">
+               <tr>
+                   <td>日</td>
+                   <td>一</td>
+                   <td>二</td>
+                   <td>三</td>
+                   <td>四</td>
+                   <td>五</td>
+                   <td>六</td>
+               </tr>
+           </table>
+       </header>
+        <div style="height: 3.3rem"></div>
+           <!-- 日期 -->
+           <table cellpadding="0" cellspacing="0" class="date-tab" >
+               <tr>
+                   <td colspan="7"><p class="date-title">2016年03月</p></td>
+               </tr>
+               <tr>
+                   <td>1</td>
+                   <td>2</td>
+                   <td>3</td>
+                   <td>4</td>
+                   <td>5</td>
+                   <td>6</td>
+                   <td>7</td>
+               </tr>
+               <tr>
+                   <td>8</td>
+                   <td>9</td>
+                   <td>10</td>
+                   <td>11</td>
+                   <td>12</td>
+                   <td>13</td>
+                   <td>14</td>
+               </tr>
+               <tr>
+                   <td>15</td>
+                   <td>16</td>
+                   <td>17</td>
+                   <td class="check-in">
+                       18
+                       <span>入住</span>
+                   </td>
+                   <td class="check-out">
+                       19
+                       <span>退房</span>
+                   </td>
+                   <td>20</td>
+                   <td>21</td>
+               </tr>
+               <tr>
+                   <td>22</td>
+                   <td>23</td>
+                   <td>24</td>
+                   <td>25</td>
+                   <td>26</td>
+                   <td>27</td>
+                   <td>28</td>
+               </tr>
+               <tr>
+                   <td>29</td>
+                   <td>30</td>
+                   <td>31</td>
+                   <td class="colo-grey">1</td>
+                   <td class="colo-grey">2</td>
+                   <td class="colo-grey">3</td>
+                   <td class="colo-grey">4</td>
+               </tr>
+           </table>
+           <table cellpadding="0" cellspacing="0" class="date-tab" >
+            <tr>
+                <td colspan="7"><p class="date-title">2016年03月</p></td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>9</td>
+                <td>10</td>
+                <td>11</td>
+                <td>12</td>
+                <td>13</td>
+                <td>14</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>16</td>
+                <td>17</td>
+                <td class="check-in">
+                    18
+                    <span>入住</span>
+                </td>
+                <td class="check-out">
+                    19
+                    <span>退房</span>
+                </td>
+                <td>20</td>
+                <td>21</td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>23</td>
+                <td>24</td>
+                <td>25</td>
+                <td>26</td>
+                <td>27</td>
+                <td>28</td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>30</td>
+                <td>31</td>
+                <td class="colo-grey">1</td>
+                <td class="colo-grey">2</td>
+                <td class="colo-grey">3</td>
+                <td class="colo-grey">4</td>
+            </tr>
+        </table>
+           <table cellpadding="0" cellspacing="0" class="date-tab" >
+            <tr>
+                <td colspan="7"><p class="date-title">2016年03月</p></td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>9</td>
+                <td>10</td>
+                <td>11</td>
+                <td>12</td>
+                <td>13</td>
+                <td>14</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>16</td>
+                <td>17</td>
+                <td class="check-in">
+                    18
+                    <span>入住</span>
+                </td>
+                <td class="check-out">
+                    19
+                    <span>退房</span>
+                </td>
+                <td>20</td>
+                <td>21</td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>23</td>
+                <td>24</td>
+                <td>25</td>
+                <td>26</td>
+                <td>27</td>
+                <td>28</td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>30</td>
+                <td>31</td>
+                <td class="colo-grey">1</td>
+                <td class="colo-grey">2</td>
+                <td class="colo-grey">3</td>
+                <td class="colo-grey">4</td>
+            </tr>
+        </table>
+    </div>
+
+</main>
+</div>
+</body>
+</html>

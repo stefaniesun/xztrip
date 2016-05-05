@@ -1,0 +1,14 @@
+$(document).ready(function(){
+	var username = getCookie("XZTRIP_LOGIN_NAME");
+	$("#username").html(username);
+	
+	$("#logoutLink").click(function(){
+		deleteXZTripCookie();
+		location.href="../../login.html";
+	});
+	
+	$("#logoutHeaderLink").click(function(){
+		deleteXZTripCookie();
+		location.href="../../login.html";
+	});
+});

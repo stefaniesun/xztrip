@@ -1,0 +1,29 @@
+package xyz.svc.buyer;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface BuyerOrderSvc {
+
+	public Map<String, Object> createOrder(String product, int count,
+			Date dateInfo, int day,String remarkBuy,String linkman,String linkPhone);
+
+	public Map<String, Object> queryOrderList(int flagPay,int offset, int pagesize);
+
+	public Map<String, Object> getOrder(String orderNum);
+
+	public Map<String, Object> deleteOrder(String orderNum);
+
+	public Map<String, Object> editOrder(String orderNum, String linkman,
+			String linkPhone);
+
+	public Map<String, Object> editOrderPersonInfo(String orderNum, String personInfo);
+
+	public Map<String, Object> holdStockOper(String orderNum, BigDecimal money);
+	
+	public Map<String, Object> paySuccessOper();
+}

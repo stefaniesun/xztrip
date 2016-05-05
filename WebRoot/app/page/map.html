@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>在地图上查看</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<link rel="stylesheet" href="../css/customer.mui.theme.css">
+<style>
+	html,
+	body {
+		background-color: #efeff4;
+	}
+	.title {
+		padding: 20px 15px 10px;
+		color: #6d6d72;
+		font-size: 15px;
+		background-color: #fff;
+	}
+#allmap {
+	width: 100%;
+	position: fixed;
+	bottom: 0px;
+	text-align: center;
+	background: #FFFFFF;
+}
+</style>
+</head>
+
+<body >
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" onclick="plus.webview.currentWebview().close();"></a>
+	<h1 class="mui-title">在地图上查看</h1>
+</header>
+<div class="mui-content">
+	  <div id="allmap"></div>
+</div>
+<!-- <script type="text/javascript"  src="../js/mui_20151228.min.js"></script> -->
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mtLjADOW3vrN8ppD7lIK2ubitHlyqGZk"></script> 
+<script type="text/javascript">
+	var sheight = ((window.screen.height/2) - document.querySelector('header').clientHeight);
+	xyz.id('allmap').style.height = sheight+'px'; 
+	var o = xyz.getUrlparam();
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+	map.centerAndZoom(new BMap.Point(116.331398,39.897445),19);
+	map.enableScrollWheelZoom(true);
+	theLocation();
+	
+	//用经纬度设置地图中心点
+	function theLocation(){
+		map.clearOverlays(); 
+		var new_point = new BMap.Point(o.la,o.lo);
+		var marker = new BMap.Marker(new_point);  // 创建标注
+		map.addOverlay(marker);              // 将标注添加到地图中
+		map.panTo(new_point);      
+	}
+</script>
+</body>
+</html>

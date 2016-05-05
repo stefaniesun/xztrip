@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Order</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<link rel="stylesheet" href="../css/customer.mui.theme.css">
+	<style>
+	html,
+	body {
+		background-color: #efeff4;
+	}
+	.title {
+		padding: 20px 15px 10px;
+		color: #6d6d72;
+		font-size: 15px;
+		background-color: #fff;
+	}
+	.mui-bar .mui-segmented-control {
+		top: 7px;
+		width: 150px;
+		margin: 0 auto;
+	}
+	.mui-segmented-control .mui-control-item {
+		line-height: 28px;
+	}
+	.mui-checkbox.mui-left input[type=checkbox], .mui-radio.mui-left input[type=radio] {
+	left: 5px;
+	}
+	.mui-table-view-cell.mui-checkbox input[type=checkbox], .mui-table-view-cell.mui-radio input[type=radio] {
+	top: 15px;
+	}
+	.mui-table-view-cell.mui-checkbox.mui-left, .mui-table-view-cell.mui-radio.mui-left {
+	padding-left: 40px;
+	}
+	</style>
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
+		<div id="segmentedControl_order" class="mui-segmented-control" >
+			<a id="nopay" class="mui-control-item mui-active" href="javascript:void(0);">未支付</a>
+			<a id="ispay" class="mui-control-item" href="javascript:void(0);">已支付</a>
+		</div>
+	</header>
+	<nav class="mui-bar mui-bar-tab" style="height:40px;background-color: #f7f7f7;" id="footerNav">
+		<div class="mui-table">
+			<div class="mui-table-cell mui-col-xs-3 mui-checkbox mui-left"  style="padding-left: 35px;borderline-height: 40px;">
+				<input name="checkbox" type="checkbox" id="checkAll">
+				<span>全选</span>
+			</div>
+			<div class="mui-table-cell" style="text-align: center;">
+				<span style="line-height: 40px;">合计¥</span><span style="line-height: 40px;color: red;" id="totalMoney">0.00</span>
+			</div>
+			<div id="payBtn" class="mui-table-cell mui-col-xs-3"  style="background-color:#e4393c;text-align:center;">
+				<span style="line-height: 40px;color: #ffffff;font-size: 14px;">合并支付</span>
+			</div>
+		</div>
+	</nav>
+<!-- 	<div class="mui-content">
+		<div class="title">
+			这里可以写些订单支付的提醒什么的，但是要根据这里的高度来动态设置下面mui-scroll-wrapper的top值
+		</div>
+	</div> -->
+	<div id="pullrefresh_order" class="mui-content mui-scroll-wrapper" >
+		<div class="mui-scroll">
+			<ul id="tableList" class="mui-table-view">
+			</ul>
+		</div>
+	</div>
+<script src="../js/mui_20151228.min.js"></script>
+<script src="../js/xyzCommon.js"></script>
+<script>
+console.log(window);
+mui.init({
+	swipeBack: false,
+	pullRefresh: {
+		container: '#pullrefresh_order',
+		down: {
+			callback: pulldownRefresh
+		},
+		up: {
+			contentrefresh: '正在加载...',
+			callback: pullupRefresh
+		}
+	}
+});
+
+if(mui.os.plus){
+	mui.plusReady(function() {
+		setTimeout(function() {
+			//pageInit();
+		}, 100);
+
+	});
+}else{
+	mui.ready(function() {
+		pageInit();
+	});
+}
+var page = 0;
+function pageInit(){
+	mui('#pullrefresh_order').pullRefresh().pullupLoading();
+	mui.each(document.querySelectorAll('#segmentedControl_order a'), function(index, ele) {
+		ele.addEventListener('tap',function () {
+			queryList(page=1,ele.id);
+		});
+	},true);
+}
+
+/**
+ * 下拉刷新具体业务实现
+ */
+function pulldownRefresh() {
+	queryList(page=1);
+}
+/**
+ * 上拉加载具体业务实现
+ */
+function pullupRefresh() {
+	queryList(++page);
+}
+	
+(function(thiz){
+	var total = 0;
+	var rows = 20;
+	thiz.queryList = function(page,flag){
+		var flag = flag?flag:mui('#segmentedControl_order .mui-active')[0].id;
+		var flagPay = flag=='ispay'?1:0;
+		xyz.ajax({
+			url:'BuyerOrderWS/queryOrderList.cus',
+			progress:false,
+			data:{
+				apikey: window.localStorage.apikey,
+				page : page,
+				rows : rows,
+				flagPay : flagPay
+			},
+			success:function(data){
+				if(page==1){
+					xyz.id('checkAll').checked=false;
+					xyz.id('totalMoney').innerText=0;
+					mui('#pullrefresh_order').pullRefresh().endPulldownToRefresh(); //refresh completed
+				}
+				var flag = true;//true代表需要显示：没有更多数据了
+				if(data.status==1){
+					flag = data.content.rows.length<=0?true:false;
+				}
+				mui('#pullrefresh_order').pullRefresh().endPullupToRefresh(flag);
+				if(data.status==1){
+					var list = data.content.rows;
+					var table = document.body.querySelector('#tableList');
+					if(page==1){
+						table.innerHTML = '';
+					}
+					for(var i=0; i<list.length; i++){
+						var o = list[i];
+						var type = o.product;
+						var unit = '';
+						var dateLabel = '';
+						if(type.indexOf('SC')==0){
+							type = '【门票】';
+							unit = '张';
+							dateLabel = '出行日期';
+						}else if(type.indexOf('HO')==0){
+							type = '【酒店】';
+							unit = '间';
+							dateLabel = '入住日期';
+						}else{
+							type = '';
+						}
+						//html += type + o.productNameCn;
+						var li = document.createElement('li');
+						li.className = 'mui-table-view-cell mui-checkbox mui-left';
+						var html = '';
+						//不要改变p和input[name="itemCheckbox"]的dom树位置和顺序
+						html += '<p style="display:none;">'+JSON.stringify(o)+'</p>';
+						if(o.flagPay==0){
+							html += '<input name="itemCheckbox" type="checkbox">';
+						}
+						html += '<div class="mui-slider-right mui-disabled">';
+						html += '<a class="mui-btn mui-btn-red deleteBtn" title="'+o.clientCode+'">删除</a>';
+						html += '</div>';
+						html += '<div class="mui-slider-handle mui-table" title="'+o.clientCode+'">';
+						html += '<div class="mui-table-cell">';
+						html += '<h4 class="mui-ellipsis" style="color:black;">'+type+o.productNameCn+'</h4>';
+						//数量、总价
+						html += '<div class="mui-table">';
+						html += '<div class="mui-table-cell mui-col-xs-6">';
+						html += '<h5>数量：'+o.count+unit+'</h5>';
+						html += '</div>';//mui-table-cell end
+						html += '<div class="mui-table-cell mui-col-xs-6">';
+						html += '<h5>总价：<span style="color:red;">'+new Number(o.money).toFixed(2)+'元</span></h5>';
+						html += '</div>'; //mui-table-cell end
+						html += '</div>';//mui-table end
+						//日期
+						html += '<h5>'+dateLabel+'：<span style="color:black;">'+o.dateInfo.split(' ')[0]+'</span></h5>';
+						html += '</div>';//mui-table end
+						html += '</div>';//mui-slider-handle end
+						li.innerHTML = html;
+						table.appendChild(li);
+						if(xyz.id('checkAll').checked){
+							//如果全选按钮是被选中的，就把刚刷出来的item都选中
+							controlAllItemCheckbox(true);
+						}
+					}
+				}else{
+					if(data.msg.indexOf('重新登录')>-1){
+						if(window.plus){
+							plus.webview.getWebviewById('page/login.html').show("slide-in-right", 300);
+						}else{
+							alert('该功能需要下载APP才能使用哦！^_^');
+						}
+					}else{
+						mui.toast(data.msg);
+					}
+				}
+			}
+		});
+	};
+})(this);
+
+mui('.mui-segmented-control').on('tap','a',function(){
+	if(this.id=='ispay'){
+		xyz.id('footerNav').style.display='none';
+		xyz.id('checkAll').checked=false;
+	}else{
+		xyz.id('footerNav').style.display='block';
+	}
+});
+
+mui('#footerNav').on('change','input',function(){
+	controlAllItemCheckbox(this.checked);
+});
+
+function controlAllItemCheckbox(checked){
+	var itemCheckbox = document.querySelectorAll('input[name="itemCheckbox"]');
+	var t = 0;
+	var totalMoney = 0;
+	for(var i=0;i<itemCheckbox.length;i++){
+		var ele = itemCheckbox[i]; 
+		ele.checked=checked;
+		if(checked){
+			t++;
+			var json = JSON.parse(ele.previousSibling.innerText);
+			totalMoney += json.money;
+		}
+	}
+	if(checked){
+		xyz.id('totalMoney').innerText = totalMoney.toFixed(2);
+	}
+	//calcTotalMoney();
+}
+
+mui('#tableList').on('change','input',function(){
+	calcTotalMoney();
+});
+
+function calcTotalMoney(){
+	console.log(6);
+	var itemCheckbox = document.querySelectorAll('input[name="itemCheckbox"]');
+	var t = 0;
+	var totalMoney = 0;
+	for(var i=0;i<itemCheckbox.length;i++){
+		var ele = itemCheckbox[i]; 
+		if(ele.checked){
+			t++;
+			var json = JSON.parse(ele.previousSibling.innerText);
+			totalMoney += json.money;
+		}
+	}
+	xyz.id('totalMoney').innerText = totalMoney.toFixed(2);
+	if(t==itemCheckbox.length){
+		xyz.id('checkAll').checked=true;
+	}else{
+		xyz.id('checkAll').checked=false;
+	}
+}
+
+//删除事件
+mui('#tableList').on('tap', '.deleteBtn', function(event) {
+	event.stopPropagation();
+	var elem = this;
+	var li = elem.parentNode.parentNode;
+	var clientCode = elem.title;
+	mui.confirm('确认删除该订单？删除后无法恢复。', '确认提示', ['确认', '取消'], function(e) {
+		if(e.index == 0){
+			xyz.ajax({
+				url:'BuyerOrderWS/deleteOrder.cus',
+				data:{
+					apikey:window.localStorage.apikey,
+					clientCode:clientCode
+				},
+				success:function(data){
+					if(data.status==1){
+						li.parentNode.removeChild(li);
+						mui.toast('删除成功');
+					}else{
+						if(data.msg.indexOf('重新登录')>-1){
+							if(window.plus){
+								plus.webview.getWebviewById('page/login.html').show("slide-in-right", 300);
+							}else{
+								alert('该功能需要下载APP才能使用哦！^_^');
+							}
+						}else{
+							alert(data.msg);
+						}
+					}
+				}
+			});
+		}else{
+			mui.swipeoutClose(li);
+		}
+	});
+});
+
+//ITEM点击事件
+mui('#tableList').on('tap', '.mui-slider-handle', function(event) {
+	event.stopPropagation();
+	mui.swipeoutClose(this.parentNode);
+	mui.openWindow({
+		id: 'page/orderDetail.html',
+		url: xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {'clientCode':this.title}),
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+});
+
+xyz.id('payBtn').addEventListener('tap', function() {
+	alert('支付功能集成中。^_^');
+});
+
+</script>
+</body>
+</html>

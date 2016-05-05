@@ -1,0 +1,138 @@
+@charset "UTF-8";
+.product-banner{
+    position: relative;
+}
+.product-banner,.product-banner img{
+    width: 100%;
+    height: 210px;
+}
+.product-banner .product-name{
+    padding: 7px 8px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    font-family: 黑体;
+    font-size: 17px;
+}
+.list-block{
+    width: 100%;
+    height: auto;
+    font-family: 黑体
+}
+.block-title{
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #ddd;
+}
+.block-title a{
+    display: block;
+    width: 50%;
+    float: left;
+    text-align: center;
+    color: #333;
+    line-height: 2.4;
+    font-size: 16px;
+    font-weight: bold;
+}
+.block-title .title-active{
+    border-bottom: 2px solid #099fde;
+}
+.product-yd-list{
+    display: block;
+}
+.product-yd-list,.product-yd-list ul{
+    width: 100%;
+    height: auto;
+    font-family: 黑体;
+    padding-bottom: 1rem;
+}
+
+.book-list-item{
+    background-color: #fff;
+    height: auto;
+    border-bottom: 1px solid #f2f3f4;
+    padding: 13px 10px;
+    position: relative;
+    font-family: 黑体;
+}
+.book-list-item .book-item-img ,
+.book-list-item .book-item-img img{
+    width: 72px;
+    height: 72px;
+    float: left;
+}
+.book-item-info{
+    height: auto;
+    padding: 0 10px;
+    width: 52%;
+    float: left;
+}
+.book-item-info h3{
+    font-size: 16px;
+    height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.7;
+    margin: 0;
+}
+.book-item-info .book-sp-decr{
+    font-size: 12px;
+    padding-top: 7px;
+    margin: 0;
+    height: auto;
+    color: #999;
+}
+.book-list-item .book-price{
+    float: right;
+    padding: 0;
+    color: #ff9a14;
+}
+.book-list-item .book-price span{
+    display: block;
+    margin-top: 5px;
+}
+.book-list-item .book-price button{
+    margin-top: 8px;
+    background-color: #ff9a14;
+    color: #fff;
+    border: 1px solid #ff9a14;
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-size: 13px;;
+}
+/* 产品介绍 */
+.product-ms-block{
+    display: none;
+}
+.product-ms-block,.product-ms-block ul{
+    width: 100%;
+    height: auto;
+}
+.product-ms-item{
+    height: auto;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+}
+.product-ms-item .iconfont{
+    font-size: 18px;
+    color: #ccc;
+
+}
+.product-ms-item .icon-you{
+    margin-top: 0.4rem;
+    font-size: 17px;
+}
+.address-con{
+    width: 80%;
+    font-size: 12px;
+    padding-left: 8px;
+    color: #666;
+    line-height: 2.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

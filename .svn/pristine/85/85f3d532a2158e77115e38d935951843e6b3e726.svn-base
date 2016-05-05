@@ -1,0 +1,32 @@
+/**������ɫ����**/
+.mui-bar{
+	background-color:#fff;
+}
+
+.mui-title {
+	color:#2577e3;
+}
+
+.mui-segmented-control{
+	border: 1px solid #fff;
+}
+.mui-segmented-control .mui-control-item{
+	color: #ffffff;
+	border-color: #ffffff;
+	border-left: 1px solid #ffffff;
+}
+.mui-segmented-control .mui-control-item.mui-active {
+	color: #b31e23;
+	background-color: #ffffff;
+}
+
+a {
+	color: #2577e3;
+}
+a:active {
+color: #2577e3;
+}
+
+.mui-bar-tab .mui-tab-item.mui-active {
+	color: #ffffff;
+}

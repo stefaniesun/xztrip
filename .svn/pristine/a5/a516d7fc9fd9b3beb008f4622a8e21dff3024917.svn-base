@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<title> 订单详情 </title>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="stylesheet" href="../wx/css/erp-order-details.css"/>
+</head>
+
+<body>
+<div class="order-details-wrap">
+    <!-- 消息提示 -->
+    <!-- <div class="message-prompt">
+        <div class="message-prompt-title">
+            消息
+        </div>
+        <div class="message-prompt-main">
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td class="message-td-title"> 票号:</td>
+                    <td class="message-td-content"> 1221222222 </td>
+                </tr>
+                <tr>
+                    <td class="message-td-title">店铺:</td>
+                    <td class="message-td-content">联科技的是否进口的联科技的 </td>
+                </tr>
+                <tr>
+                    <td class="message-td-title"> 单品: </td>
+                    <td class="message-td-content"> 嘻嘻嘻谢谢夸奖 </td>
+                </tr>
+                <tr>
+                    <td class="message-td-title"> 数量: </td>
+                    <td class="message-td-content"> 2 </td>
+                </tr>
+                <tr>
+                    <td class="message-td-title"> 提醒原因: </td>
+                    <td class="message-td-content">没有原因没有原因没有原因没有原因 </td>
+                </tr>
+                <tr>
+                    <td class="message-td-title"> 时间: </td>
+                    <td class="message-td-content">2016-8-29 </td>
+                </tr>
+
+            </table>
+        </div>
+    </div> -->
+    <!-- 订单详情 -->
+    <div class="order-details">
+        <div class="order-details-title">
+            订单详情
+        </div>
+        <div class="order-details-main">
+            <div class="ticket-num">
+                <div class="ticket-num-title">
+                    票号1
+                </div>
+                <table  cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="order-td-title"> 店铺: </td>
+                        <td class="order-td-content">南京上好假期国旅专营店 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 单品: </td>
+                        <td class="order-td-content">雪狼湖成人票 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 数量: </td>
+                        <td class="order-td-content">1 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 出票状态: </td>
+                        <td class="order-td-content">已出票 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 出票时间:</td>
+                        <td class="order-td-content">2016-02-29 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 退票状态:</td>
+                        <td class="order-td-content">未退票 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 退票时间: </td>
+                        <td class="order-td-content"> </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="ticket-num">
+                <div class="ticket-num-title">
+                    票号2
+                </div>
+                <table  cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="order-td-title"> 店铺:</td>
+                        <td class="order-td-content">南京上好假期国旅专营店 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 单品: </td>
+                        <td class="order-td-content">雪狼湖儿童票 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 数量: </td>
+                        <td class="order-td-content">1 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 出票状态: </td>
+                        <td class="order-td-content">已出票 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 出票时间: </td>
+                        <td class="order-td-content">2016-02-29 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 退票状态: </td>
+                        <td class="order-td-content">未退票 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 退票时间: </td>
+                        <td class="order-td-content"> </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- <div class="ticket-num">
+                <div class="ticket-num-title">
+                    票号3
+                </div>
+                <table  cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="order-td-title"> 店铺: </td>
+                        <td class="order-td-content">哆啦A梦的店铺 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 单品: </td>
+                        <td class="order-td-content">任意门 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 数量: </td>
+                        <td class="order-td-content">1 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 出票状态: </td>
+                        <td class="order-td-content">已出票 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 出票时间: </td>
+                        <td class="order-td-content">2016-8-29 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 退票状态:</td>
+                        <td class="order-td-content">未退票 </td>
+                    </tr>
+                    <tr>
+                        <td class="order-td-title"> 退票时间:</td>
+                        <td class="order-td-content">2016-8-29 </td>
+                    </tr>
+                </table>
+            </div> -->
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

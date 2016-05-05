@@ -1,0 +1,32 @@
+package xyz.svc.buyer;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface CustomerSvc {
+
+	Map<String, Object> getRandCodeOper(String phone);
+
+	Map<String, Object> registerOper(String phone,String password);
+
+	Map<String, Object> loginOper(String username, String password);
+
+	Map<String, Object> alterPasswordOper(String oldPassword,String newPassword);
+
+	Map<String, Object> customerExit();
+
+	Map<String, Object> recoverPasswordOper(String username,String newPassword);
+
+	Map<String, Object> verifyRandCodeOper(String phone, String randCode);
+
+	public Map<String,Object> queryCustomerList(String username,
+			int offset,
+			int pagesize);
+	
+	
+	public Map<String, Object> editCustomer(String iidd,String password);
+	
+	public Map<String,Object> editCustomerEnabled(String iidd,int enabled);
+}

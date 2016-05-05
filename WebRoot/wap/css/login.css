@@ -1,0 +1,149 @@
+@charset "UTF-8";
+
+.edit-contact .ts{
+    padding:8px ;
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    background-color: rgb(217, 235, 243);
+    margin: 0 auto;
+    margin-top: 15px;
+    line-height: 1.6;
+}
+.edit-contact ,.edit-contact-box{
+    padding:10px 20px;
+    height: auto;
+
+}
+.contact-info{
+    width: 100%;
+    background-color: #fff;
+    margin: 0 auto;
+    font-size: 14px;
+    border-radius: 5px;
+}
+.contact-info li{
+    padding: 8px 10px;
+}
+.contact-info li span{
+    width: 25%;
+    padding: 5px 0;
+    padding-right: 10px;
+
+}
+.contact-info li input{
+    padding: 6px 5px;
+    border: 0;
+    width: 67%;
+    font-size: 14px;
+}
+.save-btn{
+    width: 100%;
+    margin-top: 20px;
+    padding: 7px 0;
+    border: 1px solid #099FDE;
+    background-color: #099fed;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 4px;
+    font-family: 黑体;
+}
+
+/* 登录 */
+.item-box{
+    margin-top: 15px;
+    text-align: center;
+}
+.item-box,.item-box ul{
+    width: 100%;
+    height: auto;
+}
+.item-box ul{
+    border-bottom: 1px solid #e6e6e6;
+    border-top: 1px solid #e6e6e6;
+    background-color: #fff;
+ }
+.item-box li{
+    width: 90%;
+    padding:6px 10px;
+    font-size: 14px;
+    border-bottom: 1px solid #e6e6e6;
+    margin: 0 auto;
+    position: relative;
+
+}
+.item-box li:last-child{
+    border-bottom: 0;
+}
+.item-box li span{
+    padding: 7px 0;
+    padding-right: 10px;
+    text-align: left;
+}
+.item-box li input{
+    padding: 7px;
+    border: 0;
+    font-size: 14px;
+    width: 70%;
+}
+.item-box .icon-yanjing{
+    position: absolute;
+    right: 0;
+    top: 13px;
+}
+.item-box .icon-yj,.item-box .icon-gx{
+    color: #099fed;
+}
+.item-box i{
+    color: #999;
+}
+.item-box .icon-gouxuan{
+    position: absolute;
+    right: 0;
+    font-size: 22px;
+    top: 10px;
+}
+.login-btn{
+    width: 90%;
+    margin:  0 auto;
+    margin-top: 20px;
+    padding: 7px 0;
+    border: 1px solid #099FDE;
+    background-color: #099fed;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 4px;
+    font-family: 黑体;
+}
+.login-inner{
+    width: 60%;
+    height: auto;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 25px;
+}
+.login-inner a{
+    width: 49%;
+    text-align: center;
+    border-left: 1px solid #ddd;
+    color:#099fde;
+    font-size: 15px;
+}
+.login-inner a:first-child{
+    border-left: 0;
+}
+.item-box .yzm-btn{
+    position: absolute;
+    right: 0%;
+    font-size: 12px;
+    font-family: 黑体;
+    border: 1px solid #ccc;
+    padding: 3px;
+    color: #666;
+    top: 10px;
+    border-radius: 5px;
+
+}

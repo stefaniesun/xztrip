@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>移动应用支付入口</title>
+    <meta name="description" content="移动应用支付入口"/>
+    <meta name="keywords" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="css/style.css?v=f70e337c"/>
+</head>
+<body>
+<div class="wrapper">
+    <div class="innner order_div" style="padding-top: 48px;">
+        <div class="order" style="min-height: calc(100vh - 244px);">
+            <div class="order_detail">
+                <div class="order_title">
+                    <span><i class="icon icon_bag"></i>订单</span>
+                </div>
+                <table>
+                    <tr class="p_one_row">
+                        <td>订单名称</td>
+                        <td><span id="subject"></span></td>
+                    </tr>
+                    <tr class="p_one_row">
+                        <td>总金额</td>
+                        <td>￥<span id="amount"></span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="foot_div">
+        	<button id="cannel_pay" class="foot_btn">取消</button>
+            <button id="pay" class="foot_btn">支付 ￥<span id="payamount"></span></button>
+            <div class="footnote" style="height: 110px; line-height: 94px;"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    (function(){
+    	var common_url='js/common.js';
+    	
+        /*
+        初始化操作：
+        0.加载订单信息，设置支付参数
+        1.设置返回按钮事件
+        2.设置支付按钮事件
+        3.设置取消弹出框事件
+        */
+    	var use = function(){
+        	var back_url;
+        	//0.ajax获取支付参数
+    		var urlParams = getUrlRequest();
+    		var bill_no = urlParams['bill_no'];
+	        if(!!urlParams&&!!bill_no){
+	        	request('trade.json?bill_no='+bill_no,'get','',function(flag,res){
+	    			res = JSON.parse(res);
+	    			if(res.ResultCode == 1){
+			        	document.getElementById("subject").innerText = res.Content['order_subject'];
+			        	document.getElementById("amount").innerText = res.Content['order_amount'];
+			        	document.getElementById("payamount").innerText = res.Content['order_amount'];
+			        	
+			        	//设置返回商城地址
+			        	back_url = res.Content['back_url'];
+	    			}
+	    		}); 
+	        }
+        	
+	    	//1设置返回事件
+	    	document.getElementById('cannel_pay').addEventListener('touchend',function(e){
+	            e.preventDefault();
+	            e.stopPropagation();
+	            if(!!back_url){
+	            	window.location.href = back_url;
+	            }else{
+		            if(!!history.back){
+			           	history.back();
+		            }else{
+		            	history.go(-1);
+		            }
+	            }
+	        });
+			
+	       //2设置支付事件
+	        document.getElementById('pay').addEventListener('touchend',function(e){
+	            e.preventDefault();
+	            e.stopPropagation();
+	           	if (document.getElementById("p_one_frame") == null) {
+	            	var p_one_frame = document.createElement("div");
+	            	var v1 = '<div id="p_one_mask"class="p_one_mask"></div>';
+	            	p_one_frame.id = "p_one_frame",p_one_frame.innerHTML = v1;
+	            	
+	            	var p_one_window = document.createElement("div");
+	            	var v2 = '<div class="p_one_html in"><div class="p_one_body"><div id="p_one_channelList"class="p_one_channel"><div id="alipay_wap"class="p_one_btn"><div class="p_one_icon_alipay">支付宝</div></div></div></div></div>';
+	            	addClass(p_one_window,"p_one_window"),p_one_window.innerHTML = v2;
+	            	
+	            	p_one_frame.appendChild(p_one_window), document.body.appendChild(p_one_frame);
+	            	
+	            	//增加事件
+	            	p_one_window.addEventListener('touchend', function (event) {
+	            		event.preventDefault();
+	            		event.stopPropagation();
+	            		console.log(bill_no);
+	            		alipay(bill_no);
+	            		//TODO 如何注销改事件，防止重复提交
+	            		this.removeEventListener('touchend');
+	            	});
+	            	
+	           	} else {
+	               	addClass(document.getElementsByClassName("p_one_html")[0], "in");
+	           		setTimeout(function() {
+	               		document.getElementById("p_one_frame").style.display = "block";
+	               	}, 400);
+	           	}
+	            if(!hasClass(document.body,'p_one_open')){
+	           		addClass(document.body, "p_one_open");
+	            }
+	        });
+	        
+	       //3.设置取消弹出框事件
+	        document.body.addEventListener('touchend',function(e){
+	            e.preventDefault();
+	            e.stopPropagation();
+	            if(hasClass(document.body,'p_one_open')){
+	            	removeClass(document.getElementsByClassName("p_one_html")[0], "in");
+	               	setTimeout(function() {
+	               		document.getElementById("p_one_frame").style.display = "none";
+	               	}, 400);
+	               	removeClass(document.body, "p_one_open");
+	            }
+	        });
+    	}
+        
+    	//执行初始化
+        if(!window.request){
+            var script=document.createElement('script');
+            script.type='text/javascript';
+            script.src=common_url;
+            document.body.appendChild(script);
+            script.onload=function(){
+                use();
+            };
+        }
+        else{
+            use();
+        }
+    })();
+</script>
+<script src="js/common.js"></script>
+</html>

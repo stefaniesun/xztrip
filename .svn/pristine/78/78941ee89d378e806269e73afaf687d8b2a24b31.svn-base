@@ -1,0 +1,377 @@
+(function(win){
+    function WeUI(){
+        WeUI.prototype.version='0.0.1';
+        WeUI.prototype.doc = win.document;
+        WeUI.prototype.bodyWidth = document.body.clientWidth;
+    };
+    WeUI.prototype.q = function(cssSelector){
+        var e = this.doc.querySelectorAll(cssSelector);
+        return e ? (e.length==1 ? e[0] : e) : undefined;
+    };
+    WeUI.prototype.c = function(elementName){
+        return (typeof elementName === 'string') ? this.doc.createElement(elementName) : undefined;
+    };
+	/**
+	*weui.alert
+	**/
+    WeUI.prototype.alert = function(title,content,btnText,callback){
+        var alertDiv = this.c('div');
+        var def = {
+            title : '提示',
+            content : '',
+            btnText : '确定',
+            callback : function(){weui.hide(alertDiv);}
+        };
+        var tempCallback;
+        switch(arguments.length){
+            case 4:
+                def.title = arguments[0];
+                def.content = arguments[1];
+                def.btnText = arguments[2];
+                if(typeof arguments[3] === 'function'){
+                    tempCallback = arguments[3];
+                    def.callback = function(){
+                        if(tempCallback(alertDiv)){
+                            try{
+                                weui.hide(alertDiv);
+                            }catch(e){
+                            }
+                        }
+                    };
+                }
+            case 3:
+                if(typeof arguments[0] === 'string'){
+                    def.title = arguments[0];
+                }
+                if(typeof arguments[1] === 'string'){
+                    def.content = arguments[1];
+                }
+                if(typeof arguments[2] === 'string'){
+                    def.btnText = arguments[2];
+                }else if(typeof arguments[2] === 'function'){
+                    def.title = arguments[0];
+                    def.content = arguments[1];
+                    tempCallback = arguments[2];
+                    def.callback = function(){
+                        if(tempCallback(alertDiv)){
+                            try{
+                                weui.hide(alertDiv);
+                            }catch(e){
+                            }
+                        }
+                    };
+                }
+                break;
+            case 2:
+                if(typeof arguments[0] === 'string'){
+                    def.title = arguments[0];
+                }
+                if(typeof arguments[1] === 'string'){
+                    def.content = arguments[1];
+                }else if(typeof arguments[1] === 'function'){
+                    def.title = '提示';
+                    def.content = arguments[0];
+                    tempCallback = arguments[1];
+                    def.callback = function(){
+                        if(tempCallback(alertDiv)){
+                            try{
+                                weui.hide(alertDiv);
+                            }catch(e){
+                            }
+                        }
+                    };
+                }
+                break;
+            case 1:
+                if(typeof arguments[0] === 'string'){
+                    def.content = arguments[0];
+                }else if(typeof arguments[0] === 'function'){
+                    tempCallback = arguments[0];
+                    def.callback = function(){
+                        if(tempCallback(alertDiv)){
+                            try{
+                                weui.hide(alertDiv);
+                            }catch(e){
+                            }
+                        }
+                    };
+                }
+                break;
+            default:
+        }
+
+        def.title = typeof def.title === 'string' ? def.title : '提示';
+        def.content = typeof def.content === 'string' ? def.content : '';
+        def.btnText = typeof def.btnText === 'string' ? def.btnText : '确定';
+        def.callback = typeof def.callback === 'function' ? def.callback : function(){weui.hide(alertDiv);};
+
+        alertDiv.className = 'weui_dialog_alert';
+        alertDiv.style.display = 'block';
+        var template = '<div class="weui_mask"></div>'
+                      +'<div class="weui_dialog" style="'+(weui.bodyWidth/2)+'px">'
+                        +'<div class="weui_dialog_hd"><strong class="weui_dialog_title">'+def.title+'</strong></div>'
+                        +'<div class="weui_dialog_bd">'+def.content+'</div>'
+                        +'<div class="weui_dialog_ft">'
+                            +'<a href="javascript:void(0);" class="weui_btn_dialog primary">'+def.btnText+'</a>'
+                        +'</div>'
+                      +'</div>';
+        alertDiv.innerHTML = template;
+        var a = alertDiv.querySelector('.weui_dialog_ft a');
+        a.onclick = def.callback;
+//        weui.tap(a, def.callback);
+        this.doc.body.appendChild(alertDiv);
+    };
+	/**
+	*weui.confirm
+	**/
+    WeUI.prototype.confirm = function(title, content, cancelText, confirmText, callback){
+        var confirmDiv = this.c('div');
+        var params = {
+            title : '提示',
+            content : '',
+            cancelText : '取消',
+            confirmText : '确定',
+            callback : function(){weui.hide(confirmDiv);}
+        };
+        if(arguments.length>0 && arguments.length<6){
+            switch(arguments.length){
+                case 5:
+                    params.title = typeof arguments[0] === 'string' ? arguments[0] : params.title;
+                    params.content = typeof arguments[1] === 'string' ? arguments[1] : params.content;
+                    params.cancelText = typeof arguments[2] === 'string' ? arguments[2] : params.cancelText;
+                    params.confirmText = typeof arguments[3] === 'string' ? arguments[3] : params.confirmText;
+                    break;
+                case 4:
+                    params.title = typeof arguments[0] === 'string' ? arguments[0] : params.title;
+                    params.content = typeof arguments[1] === 'string' ? arguments[1] : params.content;
+                    params.confirmText = typeof arguments[2] === 'string' ? arguments[2] : params.confirmText;
+                    break;
+                case 3:
+                    params.title = typeof arguments[0] === 'string' ? arguments[0] : params.title;
+                    params.content = typeof arguments[1] === 'string' ? arguments[1] : params.content;
+                    break;
+                case 2:
+                    params.content = typeof arguments[0] === 'string' ? arguments[0] : params.content;
+                    break;
+                case 1:
+                    params.content = typeof arguments[0] === 'string' ? arguments[0] : params.content;
+                    break;
+                default:
+                    break;
+            }
+            if(typeof arguments[arguments.length-1] === 'function')
+                params.callback = arguments[arguments.length-1];
+        }
+
+        confirmDiv.className = 'weui_dialog_confirm';
+        confirmDiv.style.display = 'block';
+        if(weui.bodyWidth>0){
+        	confirmDiv.style.width = weui.bodyWidth+'px';
+        }
+        var template = '<div class="weui_mask"></div>'
+                      +'<div class="weui_dialog">'
+                        +'<div class="weui_dialog_hd"><strong class="weui_dialog_title">'+params.title+'</strong></div>'
+                        +'<div class="weui_dialog_bd">'+params.content+'</div>'
+                        +'<div class="weui_dialog_ft">'
+                            +'<a href="javascript:void(0);" class="weui_btn_dialog default weui_js_cancel">'+params.cancelText+'</a>'
+                            +'<a href="javascript:void(0);" class="weui_btn_dialog primary weui_js_confirm">'+params.confirmText+'</a>'
+                        +'</div>'
+                      +'</div>';
+        confirmDiv.innerHTML = template;
+        var cancel_a = confirmDiv.querySelector('.weui_dialog_ft .weui_js_cancel');
+        cancel_a.onclick = function(){weui.hide(confirmDiv);};
+        var confirm_a = confirmDiv.querySelector('.weui_dialog_ft .weui_js_confirm');
+        weui.click(confirm_a, params.callback, function(){
+            weui.hide(confirmDiv);
+        });
+        this.doc.body.appendChild(confirmDiv);
+    };
+	/**
+	*weui.actionSheet
+	**/
+	WeUI.prototype.actionSheet = function(){
+		var actionSheetDiv = this.c('div');
+        var param = {
+            html : '<p style="color:red;">选项一</p>',
+            click : function(){}
+        };
+        
+        if(arguments.length>0){
+            param = [];
+            for(var i=0;i<arguments.length;i++){
+                param[param.length] = arguments[i];
+            }
+        }
+		actionSheetDiv.className = 'actionSheet_wrap';
+        actionSheetDiv.style.display = 'block';
+        if(weui.bodyWidth>0){
+        	actionSheetDiv.style.width = weui.bodyWidth+'px';
+        }
+		var template = '<div class="weui_mask_transition weui_fade_toggle actionsheet_mask" style="display:block;"></div>'
+							 +'<div class="weui_actionsheet weui_actionsheet_toggle weui_actionsheet_div">'
+								 +'<div class="weui_actionsheet_menu">'
+									 //+'<div class="weui_actionsheet_cell">示例菜单</div>'
+									 //+'<div class="weui_actionsheet_cell">示例菜单</div>'
+								 +'</div>'
+								 +'<div class="weui_actionsheet_action">'
+									 +'<div class="weui_actionsheet_cell actionsheet_cancel" id="actionsheet_cancel">取消</div>'
+								 +'</div>'
+							 +'</div>';
+		actionSheetDiv.innerHTML = template;
+		var cancelBtn = actionSheetDiv.querySelector('.actionsheet_cancel');//取消按钮
+		var actionsheetMask = actionSheetDiv.querySelector('.actionsheet_mask');//蒙板层
+		//var actionsheetDiv = actionSheetDiv.querySelector('.weui_actionsheet_div');//ActionSheet主体
+		actionsheetMask.onclick = function(){
+			weui.hide(actionSheetDiv);
+		};
+		cancelBtn.onclick = function(){
+			weui.hide(actionSheetDiv);
+		};
+
+		var actionSheetMenu = actionSheetDiv.querySelector('.weui_actionsheet_menu');//菜单组
+
+		var menus = [];
+		if(param instanceof Array){
+			menus = param;
+		}else if(typeof param === 'object'){
+			menus=[param];
+		}
+
+		for(var i=0;i<menus.length;i++){
+			var menu = this.c('div');
+			menu.className = 'weui_actionsheet_cell';
+			menu.innerHTML = menus[i].html;
+			this.click(menu, menus[i]['click'], function(){
+				weui.hide(actionSheetDiv);
+			});
+			actionSheetMenu.appendChild(menu);
+		}
+		this.doc.body.appendChild(actionSheetDiv);
+	};
+    /**
+    *loading
+    **/
+    WeUI.prototype.loading = function(time){
+        var loadingDiv = this.c('div');
+        loadingDiv.className = 'weui_loading_toast';
+        var loadingDot = '';
+        for(var i=0;i<12;i++){
+            loadingDot += '<div class="weui_loading_leaf weui_loading_leaf_'+i+'"></div>';
+        }
+        var template = '<div class="weui_mask_transparent"></div>'
+                      +'<div class="weui_toast">'
+                          +'<div class="weui_loading">'
+                              +loadingDot
+                          +'</div>'
+                          +'<p class="weui_toast_content">加载中...</p>'
+                      +'</div>';
+        loadingDiv.innerHTML = template;
+        if(time === -1){
+        }else if((time instanceof Number) && time>-1){
+            weui.task(time, function(){
+                weui.hide(loadingDiv);
+            });
+        }else{
+            weui.task(3000, function(){
+                weui.hide(loadingDiv);
+            });
+        }
+        this.doc.body.appendChild(loadingDiv);
+        return loadingDiv;
+    };
+    WeUI.prototype.toast = function(time, text){
+        var toastDiv = this.c('div');
+        toastDiv.className = 'weui_js_toast';
+        var ttime = 3000;
+        var ttext = '已完成';
+        if(arguments.length==1){
+            if(typeof arguments[0] === 'number'){
+                ttime = arguments[0];
+            }else if(typeof arguments[0] === 'string'){
+                ttext = arguments[0];
+            }
+        }else if(arguments.length == 2){
+            if(typeof arguments[0] === 'number'){
+                ttime = arguments[0];
+            }
+            if(typeof arguments[1] === 'string'){
+                ttext = arguments[1];
+            }
+        }
+        /**
+         *
+.weui_toast {
+position: fixed;
+z-index: 3;
+width: 7.6em;
+min-height: 7.6em; 
+top: 280px;
+left: 50%;
+margin-left: -3.8em;
+background: rgba(40,40,40,.75);
+text-align: center;
+border-radius: 5px;
+color: #fff;
+}
+         */
+        var template = '<div class="weui_mask_transparent"></div>'
+                      +'<div class="weui_toast" style="min-height:10px;buttom:50px;">'
+                          /*+'<i class="weui_icon_toast"></i>'*/
+                          /*+'<p class="weui_toast_content">'+ttext+'</p>'*/
+                          +'<p>'+ttext+'</p>'
+                      +'</div>';
+        toastDiv.innerHTML = template;
+        weui.task(ttime, function(){
+            weui.hide(toastDiv);
+        });
+        this.doc.body.appendChild(toastDiv);
+        return toastDiv;
+    };
+    /**
+    *关闭由weui.loading()创建的loading
+    **/
+    WeUI.prototype.hideLoading = function(){
+        var loadings = weui.q('.weui_loading_toast');
+        if(loadings && loadings.className=='weui_loading_toast'){
+            loadings = [loadings];
+        }
+        for(var i=0;i<loadings.length;i++){
+            weui.hide(loadings[i]);
+        }
+    };
+	/**
+	*从body中移除某个元素
+	**/
+	WeUI.prototype.hide = function(element){
+        if(element)
+		  this.doc.body.removeChild(element);
+	};
+    /**
+    *绑定元素点击事件
+    **/
+	WeUI.prototype.click = function(element,func,after){
+		element.onclick = function(){
+			func();
+			if(typeof after === 'function'){
+				after();
+			}
+		};
+	};
+	WeUI.prototype.tap = function(element,func,after){
+		element.addEventListener('tap',function(){
+			func();
+			if(typeof after === 'function'){
+				after();
+			}
+		});
+	};
+    /**
+    *setTimeout封装
+    **/
+    WeUI.prototype.task = function(time, func){
+        win.setTimeout(function(){
+            func();
+        },time);
+    };
+    win.weui = new WeUI();
+})(window);

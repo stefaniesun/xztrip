@@ -1,0 +1,60 @@
+package xyz.ctrl.pay;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import xyz.filter.JSON;
+import xyz.filter.MyRequestUtil;
+import xyz.filter.ReturnUtil;
+import xyz.model.core.WxBill;
+import xyz.svc.core.WxBillSvc;
+import xyz.svc.pay.imp.WxPayUtil;
+
+@Controller
+@RequestMapping(value="/WxPayWS")
+public class WxPayWS {
+	@Autowired
+	private WxBillSvc wxBillSvc;
+	
+	/**
+	 * 获得微信支付订单信息
+	 * @return
+	 */
+	@RequestMapping(value="getWxPayOrderInfo")
+	@ResponseBody
+	public Map<String, Object> getWxPayOrderInfo(String orderNo, BigDecimal totalFee, String body){
+		if(totalFee==null || totalFee.compareTo(new BigDecimal("0"))<=0){
+			return ReturnUtil.returnMap(0, "金额不能少于一分");
+		}
+		WxBill bill = new WxBill();
+		bill.setOrderNo(orderNo);
+		bill.setTotal_fee(totalFee.multiply(new BigDecimal("100")).intValue());//乘以100转成整型
+		bill.setBody(body);
+		bill.setSpbill_create_ip(MyRequestUtil.getIp());
+		
+		return wxBillSvc.addWxBillSvc(bill);
+	}
+	
+	@RequestMapping(value="wxPayNotify")
+	@ResponseBody
+	public void wxPayNotify(HttpServletRequest request,HttpServletResponse response) throws IOException{
+		request.setCharacterEncoding("UTF-8");  
+		response.setCharacterEncoding("UTF-8");	//防止中文乱码
+		Map<String, Object> map = WxPayUtil.xml2map(request.getInputStream());
+		System.out.println(JSON.toJosn(map));
+	}
+	
+	
+
+}

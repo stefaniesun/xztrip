@@ -1,0 +1,38 @@
+package xyz.ctrl.buyer;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import xyz.svc.buyer.BuyerProviderSvc;
+
+@Controller
+@RequestMapping(value="/BuyerProviderWS")
+public class BuyerProviderWS {
+
+	@Autowired
+	BuyerProviderSvc buyerProviderSvc;
+	/**
+	 * 查询供应商列表
+	 */
+	@RequestMapping(value="queryProviderList")
+	@ResponseBody
+	public Map<String,Object> queryProviderList(String nameCn,String providerType,String minPrice,String maxPrice,String orderBy,
+			int page,
+			int rows){
+		int pagesize = rows;
+		int offset = (page-1)*pagesize;
+		return buyerProviderSvc.queryProviderList(nameCn,providerType,minPrice, maxPrice,orderBy,offset, pagesize);
+	}
+	
+	
+	@RequestMapping(value="getProvider")
+	@ResponseBody
+	public Map<String,Object> getProvider(String numberCode){
+		return buyerProviderSvc.getProvider(numberCode);
+	}
+	
+}

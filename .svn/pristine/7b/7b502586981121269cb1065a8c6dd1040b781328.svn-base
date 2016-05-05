@@ -1,0 +1,86 @@
+$(document).ready(function() {
+	
+	//加载买家列表---下拉框
+	xyzCombobox({
+		combobox : 'seller',
+		url : '../ListWS/getSellerList.do'
+	});
+	
+	$("#protype").combotree({
+		lines : false,//定义是否显示树控件上的虚线
+		animate : true,//定义节点在展开或折叠的时候是否显示动画效果
+		editable : false, //定义用户是否可以直接输入文本到字段中
+		onShowPanel : function(){
+			if(xyzIsNull($(this).combotree("options").data)){
+				var resultData = initProtypeListCombotree();
+				$('#protype').combotree('loadData',resultData);
+			}
+		}
+	});
+	
+	$("#productButton").click(function(){
+		loadTable();
+	});
+	
+	initTable();
+	
+});
+
+function initTable(){
+	
+	var toolbar = [];
+	if(xyzControlButton('buttonCode_h20151214181001')){
+		toolbar[toolbar.length]={
+				text: '新增产品',
+				border:'1px solid #bbb',
+				iconCls: 'icon-add',
+				handler: function(){addProductButton();}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	if(xyzControlButton('buttonCode_h20151214181002')){
+		toolbar[toolbar.length]={
+				text: '编辑产品',
+				border:'1px solid #bbb',
+				iconCls: 'icon-edit',
+				handler: function(){editProductButton();}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	if(xyzControlButton('buttonCode_h20151214181003')){
+		toolbar[toolbar.length]={
+				text: '删除产品',
+				border:'1px solid #bbb',
+				iconCls: 'icon-remove',
+				handler: function(){deleteProductButton();}
+		};
+		toolbar[toolbar.length]='-';
+	}	
+	
+	xyzgrid({
+		table : 'productScenicManagerTable',
+		title : '产品列表',
+		url:'../ProductScenicWS/queryProductScenicList.do',
+		pageList : [5,10,15,30,50],
+		pageSize : 5,
+		toolbar:toolbar,
+		singleSelect : false,
+		idField : 'numberCode',
+		height:'auto',
+		columns : [[
+		    {field:'checkboxTemp',checkbox:true},
+			{field:'numberCode',title:'品类编号',hidden:true},
+			{field:'nameCn',title:'产品名称',width:100},
+			{field:'provider',title:'所属供应商',width:100},
+		]]
+	});
+	
+}
+
+function loadTable(){
+	var nameCn = $("#nameCn").val();
+	
+	$("#productScenicManagerTable").datagrid("load",{
+		nameCn : nameCn,
+	});
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>map</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<link rel="stylesheet" href="../css/customer.mui.theme.css">
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+<style>
+	html,
+	body {
+		background-color: #efeff4;
+	}
+	.title {
+		padding: 20px 15px 10px;
+		color: #6d6d72;
+		font-size: 15px;
+		background-color: #fff;
+	}
+#map {
+	width: 100%;
+	position: fixed;
+	top: 44px;
+	bottom: 0px;
+	line-height: 200px;
+	text-align: center;
+	background: #FFFFFF;
+}
+</style>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	<h1 class="mui-title">地图</h1>
+</header>
+<div class="mui-content">
+	  <div id="map"></div>
+</div>
+<script type="text/javascript"  src="../js/mui_20151228.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=cad7c424682c46910d51a8b2b9eae536"></script> 
+<script>
+
+var map = new AMap.Map('map',{
+    zoom: 15,
+    center: [91.1197650000,29.6455330000]
+});
+
+var marker = new AMap.Marker({
+    position: [91.1197650000,29.6455330000],
+    map:map
+});
+
+</script>
+</body>
+</html>

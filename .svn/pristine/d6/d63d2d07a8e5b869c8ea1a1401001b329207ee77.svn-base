@@ -1,0 +1,24 @@
+function addCustomerLoginCookie(apikey,days){
+	if(days==0){
+		$.cookie('LOGIN_KEY',apikey, 
+			{
+				path : '/'
+			}
+		);
+	}else{
+		$.cookie('LOGIN_KEY',apikey, 
+			{
+				expires : days,
+				path : '/'
+			}
+		);
+	}
+}
+
+function deleteCustomerLoginCookie(){
+	$.cookie('LOGIN_KEY',null,
+		{
+			path : '/'
+		}
+	);
+}

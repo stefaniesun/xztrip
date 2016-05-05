@@ -1,0 +1,14 @@
+package xyz.svc.buyer;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface CustermerSvc {
+
+	Map<String, Object> getRegisterCode(String phone);
+
+	Map<String, Object> register(String phone, String randCode, String password);
+
+}

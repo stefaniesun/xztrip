@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>填写订单</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/order.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+<body>
+    <header>
+        <a href="" class="pull-left back-inner" onclick="window.history.back();">
+            <i class="iconfont icon-fanhui"></i>
+        </a>
+        <h1 class="header-title">
+            填写订单
+        </h1>
+    </header>
+<footer>
+    <p class="order-price pull-left">
+        订单金额：<span>¥1399.00</span>
+    </p>
+    <a href="orderDetail.html" class="submit-order pull-right">
+        提交订单
+    </a>
+</footer>
+<div class="content-wrapper proup-height">
+    <div class="order-info-item">
+        <p class="order-product-name">豪华总统套房 四室两厅两卫 无线WIFI</p>
+        <p >
+            <span class="pay-type pull-left">在线支付</span>
+            <span class="pro-dj pull-right"><label class="color-org">¥<label class="big-font">39</label>.50</label>/晚</span>
+            <div style="clear:both;"></div>
+        </p>
+    </div>
+    <div class="order-info-item">
+        <p class="order-product-date">
+            入住 <span>4月5日</span>
+            离店 <span>4月7日</span>
+            <span class="pull-right color-org">共2晚</span>
+            <i class="iconfont icon-you"></i>
+        </p>
+        <div class="order-product-num">
+            数量
+            <span class="num-box pull-right">
+                <i class="iconfont icon-minus pull-left"></i>
+                <label class="pull-left">1</label>
+                <i class="iconfont icon-jia pull-right"></i>
+            </span>
+        </div>
+    </div>
+    <div class="order-info-item">
+        <p class="contact-lm">
+            <span class="pull-left">联系人 </span>
+            <input type="text" placeholder="联系人姓名">
+        </p>
+        <p class="contact-lm">
+            <span class="pull-left">联系电话 </span>
+            <input type="text" placeholder="用于联系你">
+        </p>
+
+    </div>
+    <div class="order-info-item">
+        <textarea  placeholder="订单备注"></textarea>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+</html>

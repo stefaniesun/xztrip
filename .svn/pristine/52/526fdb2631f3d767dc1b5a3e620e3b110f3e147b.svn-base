@@ -1,0 +1,10 @@
+package xyz.svc.config;
+
+import xyz.util.SysPropertyTool;
+
+public class ConstantPms {
+
+	public static final String b2b_hotelList =  SysPropertyTool.getValue("pmsip")+"/ListWS/getChannelListForAll.do";
+	
+	public static final String b2b_roomTypeList =  SysPropertyTool.getValue("pmsip")+"/ListWS/getChannelListForAll.do";
+}

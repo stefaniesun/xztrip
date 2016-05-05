@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>门票预订</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<meta name="full-screen" content="yes"><!-- UC强制全屏 -->
+<meta name="x5-fullscreen" content="true"><!-- QQ强制全屏 -->
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/myorder.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="../css/weui.min.css"/>
+<link rel="stylesheet" href="../css/xyzCalendar.css"/>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/xyzCalendar.js"></script>
+<script type="text/javascript" src="../js/orderScenic.js"></script>
+</head>
+<body>
+<div class="ticket-reservation">
+    <header class="tibet-header">
+        <div class="back-left icon-left">
+            <img src="../images/icon-left.png"/>
+        </div>
+        <div class="center-name icon-left">
+            <h2 id="productNameCnShow">门票预订</h2>
+        </div>
+        <div class="go-right icon-right">
+            <img class="icon-house" src="../images/icon-house.png" alt=""/>
+        </div>
+    </header>
+    <div class="prop-height"></div>
+</div>
+<div class="ticket-reservation-main">
+	<p id="hideInfo" style="display: none;"></p>
+    <ul>
+        <li>
+            <p class="order-num-m bold" style="font-size: 16px" id="spotName"></p>
+        </li>
+        <li>
+            <p class="order-num-m">门票单价：<span class="color-danger" id="priceShow" style="width: 120px;"></span>元</p>
+        </li>
+        <li>
+            <p class="order-num-m" id="dateInfoChoose" data-date="">出行日期：<span id="dateInfoShow" class="color-danger">请选择出行日期</span></p>
+            <img class="icon-more" src="../images/more.png" alt="">
+        </li>
+        <li>
+            <p class="order-num-m">购买数量：</p>
+            <div class="num-box"  id="chooseNum">
+                <i class="num-reduce" data-ext="sub">
+                    <img class="icon-reduce" src="../images/icon-reduce.png" alt="">
+                </i>
+                <input  id="count" class="num-input" type="text" value="1" readonly/>
+                <i class="num-add" data-ext="add">
+                    <img class="icon-add" src="../images/icon-add.png" alt="">
+                </i>
+            </div>
+        </li>
+        <li>
+            <p class="order-num-m">票价合计：<span id="priceTotal" class="color-danger" style="font-size: 20px;">0.00</span>元</p>
+        </li>
+    </ul>
+    <ul>
+        <li>
+            <p class="order-num-m bold">联系人信息</p>
+            <p class="order-num-m">联系人姓名：<input id="linkmanForm" class="yd-info" type="text" placeholder="请输入联系人姓名"></p>
+        </li>
+        <li>
+            <p class="order-num-m">联系人手机号：<input id="linkPhoneForm" class="yd-info" type="tel" placeholder="请输入联系人手机号"></p>
+        </li>
+        <li>
+            <p class="order-num-m">备注说明：<input id="remarkBuyForm" class="yd-info" placeholder="无特殊说明可不填" /></p>
+        </li>
+    </ul>
+<!--     <ul>
+        <li>
+            <p class="order-num-m bold">温馨提醒</p>
+            <p class="order-num-m color-success">取消规则：订单提交需支付全部房费，如订单不确认将全额退款至您的付款账户。
+                订单确认后不可取消修改，如未入住或取消修改及提前离店，我们将收取您¥194支付酒店
+            </p>
+        </li>
+    </ul> -->
+    <div class="yd-btn-box" >
+        <buttom id="submitBtn" class="yd-btn" >确认订单并支付</buttom>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/weui.js"></script>
+</html>

@@ -1,0 +1,34 @@
+package xyz.svc.main;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface ProductHotelSvc {
+	
+	public Map<String,Object> queryProductHotelList(String nameCn, String provider,
+			int offset,
+			int pagesize);
+
+	public Map<String,Object> addProductHotel(String nameCn,String provider,String remark,int refundTime,int maxDate);
+	
+	public Map<String,Object> editProductHotel(String numberCode,String nameCn,String provider,String remark,int refundTime,int maxDate);
+	
+	public Map<String,Object> deleteProductHotel(String numberCodes);
+
+	public Map<String, Object> queryProductHotelListForStock(String nameCn,
+			String provider, int offset, int pagesize);
+
+	public Map<String, Object> deletePms(String numberCode);
+
+	public Map<String, Object> editPms(String numberCode, String hotel,
+			String roomType);
+
+	public Map<String, Object> editProductHotelImage(String numberCode,
+			String imageUrl);
+
+	public Map<String, Object> editUserTag(String numberCode, int value);
+	
+	public Map<String, Object> editOnlineFlag(String numberCode, int value);
+}

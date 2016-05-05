@@ -1,0 +1,68 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei UI", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    background-color: #f2f2f2;
+    color: #333;
+}
+.order-details-wrap{
+    width: 100%;
+    height: auto;
+}
+.message-prompt,.order-details{
+    width: 95%;
+    height: auto;
+    background-color: #fff;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 0.4rem;
+    margin-top: 1rem;
+}
+.message-prompt-title,.order-details-title{
+    height: 2.2rem;
+    line-height: 2.2rem;
+    padding-left: 0.75rem;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+    font-weight: bold;
+}
+.message-prompt-main table,
+.order-details .order-details-main,
+.ticket-num table{
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 14px;
+    width: 100%;
+}
+.message-prompt-main table td,
+.ticket-num table td{
+    padding:0.3rem  0.75rem;
+}
+.message-prompt-main .message-td-content,
+.ticket-num .order-td-content{
+    width: 70%;
+    text-align: left;
+    padding-left: 0;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+.message-prompt-main .message-td-title,
+.ticket-num .order-td-title{
+    width: 30%;
+}
+.order-details-main .ticket-num{
+    width: 100%;
+    height: auto;
+    border-bottom: 1px dashed #ddd;
+}
+.order-details-main .ticket-num:last-child{
+    border-bottom: 0;
+}
+.ticket-num-title{
+    padding-left: 0.75rem;
+    padding-top: 0.5rem;
+    font-weight: bold;
+    color: #f00;
+}

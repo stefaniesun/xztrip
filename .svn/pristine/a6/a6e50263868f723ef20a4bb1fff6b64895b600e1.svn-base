@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>西藏旅游数据中心</title>
+<link rel="stylesheet" href="css/bootstrap.min.css"/>
+<link rel="stylesheet" href="css/css_visa/login.css">
+<script type="text/javascript" src="js/library/jquery-1.7.2.js"></script>	
+<script type="text/javascript" src="js/library/cookie/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/library/common/cookie2.js"></script>
+<script type="text/javascript" src="js/library/common/common.js"></script>
+<script type="text/javascript" src="js/library/placeholder/placeholder.js"></script>
+<script type="text/javascript" src="js/library/layer/layer.min.js"></script>
+<script type="text/javascript" src="js/library/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/js_login/login.js"></script>
+</head>
+<body>
+<header>
+<div class="title">客户协同中心</div>
+  <div class="qr-code"><img src="image/visa/visaRQCode.jpg" alt="二维码" /></div>
+  <div class="code-slogan">
+    <div>关注<strong>微信号 ilyv178</strong></div>
+    <div>即送惊喜好礼</div>
+    <div>最新特价旅行一秒get</div>
+  </div>
+  <div class="clear"></div>
+</header>
+<div class="backgroud">
+  <div class="container">
+    <div class="container-login">
+      <div class="login-title">
+        <h3>客户登录</h3>
+        <div class="login-title-line"></div>
+      </div>
+      <div class="form-group">
+         <form>
+			<input class="form-control text-width" placeholder="订单编号"   id="orderNum" type="text"/>
+			<input class="form-control text-width" placeholder="旺旺ID或者手机号码" id="phoneOrTaoBaoId" type="text"/>
+	    </form>
+      </div>
+      <div class="check">
+        <div class="check-left">
+	      <div class="check-box">
+	        <label class="checkbox-inline">
+	          <input type="checkbox" name="checkCodeForm" value="1"/>
+	          1 </label>
+	        <label class="checkbox-inline">
+	          <input type="checkbox" name="checkCodeForm" value="2"/>
+	          2 </label>
+	        <label class="checkbox-inline">
+	          <input type="checkbox" name="checkCodeForm" value="4"/>
+	          4 </label>
+	        <label class="checkbox-inline">
+	          <input type="checkbox" name="checkCodeForm" value="8"/>
+	          8 </label>
+	      </div>
+	    </div>
+	    	<div class="equal"></div>
+           	<span style="width: 40px;height: 40px;margin: auto;">
+				<span id="checkCodeDiv" style="width: 40px;height: 40px;line-height: 40px;position:absolute ;
+				font-size: 40px;text-align: center;z-index:0 ">
+				</span>
+				<span id="checkCodeFont" style="width: 40px;height: 40px;position:absolute ;z-index:1000;
+				background-color: yellow;opacity:0.1; filter:alpha(opacity=10);">
+				</span>
+				<span style="width: 40px;height: 40px;display:inline-block ;"></span>
+			</span>
+	    	<input type="submit" value="登录" onclick="check_submit()" id="submit_button" class="btn btn-primary btn-lg btn-block login-btn" />
+        </div>
+    </div>
+  </div>
+  <!--推荐浏览器提示-->
+    <div class="prompt">
+        <p>
+          	 提示：请使用火狐 、谷歌 、360或IE9及以上浏览器
+        </p>
+    </div>
+</div>
+<footer class="message">&copy;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;沪ICP备14042262号-1</footer>
+</body>
+</html>

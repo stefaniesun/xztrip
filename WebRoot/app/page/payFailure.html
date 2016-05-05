@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>支付失败</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<style type="text/css">
+body{
+    margin: 0;
+    padding: 0;
+}
+.pay-failure{
+    width: 100%;
+    height:100%;
+    text-align: center;
+}
+.pay-failure-img{
+    width: 100%;
+    height: 4rem;
+    text-align: center;
+    margin-top: 5rem
+}
+.pay-failure-btn{
+    border: 0;
+    background: #bd362f;
+    color: #fff;
+    padding:0.4rem 4rem;
+    font-size: 14px;
+}
+.pay-failure-text{
+    text-align: center;
+    font-size: 14px;
+}
+</style>
+<script type="text/javascript">
+function closeWebview(){
+	if(window.plus){
+		plus.webview.currentWebview().close();
+	}
+}
+</script>
+</head>
+
+<body>
+    <div class="pay-failure" >
+        <div class="pay-failure-img">
+            <img src="../images/pay-failure.png" alt="" title="" style="width: 4rem;">
+        </div>
+        <p class="pay-failure-text" >抱歉，订单付款失败！</p>
+        <button class="pay-failure-btn" style="" onclick="closeWebview()">确定</button>
+    </div>
+</body>
+</html>

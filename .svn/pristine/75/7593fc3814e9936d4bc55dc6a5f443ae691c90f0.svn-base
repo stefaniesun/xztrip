@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/userCenter.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+    <link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+
+<body>
+<header>
+    <a href="" class="pull-left back-inner" onclick="window.history.back();">
+        <i class="iconfont icon-fanhui"></i>
+    </a>
+    <h1 class="header-title">
+        我的
+    </h1>
+</header>
+<footer>
+        <a href="javascript:void(0);" data-ext="index.html" class="footer-item">
+            <i class="iconfont icon-shouyeshouye"></i>
+            <span class="footer-title">首页</span>
+        </a>
+        <a href="javascript:void(0);" data-ext="page/orderList.html" class="footer-item">
+            <i class="iconfont icon-liebiao"></i>
+            <span class="footer-title">订单</span>
+        </a>
+        <a href="javascript:void(0);" data-ext="page/userCenter.html" class="footer-item footer-item-active">
+            <i class="iconfont icon-gerenzhongxin"></i>
+            <span class="footer-title">我的</span>
+        </a>
+</footer>
+<div class="content-wrapper proup-height">
+    <div class="usercenter">
+        <div class="usercenter-bg">
+            <div class="head-box">
+                <img class="dn" src="../images/default-header-img-min.jpg" alt="" />
+                <a href="login.html" class="dk">登录</a>
+            </div>
+
+        </div>
+        <div class="usercenter-list">
+            <ul>
+                <li>
+                    <p class="pull-left">
+                        <span class="user-name">西藏旅游</span><br>
+                        <span class="user-tel color-grey">账号：<span>-未登录-</span></span>
+                    </p>
+                    <i class="iconfont icon-you pull-right color-grey" style="margin-top: 15px;"></i>
+                    <div style="clear: both;"></div>
+                </li>
+                <li style="margin-bottom: 0px">
+                    <a href="javascript:void(0);" class="dk">
+                        <i class="iconfont icon-liebiao color-grey"></i>
+                        <span>常用联系人</span>
+                        <i class="iconfont icon-you pull-right color-grey" style="margin-top: 3px"></i>
+                    </a>
+                </li>
+                <li style="margin-bottom: 0px" id="resetPasswordItem">
+                    <a href="javascript:void(0);" class="dk">
+                        <i class="iconfont icon-liebiao color-grey"></i>
+                        <span>修改/重置密码</span>
+                        <i class="iconfont icon-you pull-right color-grey" style="margin-top: 3px"></i>
+                    </a>
+                </li>
+                <li id="shareBarcodeItem">
+                    <a href="javascript:void(0);" class=" dk">
+                        <i class="iconfont icon-liebiao color-grey"></i>
+                        <span>推广二维码</span>
+                        <i class="iconfont icon-you pull-right color-grey" style="margin-top: 3px"></i>
+                    </a>
+                </li>
+                <li style="margin-top: 20px;">
+                    <p class="exit-login">退出登录</p>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- 分享二维码弹出层 -->
+<div class="xyzmod-base">
+    <div class="header">
+        <a href="javascript:void(0);" class="pull-left back-inner" onclick="document.querySelector('.xyzmod-base').style.display='none';">
+            <span>返回</span>
+        </a>
+        <h1 class="header-title">
+            扫码即可关注/下载畅行西藏
+        </h1>
+    </div>
+    <div>
+    	<img src="../images/appbarcode.png" alt="empty" style="width: 100%;"/>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script>
+document.querySelector('footer').addEventListener('touchend', function(e){
+	var target = 'A'===e.target.nodeName?e.target:e.target.parentNode;
+	var url = target.getAttribute('data-ext');
+	if(!xyz.isNull(url)){
+		if('page/orderList.html'==url && xyz.isNull(window.localStorage.apikey)){
+			url = 'page/login.html';
+		}
+		weui.loading(-1);
+		window.location.href=xyz.getFullurl(url);
+	}
+},false);
+
+document.querySelector('#shareBarcodeItem').addEventListener('touchend', function(e){
+	document.querySelector('.xyzmod-base').style.display='block';
+},false);
+
+document.querySelector('#resetPasswordItem').addEventListener('touchend', function(e){
+	document.querySelector('.xyzmod-base').style.display='block';
+},false);
+</script>
+</html>

@@ -1,0 +1,37 @@
+function getLoginCookie(){
+	var cookieValue = $.cookie('yoyoyoyoyoyoyoyoyoyoyoyoyo');
+	if(cookieValue==null){
+		cookieValue = "";
+	}
+	return cookieValue;
+}
+
+function deleteLoginCookie(){
+	$.cookie('yoyoyoyoyoyoyoyoyoyoyoyoyo',null,
+		{
+			path : '/'
+		}
+	);
+}
+
+function setLoginCookie(yoyoyoyoyoyoyoyoyoyoyoyoyo){
+	$.cookie('yoyoyoyoyoyoyoyoyoyoyoyoyo',yoyoyoyoyoyoyoyoyoyoyoyoyo);
+}
+
+function addLoginCookie(yoyoyoyoyoyoyoyoyoyoyoyoyo,days){
+	if(days==0){
+		$.cookie('yoyoyoyoyoyoyoyoyoyoyoyoyo',yoyoyoyoyoyoyoyoyoyoyoyoyo, 
+			{
+				path : '/'
+			}
+		);
+	}else{
+		$.cookie('yoyoyoyoyoyoyoyoyoyoyoyoyo',yoyoyoyoyoyoyoyoyoyoyoyoyo, 
+			{
+				expires : days,
+				path : '/'
+			}
+		);
+	}
+}
+

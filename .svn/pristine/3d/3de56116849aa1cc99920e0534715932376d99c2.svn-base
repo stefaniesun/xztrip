@@ -1,0 +1,150 @@
+$(document).ready(function() {
+	$("#customerButton").click(function(){
+		loadTable();
+	});
+	
+	initTable();
+});
+
+function initTable(){
+	
+	var toolbar = [];
+	if(xyzControlButton('buttonCode_h20151215093702')){
+		toolbar[toolbar.length]={
+				text: '编辑客户',
+				border:'1px solid #bbb',
+				iconCls: 'icon-edit',
+				handler: function(){var title=$(this).text();editCustomerButton(title);}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	
+	xyzgrid({
+		table : 'customerManagerTable',
+		title : '客户列表',
+		url:'../CustomerWS/queryCustomerList.do',
+		pageList : [5,10,15,30,50],
+		pageSize : 5,
+		toolbar:toolbar,
+		singleSelect : false,
+		idField : 'iidd',
+		height:'auto',
+		columns : [[
+		    {field:'checkboxTemp',checkbox:true},
+			{field:'username',title:'帐号',width:100},
+			{field:'nickName',title:'昵称',width:100},
+			{field:'enabled',title:'账户状态',
+				formatter : function(value,row,index){
+					if(value == 1){
+						return "√";
+					}else {
+						return "×";
+					}
+				},
+				styler : function(value,row,index){
+					if(value == 1){
+						return "background-color:green";
+					}else {
+						return "background-color:red";
+					}
+				}
+			},
+			{field:'operTemp0',title:'操作',
+				formatter: function(value,row,index){
+					if(row.enabled==0){
+						var btn1 = "<a href='javascript:void(0);' onclick='editCustomerEnabled(\""+row.iidd+"\",\""+1+"\")'>激活</a>";
+						return btn1;
+					}else{
+						var btn1 = "<a href='javascript:void(0);' onclick='editCustomerEnabled(\""+row.iidd+"\",\""+0+"\")'>锁死</a>";
+						return btn1;
+					}
+				}
+			}
+		]]
+	});
+	
+}
+
+function loadTable(){
+	var username = $("#username").val();
+	$("#customerManagerTable").datagrid("load",{
+		username : username,
+	});
+}
+
+
+function editCustomerEnabled( iidd, enabled){
+	xyzAjax({
+		url:"../CustomerWS/editCustomerEnabled.do",
+		data:{
+			iidd:iidd,
+			enabled:enabled
+		},
+		success:function(data){
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#customerManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+}
+
+
+function editCustomerButton(title){
+	
+	var customer = $("#customerManagerTable").datagrid("getChecked");
+	if(customer.length != 1){
+		top.$.messager.alert("提示","请先选中单个对象！","info");
+		return;
+	}
+	var row = customer[0];
+	
+	xyzdialog({
+		dialog : 'dialogFormDiv_editCustomer',
+		title : title,
+	    href : '../jsp_buyer/editCustomer.html',
+	    fit:false,
+	    height:300,
+	    width:600,
+	    buttons:[{
+			text:'确定',
+			handler:function(){
+				editCustomerSubmit(row.iidd);
+			}
+		},{
+			text:'取消',
+			handler:function(){
+				$("#dialogFormDiv_editCustomer").dialog("destroy");
+			}
+		}]
+	});
+}
+
+
+function editCustomerSubmit(iidd){
+	var password=$("#passwordForm").val();
+	var newPassword=$.md5(password).substr(8,16);
+	if(!$("form").form('validate')){
+		return;
+	}
+	xyzAjax({
+		url:"../CustomerWS/editCustomer.do",
+		data:{
+			iidd:iidd,
+			password:newPassword
+			
+		},
+		success:function(data){
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#dialogFormDiv_editCustomer").dialog("destroy");
+				$("#customerManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+	
+}

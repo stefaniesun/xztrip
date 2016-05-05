@@ -1,0 +1,461 @@
+$(document).ready(function() {
+	
+	initTable();
+	
+	$("#systemSqlQueryButton").click(function(){
+		loadTable();
+	});
+	
+});
+
+function loadTable(){
+	var nameCn = $("#nameCn").val();
+	var sqlTitle = $("#sqlTitle").val();
+	$("#systemSqlManagerTable").datagrid('load',{
+		nameCn : nameCn,
+		sqlTitle : sqlTitle
+	});
+}
+
+function initTable(){
+	
+	var toolbar = [];
+	if(xyzControlButton('buttonCode_s20151118171304')){
+		toolbar[toolbar.length]={
+				text: '添加系统SQL',
+				border:'1px solid #bbb',
+				iconCls: 'icon-add',
+				handler: function(){addSystemSqlButton();}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	if(xyzControlButton('buttonCode_s20151118171305')){
+		toolbar[toolbar.length]={
+				text: '编辑系统SQL',
+				border:'1px solid #bbb',
+				iconCls: 'icon-edit',
+				handler: function(){editSystemSqlButton();}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	if(xyzControlButton('buttonCode_s20151118171306')){
+		toolbar[toolbar.length]={
+				text: '删除系统SQL',
+				border:'1px solid #bbb',
+				iconCls: 'icon-remove',
+				handler: function(){deleteSystemSqlButton();}
+		};
+		toolbar[toolbar.length]='-';
+	}	
+	
+	xyzgrid({
+		table:'systemSqlManagerTable',
+		title:'系统SQL列表',
+		url:'../SystemSqlWS/querySystemSqlList.do',
+		idField:"numberCode",
+		singleSelect:false,
+		toolbar:toolbar,
+		columns:[[
+		    {field:'checkboxTemp',checkbox:true},
+		    {field:'numberCode',title:'系统SQL编号',hidden:true},
+		    {field:'nameCn',title:'系统SQL名称',width:125},
+		    {field:'source',title:'连接库',width:50},
+		    {field:'sqlType',title:'类型',width:50},
+		    {field:'sqlTitle',title:'标题',width:200},
+		    {field:'sqlContent',title:'内容',width:200},
+		    {field:'useCount',title:'使用次数',width:50},
+		    {field:'queryDataBySystemSql',title:'查询数据',
+				formatter: function(value,row,index){
+					if(xyzControlButton('buttonCode_s20151118171302')){
+						return "<a href='#' onclick='showDataBySystemSql(\""+index+"\")'>查询数据</a>";
+					}else{
+						return '';
+					}
+					
+				}
+			},
+			{field:'downloadExcel',title:'导出Excel',
+				formatter: function(value,row,index){
+					if(xyzControlButton('buttonCode_s20151118171303')){
+						return "<a href='#' onclick='downloadExcel(\""+index+"\")'>导出Excel</a>";
+					}else{
+						return '';
+					}
+				}
+			},
+			{field:'addDate',title:'创建时间',width:125,hidden:true},
+			{field:'alterDate',title:'修改时间',width:125}
+		]],
+		onClickCell:function(rowIndex, field ,value){
+			//弹窗修改
+			if(field == "sqlTitle" || field == "sqlContent"){
+				xyzdialog({
+					dialog : 'dialogFormDiv_showText',
+				    content : '<textarea id="showTextP" style="width:679px;height:218px;"></textarea>',
+				    fit:false,
+				    width:700,
+				    height:300,
+				    buttons:[{
+						text:'关闭',
+						handler:function(){
+							$("#dialogFormDiv_showText").dialog("destroy");
+						}
+					}],onOpen:function(){
+						$("#showTextP").text(value);
+					}
+				});
+			}
+		}
+	});
+}
+
+function addSystemSqlButton(){
+	xyzdialog({
+		dialog : 'dialogFormDiv_addSystemSql',
+	    href : '../jsp_sql/addSystemSql.html',
+	    buttons:[{
+			text:'确定',
+			handler:function(){
+				addSystemSqlSubmit();
+			}
+		},{
+			text:'取消',
+			handler:function(){
+				$("#dialogFormDiv_addSystemSql").dialog("destroy");
+			}
+		}],onLoad:function(){
+			xyzCombobox({
+				combobox:'usernameRoleChoiceForm',
+				url : '../AdminUserWS/getSecurityUserList.do',
+				mode : 'remote',
+				lazy : true,
+				onSelect : function(){
+					addUsernameRoleButton();
+				}
+			});
+		}
+	});
+}
+
+function addSystemSqlSubmit(){
+	
+	if(!$("form").form('validate')){
+		return false;
+	}
+	var nameCn=$("#nameCnForm").val();
+	var sqlTitle=$("#sqlTitleForm").val();
+	var sqlType=$("#sqlTypeForm").val();
+	var sqlContent=$("#sqlContentForm").val();
+	var usernameRole=$("#usernameRoleForm").val();
+	var source=$("#sourceForm").val();
+	$.ajax({
+		url : "../SystemSqlWS/addSystemSql.do",
+		type : "POST",
+		data : {
+			nameCn : nameCn,
+			sqlTitle:sqlTitle,
+			sqlType : sqlType,
+			sqlContent:sqlContent,
+			usernameRole:usernameRole,
+			source:source
+		},
+		async : false,
+		dataType : "json",
+		success : function(data) {
+			if(data.status==1){
+				$("#systemSqlManagerTable").datagrid("reload");
+				top.$.messager.alert("提示","操作成功！","info");
+				$("#dialogFormDiv_addSystemSql").dialog("destroy");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			top.window.AjaxError(XMLHttpRequest, textStatus, errorThrown);
+		}
+	});
+}
+
+function editSystemSqlButton(){
+	var systemSqlTable = $("#systemSqlManagerTable").datagrid("getChecked");
+	if(systemSqlTable.length != 1){
+		top.$.messager.alert("提示","请先选中单个对象！","info");
+		return;
+	}
+	if(!$("form").form('validate')){
+		return false;
+	}
+	var row = systemSqlTable[0];
+	xyzdialog({
+		dialog : 'dialogFormDiv_addSystemSql',
+	    href : '../jsp_sql/editSystemSql.html',
+	    buttons:[{
+			text:'确定',
+			handler:function(){
+				editSystemSqlSubmit(row.numberCode);
+			}
+		},{
+			text:'取消',
+			handler:function(){
+				$("#dialogFormDiv_addSystemSql").dialog("destroy");
+			}
+		}],
+		onLoad:function(){
+			$("#sqlTitleForm").val(row.sqlTitle);
+			$("#sqlTypeForm").val(row.sqlType);
+			$("#nameCnForm").val(row.nameCn);
+			$("#sqlContentForm").val(row.sqlContent);
+			$("#sourceForm").val(row.source);
+			var tempUsernameRoles = row.usernameRole;
+			
+			var usernameRoles = [];
+			if(!xyzIsNull(tempUsernameRoles)){
+				usernameRoles = tempUsernameRoles.split(",");
+			}
+			
+			var usernameRoleDivFormHtml = "";
+			
+			for(var i=0;i<usernameRoles.length;i++){
+				var temp = usernameRoles[i];
+				var tempUsernameRoleDivFormHtml = ''
+					+'<div id="usernameRole_'+temp+'" style="float:left; margin-left:25px;">'
+					+	'<span>'+temp+'</span><a style="margin-left:5px;text-decoration:none; color:red" href="#" onclick="deleteUsernameRoleButton(\''+temp+'\');">×</a>'
+					+'</div>';
+				usernameRoleDivFormHtml += tempUsernameRoleDivFormHtml;
+			}
+			
+			$("#usernameRoleDivForm").html(usernameRoleDivFormHtml);
+			$("#usernameRoleForm").val(usernameRoles.length==0?"":usernameRoles.join(","));
+			
+			xyzCombobox({
+				combobox:'usernameRoleChoiceForm',
+				url : '../AdminUserWS/getSecurityUserList.do',
+				mode : 'remote',
+				lazy : true,
+				onSelect : function(){
+					addUsernameRoleButton();
+				}
+			});
+		}
+	});
+}
+
+function editSystemSqlSubmit(numberCode){
+	
+	if(!$("form").form('validate')){
+		return false;
+	}
+	
+	var nameCn=$("#nameCnForm").val();
+	var sqlTitle=$("#sqlTitleForm").val();
+	var sqlType=$("#sqlTypeForm").val();
+	var sqlContent=$("#sqlContentForm").val();
+	var usernameRole=$("#usernameRoleForm").val();
+	var source=$("#sourceForm").val();
+	$.ajax({
+		url : "../SystemSqlWS/editSystemSql.do",
+		type : "POST",
+		data : {
+			numberCode : numberCode,
+			nameCn : nameCn,
+			sqlTitle:sqlTitle,
+			sqlType : sqlType,
+			sqlContent:sqlContent,
+			usernameRole:usernameRole,
+			source:source
+		},
+		async : false,
+		dataType : "json",
+		success : function(data) {
+			if(data.status==1){
+				$("#systemSqlManagerTable").datagrid("reload");
+				top.$.messager.alert("提示","操作成功！","info");
+				$("#dialogFormDiv_addSystemSql").dialog("destroy");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			top.window.AjaxError(XMLHttpRequest, textStatus, errorThrown);
+		}
+	});
+}
+
+function deleteSystemSqlButton(){
+	var systemSqls = $.map($("#systemSqlManagerTable").datagrid("getChecked"),function(p){return p.numberCode;}).join(",");
+	
+	if(xyzIsNull(systemSqls)){
+		top.$.messager.alert("提示","请先选择需要删除的对象!","info");
+		return false;
+	}
+	
+	if(!confirm("彻底删除对象，确定？")){
+		return;
+	}
+	
+	$.ajax({
+		url : "../SystemSqlWS/deleteSystemSql.do",
+		type : "POST",
+		data : {
+			numberCodes:systemSqls
+		},
+		async : false,
+		dataType : "json",
+		success : function(data) {
+			if(data.status==1){
+				$("#systemSqlManagerTable").datagrid("reload");
+				top.$.messager.alert("提示","操作成功！","info");
+				$("#dialogFormDiv_addSystemSql").dialog("destroy");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			top.window.AjaxError(XMLHttpRequest, textStatus, errorThrown);
+		}
+	});
+}
+
+function addUsernameRoleButton(){
+	var usernameRoleValue = $("#usernameRoleChoiceForm").combobox("getValue");
+	var usernameRoleDivFormHtml = $("#usernameRoleDivForm").html();
+	var tempUsernameRoleStr = $("#usernameRoleForm").val();
+	var usernameRoles = [];
+	if(!xyzIsNull(tempUsernameRoleStr)){
+		usernameRoles = tempUsernameRoleStr.split(",");
+	}
+	for(var i=0;i<usernameRoles.length;i++){
+		var temp = usernameRoles[i];
+		if(temp == usernameRoleValue){
+			return;
+		}
+	}
+	usernameRoles[usernameRoles.length] = usernameRoleValue;
+	
+	var tempUsernameRoleDivFormHtml = ''
+		+'<div id="usernameRole_'+usernameRoleValue+'" style="float:left; margin-left:25px;">'
+		+	'<span>'+usernameRoleValue+'</span><a style="margin-left:5px;text-decoration:none; color:red" href="#" onclick="deleteUsernameRoleButton(\''+usernameRoleValue+'\');">×</a>'
+		+'</div>';
+	
+	usernameRoleDivFormHtml += tempUsernameRoleDivFormHtml;
+	
+	$("#usernameRoleDivForm").html(usernameRoleDivFormHtml);
+	$("#usernameRoleForm").val(usernameRoles.length==0?"":usernameRoles.join(","));
+}
+
+function deleteUsernameRoleButton(usernameRoleValue){
+	
+	var tempUsernameRoleStr = $("#usernameRoleForm").val();
+	var usernameRoles = [];
+	if(!xyzIsNull(tempUsernameRoleStr)){
+		usernameRoles = tempUsernameRoleStr.split(",");
+	}
+	var newUsernameRoles = [];
+	for(var i=0;i<usernameRoles.length;i++){
+		var temp = usernameRoles[i];
+		if(temp != usernameRoleValue){
+			newUsernameRoles[newUsernameRoles.length] = temp;
+		}
+	}
+	
+	$("#usernameRole_"+usernameRoleValue).remove();
+	$("#usernameRoleForm").val(newUsernameRoles.length==0?"":newUsernameRoles.join(","));
+}
+
+function showDataBySystemSql(index){
+	var row = $("#systemSqlManagerTable").datagrid("clearSelections").datagrid("selectRow",index).datagrid("getSelected");
+	
+	var numberCode = row.numberCode;
+	if(xyzIsNull(numberCode)){
+		top.$.messager.alert("警告","参数错误!","warning");
+		return false;
+	}
+	
+	var nameCn = row.nameCn; 
+	
+	var title = '查看['+nameCn+']的执行结果';
+	xyzdialog({
+		dialog : "dialogFormDiv_showDataBySystemSql",
+		title : title,
+	    content : "<table id='showDataBySystemSqlTable'></table>",
+	    fit:true,
+	    buttons:[{
+	    	text:'返回',
+			handler:function(){
+				$("#dialogFormDiv_showDataBySystemSql").dialog("destroy");
+			}
+		}],
+		onOpen:function(){
+			var columns = [[{field:'checkboxTemp',checkbox:true}]];
+			$.ajax({
+				url : "../SystemSqlWS/getSystemSql.do",
+				type : "POST",
+				data : {
+					numberCode : numberCode
+				},
+				async : false,
+				dataType : "json",
+				success : function(data) {
+					if(data.status==1){
+						var systemSql = data.content;
+						var sqlTitle = systemSql.sqlTitle.split(',');
+						for(var i in sqlTitle){
+							var column = {field:sqlTitle[i].split("@")[0],title:sqlTitle[i].split("@")[0],width:(sqlTitle[i].split("@")[1])*10};
+							columns[0][columns[0].length] = column;
+						}
+					}else{
+						top.$.messager.alert("警告",data.msg,"warning");
+					}
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					top.window.AjaxError(XMLHttpRequest, textStatus, errorThrown);
+				}
+			});
+			
+			var toolbar = [];
+			xyzgrid({
+				table:'showDataBySystemSqlTable',
+				title:'系统SQL列表',
+				url:'../SystemSqlWS/queryDataBySystemSql.do',
+				singleSelect:true,
+				toolbar:toolbar,
+				columns:columns,
+				height:'auto',
+				queryParams:{
+					numberCode : numberCode
+				}
+			});
+			
+			loadTable();//重新加载数据, 以读取新的使用次数!
+		}
+	});
+}
+
+function downloadExcel(index){
+	var row = $("#systemSqlManagerTable").datagrid("clearSelections").datagrid("selectRow",index).datagrid("getSelected");
+	var numberCode = row.numberCode;
+	if(xyzIsNull(numberCode)){
+		top.$.messager.alert("警告","参数错误!","warning");
+		return false;
+	}
+	$.ajax({
+		url : '../SystemSqlWS/downloadExcelForSystemSql.do',
+		type : "POST",
+		data : {
+			numberCode : numberCode
+		},
+		async : false,
+		dataType : "json",
+		success : function(data) {
+			if(data.status==1){
+				window.location.assign("../tempFile/"+data.content);
+				loadTable();//重新加载数据, 以读取新的使用次数!
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			top.window.AjaxError(XMLHttpRequest, textStatus, errorThrown);
+		}
+	});
+}

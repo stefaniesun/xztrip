@@ -1,0 +1,9 @@
+$(function(){
+	$("#showBtn").click(function(event){
+		$('.menu-show').slideToggle(100);
+		$(document).one("click",function(){
+			$('.menu-show').hide();
+		});
+		event.stopPropagation();//阻止事件冒泡
+	});
+});

@@ -1,0 +1,85 @@
+package xyz.ctrl.main;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import xyz.svc.main.ProductUserTagStockSvc;
+
+@Controller
+@RequestMapping(value="/ProductUserTagStockWS")
+public class ProductUserTagStockWS {
+	@Autowired
+	private ProductUserTagStockSvc productUserTagStockSvc;
+	
+	@RequestMapping(value="queryProductUserTagStockList")
+	@ResponseBody
+	public Map<String, Object> queryProductUserTagStockList(
+			int page,
+			int rows,
+			String productUserTag,
+			Date dateStart,
+			Date dateEnd){
+		int pagesize = rows;
+		int offset = (page-1)*pagesize;
+		return productUserTagStockSvc.queryProductUserTagStockList(offset, pagesize, productUserTag, dateStart,dateEnd);
+	}
+	
+	@RequestMapping(value="queryProductUserTagStockAllList")
+	@ResponseBody
+	public Map<String, Object> queryProductUserTagStockAllList(String productUserTag){
+		return productUserTagStockSvc.queryProductUserTagStockAllList(productUserTag);
+	}
+	
+	@RequestMapping(value="addProductUserTagStock")
+	@ResponseBody
+	public Map<String,Object> addProductUserTagStock(
+			String productUserTag, 
+			String dateInfo, 
+			BigDecimal discount,
+			BigDecimal reduction){
+		return productUserTagStockSvc.addProductUserTagStock(productUserTag,dateInfo,discount,reduction);
+		
+	}
+	
+	@RequestMapping(value="deleteProductUserTagStock")
+	@ResponseBody
+	public Map<String,Object> deleteProductUserTagStock(String numberCodes){
+		return productUserTagStockSvc.deleteProductUserTagStock(numberCodes);
+	}
+	
+	@RequestMapping(value="deleteProductUserTagStock2")
+	@ResponseBody
+	public Map<String,Object> deleteProductUserTagStock2(
+			String productUserTag,
+			String dateInfo
+			){
+		return productUserTagStockSvc.deleteProductUserTagStock2(productUserTag,dateInfo);
+	}
+	
+	@RequestMapping(value="queryLogProductUserTagStock")
+	@ResponseBody
+	public Map<String,Object> queryLogProductUserTagStock(String productUserTag,Date dateInfo){
+		return productUserTagStockSvc.queryLogProductUserTagStock(productUserTag, dateInfo);
+	}
+	
+
+	@RequestMapping(value="queryProductForStockList")
+	@ResponseBody
+	public Map<String, Object> queryProductForStockList(
+			int page,
+			int rows,
+			String productUserTag,
+			Date dateInfo){
+		int pagesize = rows;
+		int offset = (page-1)*pagesize;
+		return productUserTagStockSvc.queryProductForStockList(offset, pagesize, productUserTag,dateInfo);
+	}
+	
+	
+}

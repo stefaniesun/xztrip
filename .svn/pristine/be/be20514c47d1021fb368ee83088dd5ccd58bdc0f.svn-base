@@ -1,0 +1,148 @@
+package xyz.svc.wechat.imp;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.JSON;
+import xyz.filter.ReturnUtil;
+import xyz.model.member.Customer;
+import xyz.model.member.CustomerUserTag;
+import xyz.model.member.XyzSessionLogin;
+import xyz.model.member.XyzSessionUtil;
+import xyz.model.wechat.WeixinUserInfo;
+import xyz.svc.wechat.WeixinUserInfoSvc;
+import xyz.util.Constant;
+import xyz.util.EncryptionUtil;
+import xyz.util.StringTool;
+import xyz.util.UUIDUtil;
+
+@Service
+public class WeixinUserInfoSvcImp implements WeixinUserInfoSvc {
+
+	@Autowired
+	CommonDao commonDao;
+	
+	@Override
+	public Map<String, Object> getWeixinUserInfo(String openid) {
+		if(openid == null){
+			return ReturnUtil.returnMap(0, "缺少参数！");
+		}
+		WeixinUserInfo  weixinUserInfo = (WeixinUserInfo)commonDao.getObjectByUniqueCode("WeixinUserInfo", "openid", openid);
+		if(weixinUserInfo == null){
+			return ReturnUtil.returnMap(0, "该用户不存在！");
+		}
+		return ReturnUtil.returnMap(1, weixinUserInfo);
+	}
+
+	@Override
+	public Map<String,Object> editWeixinUser(String openid,String linkPhone){
+		if(openid == null && "".equals(openid)){
+			return ReturnUtil.returnMap(0, "缺少参数！");
+		}
+		WeixinUserInfo weixinUserInfo = (WeixinUserInfo)commonDao.getObjectByUniqueCode("WeixinUserInfo", "openid", openid);
+		if(weixinUserInfo != null){
+			if(linkPhone != null){
+				weixinUserInfo.setLinkPhone(linkPhone);
+			}
+			commonDao.update(weixinUserInfo);
+			return ReturnUtil.returnMap(1, null);
+		}else{
+			return ReturnUtil.returnMap(0, "用户不存在！");
+		}
+	}
+
+	@Override
+	public Map<String, Object> addOrUpdateWeixinUser(
+			Map<String, Object> userInfo) {
+		if(userInfo.isEmpty()){
+			return ReturnUtil.returnMap(0, null);
+		}
+		String openid = StringTool.getStringByMap(userInfo,"openid");
+		WeixinUserInfo weixinUserInfo = (WeixinUserInfo)commonDao.getObjectByUniqueCode("WeixinUserInfo", "openid", openid);
+		if(weixinUserInfo==null){
+			weixinUserInfo = new WeixinUserInfo();
+			weixinUserInfo.setOpenid(openid);
+			weixinUserInfo.setOpenidAppend(JSON.toJosn(userInfo));
+			commonDao.save(weixinUserInfo);
+		}else{
+			weixinUserInfo.setOpenidAppend(JSON.toJosn(userInfo));
+			commonDao.update(weixinUserInfo);
+		}
+		return ReturnUtil.returnMap(1, null);
+	}
+	
+	
+	
+	
+	@Override
+	public Map<String, Object> openidLoginOper(String openid) {
+		WeixinUserInfo weixinUserInfo = (WeixinUserInfo)commonDao.getObjectByUniqueCode("WeixinUserInfo", "openid", openid);
+		if(weixinUserInfo==null){
+			return ReturnUtil.returnMap(0, "请先关注【畅行西藏】微信公众号。");
+		}
+		
+		String hql1 = "from Customer t where t.username = '"+weixinUserInfo.getCustomer()+"' "; 
+		Customer customer = (Customer) commonDao.queryUniqueByHql(hql1);
+		/**
+		 * 验证用户登录的账号是否合格
+		 */
+		if(customer == null){
+			return ReturnUtil.returnMap(0,"您还没有绑定【畅行西藏】账号！");
+		}
+		if(customer.getEnabled()==0){
+			return ReturnUtil.returnMap(0,"用户受限,暂不允许登录!");
+		}
+		
+		hql1="from CustomerUserTag where customer ='"+customer.getIidd()+"'";
+		@SuppressWarnings("unchecked")
+		List<CustomerUserTag> userTags=commonDao.queryByHql(hql1);
+		String tags="";
+		for(CustomerUserTag tag:userTags){
+			tags+="'"+tag.getUserTag()+"',";
+		}
+		if(tags.length()>1){
+			tags=tags.substring(0, tags.length()-1);
+		}
+		
+		String apikey = UUIDUtil.getUUIDStringFor32();
+		XyzSessionLogin xyzSessionLogin = new XyzSessionLogin();
+		xyzSessionLogin.setApikey(apikey);
+		xyzSessionLogin.setUserTags(tags);
+		xyzSessionLogin.setUsername(customer.getUsername());
+		xyzSessionLogin.setLinkman(customer.getLinkman());
+		xyzSessionLogin.setLinkPhone(customer.getLinkPhone());
+		xyzSessionLogin.setOpenid(weixinUserInfo.getOpenid());
+		xyzSessionLogin.setExpireDate(new Date(new Date().getTime()+Constant.sessionTimes));
+		XyzSessionUtil.logins.put(apikey, xyzSessionLogin);
+		
+		return ReturnUtil.returnMap(1, xyzSessionLogin);
+	}
+	
+
+	@Override
+	public Map<String, Object> bindOpenidOper(String openid, String username,
+			String password) {
+		WeixinUserInfo weixinUserInfo = (WeixinUserInfo)commonDao.getObjectByUniqueCode("WeixinUserInfo", "openid", openid);
+		if(weixinUserInfo==null){
+			return ReturnUtil.returnMap(0, "请先关注【畅行西藏】微信公众号。");
+		}
+		
+		String passwordSe = EncryptionUtil.md5(password+"{"+username+"}");
+		String hql = "from Customer t where t.username = '"+username+"'  and t.password = '"+passwordSe+"'"; 
+		Customer customer = (Customer) commonDao.queryUniqueByHql(hql);
+		/**
+		 * 验证用户登录的账号是否合格
+		 */
+		if(customer == null){
+			return ReturnUtil.returnMap(0,"用户名或密码错误！");
+		}
+		weixinUserInfo.setCustomer(username);
+		commonDao.update(weixinUserInfo);
+		return ReturnUtil.returnMap(1, null);
+	}
+}

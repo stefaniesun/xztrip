@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>门票详情页</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<meta name="full-screen" content="yes"><!-- UC强制全屏 -->
+<meta name="x5-fullscreen" content="true"><!-- QQ强制全屏 -->
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/hotel-detais.css" rel="stylesheet" type="text/css">
+<link href="../css/dropload.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/productScenicList.js"></script>
+</head>
+<body>
+<div class="ticket-details default-width">
+    <header class="tibet-header">
+        <div class="back-left icon-left">
+            <img src="../images/icon-left.png"/>
+        </div>
+        <div class="center-name icon-left">
+            <h2 id="headerTitle">门票详情</h2>
+        </div>
+        <div class="go-right icon-right">
+        	<img class="icon-house" src="../images/icon-house.png" alt=""/>
+        </div>
+    </header>
+    <div class="prop-height"></div>
+    <!-- 门票顶部详情 -->
+    <div class="ticket-top-detail default-width">
+        <div class="ticket-top-img default-width">
+            <img id="headerImg" src="" />
+        </div>
+        <div class="ticket-list-block default-width">
+            <ul>
+                <li class="item-content">
+                    <div class="item-title" id="spot_title"></div>
+                </li>
+                 <li class="item-content">
+                     <div class="open-time">
+                         开放时间：
+                     </div>
+                     <div class="item-time">早上10:00 - 下午16：00</div>
+                 </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 门票预订详情 -->
+    <div class="ticket-content-details default-width" >
+        <div class="content-chioce">
+            <div class="place-order-info">
+                <a class="hotel-yd order-active" id="show_title1" href="javascript:void(0)" onclick="showContent(1)">门票预订</a>
+                <a class="details-info" id="show_title2" href="javascript:void(0)" onclick="showContent(2)" >景点详情</a>
+            </div>
+
+            <!-- 景点门票列表 -->
+            <div class="ticket-list default-width" id="show_content_1">
+	            <div id="tableList">
+	            </div>
+            </div>
+
+            <!-- 景点详情 -->
+            <div class="ticket-brief-introduction default-width" style="display: none" id="show_content_2">
+                <div class="ticket-facilities-box">
+                    <div class="ticket-facilities card">
+                        联系方式
+                    </div>
+                    <div class="ticket-facilities-list default-width" style="background-color: #fff;display: table">
+                        <p id="hotelLinkphone" style="padding:0.5rem  0.75rem">未录入</p>
+                    </div>
+                </div>
+                <div class="ticket-facilities-box">
+                    <div class="ticket-facilities card">
+                        景点地址
+                    </div>
+                    <div class="ticket-facilities-list default-width" style="background-color: #fff;display: table">
+                        <p id="hotelLinkaddress" style="padding:0.5rem  0.75rem">未录入</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>

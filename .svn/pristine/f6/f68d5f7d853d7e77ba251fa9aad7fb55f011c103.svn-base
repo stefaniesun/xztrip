@@ -1,0 +1,422 @@
+package xyz.svc.buyer.imp;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.persistence.criteria.Order;
+
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.JSON;
+import xyz.filter.MyRequestUtil;
+import xyz.filter.ReturnUtil;
+import xyz.model.core.Bill;
+import xyz.model.core.OrderContent;
+import xyz.model.form.OrderContentForm;
+import xyz.model.main.ProductObject;
+import xyz.model.main.ProductStock;
+import xyz.model.member.Customer;
+import xyz.model.member.MoneyFlow;
+import xyz.model.member.XyzSessionLogin;
+import xyz.svc.buyer.BuyerOrderSvc;
+import xyz.util.DateUtil;
+import xyz.util.ProductUtil;
+import xyz.util.StockPriceUtil;
+import xyz.util.StringTool;
+import xyz.util.StringUtil;
+import xyz.util.UUIDUtil;
+
+@Service
+public class BuyerOrderSvcImp implements BuyerOrderSvc {
+
+	@Resource
+	CommonDao commonDao;
+	
+	@Autowired
+	StockPriceUtil stockPriceUtil;
+	
+	@Autowired
+	ProductUtil productUtil;
+	
+	@Override
+	public Map<String, Object> createOrder(String product,
+			int count,Date dateInfo,int day, String remarkBuy,String linkman,String linkPhone) {
+		if(dateInfo==null){
+			return  ReturnUtil.returnMap(0, "出行日期不能为空！");
+		}
+		if(dateInfo.getTime()<DateUtil.shortStringToDate(DateUtil.dateToShortString(new Date())).getTime()){
+			return  ReturnUtil.returnMap(0, "日期不能小于当天！");
+		}
+		if(linkman==null||linkman.equals("")){
+			return  ReturnUtil.returnMap(0, "联系人不能为空！");
+		}
+		if(linkPhone==null||linkPhone.equals("")){
+			return  ReturnUtil.returnMap(0, "联系电话不能为空！");
+		}
+		String username = MyRequestUtil.getXyzSessionLogin().getUsername();
+		Customer customer =  (Customer) commonDao.getObjectByUniqueCode("Customer", "username", username);
+		if(customer==null){
+			return  ReturnUtil.returnMap(0, "用户不存在！");
+		}
+		
+		ProductObject productObject=productUtil.getProductByNumberCode(product);
+		if(productObject==null){
+			return  ReturnUtil.returnMap(0, "产品不存在！");
+		}
+		
+		Calendar calendar=Calendar.getInstance();
+		calendar.setTime(dateInfo);
+		String orderNum = StringUtil.get_new_orderNum();
+		BigDecimal total=new BigDecimal(0);
+		
+		for(int i=0;i<day;i++){
+			calendar.add(Calendar.DATE, i);
+			dateInfo=calendar.getTime();
+			
+			ProductStock productStock=stockPriceUtil.getStockByDate(product,dateInfo);
+			if(productStock==null||productStock.getCount()==0){
+				return  ReturnUtil.returnMap(0, "库存为空，请重新选择！");
+			}
+			BigDecimal price=productStock.getPrice();
+			
+			BigDecimal amount = new BigDecimal(count).multiply(price);
+			
+			String clientCode = StringUtil.get_new_clientCode();
+			
+			OrderContent orderContent=new OrderContent();
+			orderContent.setOrderNum(orderNum);
+			orderContent.setClientCode(clientCode);
+			orderContent.setCount(count);
+			orderContent.setPrice(price);
+			orderContent.setBuyer(customer.getUsername());
+			orderContent.setDateInfo(dateInfo);
+			orderContent.setMoney(amount);
+			orderContent.setLinkman(linkman);
+			orderContent.setLinkPhone(linkPhone);
+			orderContent.setAddDate(new Date());
+			orderContent.setAlterDate(new Date());
+			orderContent.setProduct(productObject.getNumberCode());
+			orderContent.setProductNameCn(productObject.getNameCn());
+			orderContent.setProvider(productObject.getProvider());
+			orderContent.setProviderNameCn(productObject.getProviderNameCn());
+			orderContent.setFlagApply(0);
+			orderContent.setFlagDelete(0);
+			orderContent.setRemarkBuy(remarkBuy);
+			orderContent.setFlagPayPlan(0);//未发起支付
+			orderContent.setIsException(0);//订单没有异常
+			
+			commonDao.save(orderContent);
+			
+			total.add(amount);
+		}
+		
+		
+		/*MoneyFlow moneyFlow=new MoneyFlow();
+		moneyFlow.setNumberCode(UUIDUtil.getUUIDStringFor32());
+		moneyFlow.setAccount(customer.getUsername());
+		moneyFlow.setOutAmount(total);
+		moneyFlow.setType(MoneyFlow.TYPE_ORDER_PAY);
+		moneyFlow.setAddDate(new Date());
+		moneyFlow.setAlterDate(new Date());
+		moneyFlow.setBalance(moneyFlow.getBalance().subtract(total));
+		commonDao.save(moneyFlow);*/
+		
+		return ReturnUtil.returnMap(1, null);
+	}
+
+	@Override
+	public Map<String, Object> queryOrderList(int flagPay,int offset, int pagesize) {
+		XyzSessionLogin xyzSessionLogin = MyRequestUtil.getXyzSessionLogin();
+		if(xyzSessionLogin==null){
+			return ReturnUtil.returnMap(0,"无有效登录信息");
+		}
+		String hql=" from OrderContent where buyer='"+xyzSessionLogin.getUsername()+"'";
+		hql+=" and flagPay = "+flagPay;
+		hql+=" group by orderNum order by  addDate desc";
+		//用于count查询
+		String sql = "SELECT o.iidd FROM order_content o WHERE o.buyer='"+xyzSessionLogin.getUsername()+"'";
+		sql+=" and flag_pay = "+flagPay;
+		sql+=" GROUP BY o.order_num ORDER BY o.add_date DESC";
+		
+		String countSql = "SELECT count(t.iidd) FROM ("+sql+") t";
+		SQLQuery countQuery = commonDao.getSqlQuery(countSql);
+		Number countTemp = (Number)countQuery.uniqueResult();
+		int count = countTemp==null?0:countTemp.intValue();
+		
+		Query query = commonDao.getQuery(hql);
+		query.setMaxResults(pagesize);
+		query.setFirstResult(offset);
+		@SuppressWarnings("unchecked")
+		List<OrderContent> orderContentList=query.list();
+		
+		List<String> orderNumList = new ArrayList<String>();
+		for(int i=0;i<orderContentList.size();i++){
+			orderNumList.add(orderContentList.get(i).getOrderNum());
+		}
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> datePriceList = commonDao.getSqlQuery("SELECT o.order_num,o.date_info,o.price FROM order_content o WHERE o.order_num IN("+StringTool.listToSqlString(orderNumList)+") ORDER BY o.add_date ASC").list();
+		
+		for(int i=0;i<orderContentList.size();i++){
+			String orderNum = orderContentList.get(i).getOrderNum();
+			List<Map<String, Object>> datePriceJsonList = new ArrayList<Map<String, Object>>();
+			
+			for(int k=0;k<datePriceList.size();k++){
+				Object[] obj = datePriceList.get(k);
+				if(orderNum.equals(obj[0].toString())){
+					Map<String, Object> datePriceMap = new HashMap<String,Object>();
+					datePriceMap.put("dateInfo", obj[1]);
+					datePriceMap.put("price", obj[2]);
+					datePriceJsonList.add(datePriceMap);
+					//搞完了就把这一个从datePriceList中删除，以减少数据提高后续的遍历速度
+					//datePriceList.remove(k);
+				}
+			}
+			orderContentList.get(i).setInfoData(JSON.toJosn(datePriceJsonList));
+		}
+		
+		/**
+		List<OrderContentForm> forms=new ArrayList<OrderContentForm>();
+		int index=1;
+
+		for(int i=0;i<orderContents.size();i++){
+			if(orderContents.get(i).getOrderNum().equals(orderContents.get(index).getOrderNum())){
+				index++;
+			}else{
+				List<OrderContent> contents=orderContents.subList(i, index);
+				OrderContentForm form=new OrderContentForm();
+				List<Map<String , Object>> datePriceList=new ArrayList<Map<String , Object>>();
+				if(contents.size()>0){
+					form.setOrderNum(contents.get(0).getOrderNum());
+					form.setBuyer(contents.get(0).getBuyer());
+					form.setCount(contents.get(0).getCount());
+					form.setProduct(contents.get(0).getProduct());
+					form.setProductNameCn(contents.get(0).getProductNameCn());
+				}
+				for(OrderContent orderContent:contents){
+					Map<String, Object> datePrice=new HashMap<String, Object>();
+					datePrice.put("dateInfo", orderContent.getDateInfo());
+					datePrice.put("price", orderContent.getPrice());
+					datePriceList.add(datePrice);
+					form.setMoney(form.getMoney().add(orderContent.getMoney()));
+				}
+				forms.add(form);
+			}
+		}
+		**/
+		
+		Map<String,Object> mapContent=new HashMap<String, Object>();
+		mapContent.put("total", count);
+		mapContent.put("rows",orderContentList);
+		return ReturnUtil.returnMap(1, mapContent);
+	}
+
+	@Override
+	public Map<String, Object> getOrder(String orderNum) {
+		String hql="from OrderContent where orderNum='"+orderNum+"' group by orderNum";
+		@SuppressWarnings("unchecked")
+		List<OrderContent> orderContentList=commonDao.queryByHql(hql);
+		if(orderContentList.size()!=1){
+			return ReturnUtil.returnMap(0, "订单不存在");
+		}
+		OrderContent orderContent = orderContentList.get(0);
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> datePriceList = commonDao.getSqlQuery("SELECT o.order_num,o.date_info,o.price FROM order_content o WHERE o.order_num ='"+orderNum+"' ORDER BY o.add_date ASC").list();
+		
+		List<Map<String, Object>> datePriceJsonList = new ArrayList<Map<String, Object>>();
+		for(int k=0;k<datePriceList.size();k++){
+			Object[] obj = datePriceList.get(k);
+			Map<String, Object> datePriceMap = new HashMap<String,Object>();
+			datePriceMap.put("dateInfo", obj[1]);
+			datePriceMap.put("price", obj[2]);
+			datePriceJsonList.add(datePriceMap);
+		}
+		orderContent.setInfoData(JSON.toJosn(datePriceJsonList));
+		/**
+		OrderContentForm form=new OrderContentForm();
+		
+		if(orderContents.size()>0){
+			form.setOrderNum(orderContents.get(0).getOrderNum());
+			form.setBuyer(orderContents.get(0).getBuyer());
+			form.setCount(orderContents.get(0).getCount());
+			form.setProduct(orderContents.get(0).getProduct());
+			form.setProductNameCn(orderContents.get(0).getProductNameCn());
+		}else{
+			return ReturnUtil.returnMap(0, "订单不存在");
+		}
+		BigDecimal amount=new BigDecimal(0);
+		List<Map<String , Object>> datePriceList=new ArrayList<Map<String , Object>>();
+		
+		for(OrderContent orderContent:orderContents){
+			if(orderContent==null){
+				return ReturnUtil.returnMap(0, "订单不存在");
+			}
+			amount.add(orderContent.getMoney());
+			Map<String, Object> datePrice=new HashMap<String, Object>();
+			datePrice.put("dateInfo", orderContent.getDateInfo());
+			datePrice.put("price", orderContent.getPrice());
+			datePriceList.add(datePrice);
+		}
+		form.setMoney(amount);
+		form.setDatePrice(	JSON.toJosn(datePriceList));
+		**/
+		return ReturnUtil.returnMap(1, orderContent);
+	}
+
+	@Override
+	public Map<String, Object> deleteOrder(String orderNum) {
+		
+		String hql="from OrderContent where orderNum='"+orderNum+"'";
+		List<OrderContent> orderContents=commonDao.queryByHql(hql);
+		
+		for(OrderContent orderContent:orderContents){
+			if(orderContent==null){
+				return ReturnUtil.returnMap(0, "订单不存在");
+			}
+			if(orderContent.getFlagPay()==1){
+				orderContent.setFlagDelete(1);
+				commonDao.save(orderContent);
+			}else{
+				commonDao.delete(orderContent);
+			}
+		}
+		return ReturnUtil.returnMap(1, null);
+	}
+
+	@Override
+	public Map<String, Object> editOrder(String orderNum, String linkman,
+			String linkPhone) {
+		if(linkman==null||linkman.equals("")){
+			return  ReturnUtil.returnMap(0, "联系人不能为空！");
+		}
+		if(linkPhone==null||linkPhone.equals("")){
+			return  ReturnUtil.returnMap(0, "联系电话不能为空！");
+		}
+		
+		String hql="from OrderContent where orderNum='"+orderNum+"'";
+		List<OrderContent> orderContents=commonDao.queryByHql(hql);
+		
+		for(OrderContent orderContent:orderContents){
+			if(orderContent==null){
+				return ReturnUtil.returnMap(0, "订单不存在");
+			}
+			orderContent.setLinkman(linkman);
+			orderContent.setLinkPhone(linkPhone);
+			commonDao.save(orderContent);
+		}
+		
+		return ReturnUtil.returnMap(1, null);
+	}
+
+	@Override
+	public Map<String, Object> editOrderPersonInfo(String orderNum,
+			String personInfo) {
+		
+		String hql="from OrderContent where orderNum='"+orderNum+"'";
+		List<OrderContent> orderContents=commonDao.queryByHql(hql);
+		
+		for(OrderContent orderContent:orderContents){
+			if(orderContent==null){
+				return ReturnUtil.returnMap(0, "订单不存在");
+			}
+			orderContent.setPersonInfo(personInfo);
+			commonDao.save(orderContent);
+		}
+
+		return ReturnUtil.returnMap(1, null);
+	}
+	
+	@Override
+	public Map<String, Object> holdStockOper(String clientCodes) {
+		if(clientCodes==null || "".equals(clientCodes)){
+			return ReturnUtil.returnMap(0, "缺少参数");
+		}
+		String[] clientCodeArr = clientCodes.split(",");
+		for(int i=0; i<clientCodeArr.length; i++){
+			OrderContent orderContent=(OrderContent) commonDao.getObjectByUniqueCode("OrderContent", "clientCode", clientCodeArr[i]);
+			if(orderContent==null){
+				return ReturnUtil.returnMap(0, "订单编号为"+clientCodeArr[i]+"的订单不存在");
+			}
+			if(orderContent.getIsException()==1){
+				return ReturnUtil.returnMap(0, "订单编号为"+clientCodeArr[i]+"的订单属于异常订单");
+			}
+			//检查是否已支付
+			if(orderContent.getFlagPay()==1){
+				return ReturnUtil.returnMap(0, "订单编号为"+clientCodeArr[i]+"是已经支付过的订单请勿重复支付");
+			}
+			ProductStock productStock = stockPriceUtil.getStockByDate(orderContent.getProduct(), orderContent.getDateInfo());
+			
+			//检查产品价格是否有变化
+			if(productStock.getPrice().compareTo(orderContent.getPrice())!=0){
+				return ReturnUtil.returnMap(0, "产品【"+orderContent.getProductNameCn()+"】价格有变动，请删除相关订单后重新下单。");
+			}
+			
+			//锁定库存（占库存）
+			stockPriceUtil.occupyingStock(clientCodeArr[i]);
+			
+			//改变发起支付状态和时间
+			orderContent.setFlagPayPlan(1);
+			orderContent.setPayPlanDate(new Date());
+			
+			commonDao.update(orderContent);
+		}
+		return ReturnUtil.returnMap(1, null);
+	}
+	
+	//支付成功的回调（变更flagPay）
+	public Map<String, Object> paySuccessOper(String billNo){
+		if(billNo==null || "".equals(billNo)){
+			return ReturnUtil.returnMap(0, "账单号不存在");
+		}
+		Bill bill=(Bill) commonDao.getObjectByUniqueCode("Bill", "billNo", billNo);
+		if(bill==null){
+			return ReturnUtil.returnMap(0, "无效的账单号");
+		}
+		if(!bill.getBillStatus().equals("5")){
+			return ReturnUtil.returnMap(0, "未完成支付的账单号");
+		}
+		if(bill.getOrderNo()==null){
+			return ReturnUtil.returnMap(0, "订单号不存在");
+		}
+		String[] clientCodeArr = bill.getOrderNo().split(",");
+		for(int i=0; i<clientCodeArr.length; i++){
+			OrderContent orderContent=(OrderContent) commonDao.getObjectByUniqueCode("OrderContent", "clientCode", clientCodeArr[i]);
+			if(orderContent==null){
+				return ReturnUtil.returnMap(0, "订单编号为"+clientCodeArr[i]+"的订单不存在");
+			}
+			
+			//属于异常订单
+			if(orderContent.getIsException()==1){
+				return ReturnUtil.returnMap(0, "订单编号为"+clientCodeArr[i]+"的订单属于异常订单");
+			}
+			
+			//支付锁定已超时，需联系客服退款，并重新支付。
+			if(orderContent.getFlagPayPlan()==0){
+				
+			}
+			
+			//重复支付的订单
+			if(orderContent.getFlagPay()==1){
+				
+			}
+			
+			orderContent.setFlagPay(1);
+			orderContent.setPayDate(new Date());
+			commonDao.update(orderContent);
+		}
+		return ReturnUtil.returnMap(1, null);
+	}
+
+}

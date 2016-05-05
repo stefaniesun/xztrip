@@ -1,0 +1,20 @@
+package xyz.svc.core;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface ListSvc {
+	public Map<String, Object> getSecurityUserList();
+	
+	public Map<String,Object> getProviderList(String type);
+
+	public Map<String, Object> getPmsHotelList();
+
+	public Map<String, Object> getPmsRoomTypeList(String hotelid);
+
+	public Map<String, Object> getUserTagList();
+
+	public Map<String, Object> getRegionList();
+}

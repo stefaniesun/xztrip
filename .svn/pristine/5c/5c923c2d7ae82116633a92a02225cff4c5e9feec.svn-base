@@ -1,0 +1,199 @@
+package xyz.util;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alipay.util.json.JSONUtils;
+
+import xyz.filter.ReturnUtil;
+import xyz.filter.RmiUtil;
+import xyz.model.core.OrderContent;
+import xyz.model.main.ProductObject;
+import xyz.model.main.ProductStock;
+import xyz.svc.config.ConstantPms;
+
+@Component
+public class PmsStockPriceUtil {
+
+	@Autowired
+	RmiUtil rmiUtil;
+	
+	@Autowired
+	ProductUtil productUtil;
+	
+	@Autowired
+	UserTagPriceUtil userTagPriceUtil;
+	
+	public ProductStock getStockByDate(String product, Date dateInfo) {
+		
+		ProductObject productObject=productUtil.getProductByNumberCode(product);
+		
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Map<String,String> accessoryParam = new HashMap<String, String>();
+		accessoryParam.put("product", productObject.getPmsRoomType());
+		accessoryParam.put("dateInfo", format.format(dateInfo));
+		@SuppressWarnings("unchecked")
+		Map<String, Object> result= (Map<String, Object>)rmiUtil.loadData(ConstantPms.pms_getStockByDate,accessoryParam);
+		System.out.println(result.toString());
+		int status=new BigDecimal(result.get("status").toString()).intValue();
+		if(status==1){
+			JSONObject jsStr = JSONObject.fromObject(result.get("content")).getJSONObject("content");
+			ProductStock productStock=new ProductStock();
+			productStock.setPrice(new BigDecimal(jsStr.getString("price")));
+			productStock.setCount(jsStr.getInt("count"));
+			productStock.setUseCount(jsStr.getInt("useCount"));
+			try {
+				productStock.setDateInfo(format.parse(jsStr.getString("dateInfo")));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			return productStock;
+		}
+		
+		return null;
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public  Map<String, Object> queryProductStockList(int page, int rows,
+			String product,String pmsProduct, Date dateStart, Date dateEnd) {
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Map<String,String> accessoryParam = new HashMap<String, String>();
+		accessoryParam.put("page", page+"");
+		accessoryParam.put("rows", rows+"");
+		accessoryParam.put("product", pmsProduct);
+		accessoryParam.put("dateStart", format.format(dateStart));
+		accessoryParam.put("dateEnd", format.format(dateEnd));
+		Map<String, Object> result=(Map<String, Object>)  rmiUtil.loadData(ConstantPms.pms_queryProductStockList,accessoryParam);
+		
+		System.out.println(result);
+		JSONObject content = JSONObject.fromObject(result.get("content"));
+		String count=content.getString("total").toString();
+		JSONArray array=content.getJSONArray("rows");
+		List<ProductStock> list=new ArrayList<ProductStock>();
+
+     	try {
+     		for (int i = 0; i < array.size(); i++) {
+    	       	JSONObject object = (JSONObject) array.get(i);
+    	       	ProductStock productStock=new ProductStock();
+    	     	productStock.setProduct(object.getString("product"));
+    	     	productStock.setPrice(new BigDecimal(object.getString("price")));
+    	     	productStock.setCount(new BigDecimal(object.getString("count")).intValue());
+    	     	productStock.setDateInfo(format.parse(object.getString("dateInfo")));
+    	     	list.add(productStock);
+     		}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	  
+		ProductObject productObject=productUtil.getProductByNumberCode(product);
+		if(productObject.getIsTag()==1){
+			//产品关联标签价格取标签最低价
+			for(ProductStock productStock : list){
+				BigDecimal minPrice=userTagPriceUtil.getMinPrice(product,productStock.getDateInfo(),productStock.getPrice());
+				if(minPrice!=null){
+					productStock.setPrice(minPrice);
+				}
+			}
+		}
+		
+		Map<String,Object> mapContent = new HashMap<String, Object>();
+		mapContent.put("total", count);
+		mapContent.put("rows", list);
+		return ReturnUtil.returnMap(1, mapContent);
+	}
+
+/*	public List<ProductStock> getStockByDate(String product, Date dateStart,
+			Date dateEnd) {
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Map<String,String> accessoryParam = new HashMap<String, String>();
+		accessoryParam.put("product", product);
+		accessoryParam.put("dateStart", format.format(dateStart));
+		accessoryParam.put("dateEnd", format.format(dateEnd));
+		Map<String, Object> result=(Map<String, Object>) rmiUtil.loadData(ConstantPms.pms_queryProductStockList,accessoryParam);
+		JSONArray array=JSONArray.fromObject(result.get("content"));
+		List<ProductStock> list=new ArrayList<ProductStock>();
+		for (int i = 0; i < array.size(); i++) {
+           	JSONObject object = (JSONObject) array.get(i);
+           	ProductStock productStock=new ProductStock();
+           	try {
+				productStock.setDateInfo(format.parse(object.getString("dateInfo")));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+         	productStock.setCount(object.getInt("count"));
+         	productStock.setUseCount(object.getInt("useCount"));
+         	productStock.setProduct(object.getString("product"));
+         	productStock.setPrice(new BigDecimal(object.getString("price")));
+         	list.add(productStock);
+	     }
+		return list;
+	}*/
+	
+	
+	public List<ProductStock> getAllProductStock(Date dateInfo) {
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Map<String,String> accessoryParam = new HashMap<String, String>();
+		accessoryParam.put("dateInfo", format.format(dateInfo));
+		@SuppressWarnings("unchecked")
+		Map<String, Object> result=(Map<String, Object>) rmiUtil.loadData(ConstantPms.pms_getAllProductStock,accessoryParam);
+		System.out.println(result.toString());
+		int status=new BigDecimal(result.get("status").toString()).intValue();
+		List<ProductStock> list=new ArrayList<ProductStock>();
+		if(status==1){
+			JSONArray array=JSONArray.fromObject(result.get("content"));
+			for (int i = 0; i < array.size(); i++) {
+	           	JSONObject object = (JSONObject) array.get(i);
+	           	ProductStock productStock=new ProductStock();
+	         	productStock.setProduct(object.getString("product"));
+	         	productStock.setPrice(new BigDecimal(object.getString("price")));
+	         	list.add(productStock);
+		     }
+		}
+		return list;
+	}
+
+	public List<ProductStock> getRoomTypeProductStock(Date dateInfo,
+			List<String> roomTypes) {
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		String rooms="";
+		for(String roomType:roomTypes){
+			rooms+=roomType+",";
+		}
+		if(!"".equals(rooms)&&rooms.length()>1){
+			rooms=rooms.substring(0,rooms.length()-1);
+		}
+		Map<String,String> accessoryParam = new HashMap<String, String>();
+		accessoryParam.put("dateInfo", format.format(dateInfo));
+		accessoryParam.put("roomTypes", rooms);
+		@SuppressWarnings("unchecked")
+		Map<String, Object> result=(Map<String, Object>) rmiUtil.loadData(ConstantPms.pms_getRoomTypeProductStock,accessoryParam);
+		int status=new BigDecimal(result.get("status").toString()).intValue();
+		List<ProductStock> list=new ArrayList<ProductStock>();
+		if(status==1){
+			JSONArray array=JSONArray.fromObject(result.get("content"));
+			for (int i = 0; i < array.size(); i++) {
+	           	JSONObject object = (JSONObject) array.get(i);
+	           	ProductStock productStock=new ProductStock();
+	         	productStock.setProduct(object.getString("product"));
+	         	productStock.setPrice(new BigDecimal(object.getString("price")));
+	         	list.add(productStock);
+		     }
+		}
+		return list;
+	}
+}

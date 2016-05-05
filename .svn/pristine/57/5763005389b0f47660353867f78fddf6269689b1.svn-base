@@ -1,0 +1,334 @@
+package xyz.svc.pay.imp;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SignatureException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+
+import javax.crypto.Cipher;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+import xyz.model.core.Bill;
+
+import com.alipay.sign.Base64;
+
+/* *
+ *类名：AlipayConfig
+ *功能：基础配置类
+ *详细：设置帐户有关信息及返回路径
+ *版本：3.3
+ *日期：2012-08-10
+ *说明：
+ *以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己网站的需要，按照技术文档编写,并非一定要使用该代码。
+ *该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
+	
+ *提示：如何获取安全校验码和合作身份者ID
+ *1.用您的签约支付宝账号登录支付宝网站(www.alipay.com)
+ *2.点击“商家服务”(https://b.alipay.com/order/myOrder.htm)
+ *3.点击“查询合作者身份(PID)”、“查询安全校验码(Key)”
+
+ *安全校验码查看时，输入支付密码后，页面呈灰色的现象，怎么办？
+ *解决方法：
+ *1、检查浏览器配置，不让浏览器做弹框屏蔽设置
+ *2、更换浏览器或电脑，重新登录查询。
+ */
+public class AliPayUtil {
+	
+	public static final String backUrl = "";
+	public static final String returnUrl = "";
+	public static final String notifyUrl = "http://www.xingzeng.net/PayWS/alipayNotify.xyz";
+	public static final String showUrl = "";
+	public static final String successUrl = "";
+	public static final String failUrl = "";
+	
+	//↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+	// 合作身份者ID，以2088开头由16位纯数字组成的字符串
+//	public static String partner = "2088611398543295";
+	public static String partner = "2088221473986691";
+	
+	// 收款支付宝账号，以2088开头由16位纯数字组成的字符串，一般情况下收款账号就是签约账号
+	public static String seller_id = partner;
+	
+	//商户的MD5私钥
+//	public static String private_key = "octm13suu8jfvyfjbp9788lbmg00cxpf";
+	public static String private_key = "o5zxyrilc7xm19rlnp1v9gxgovw47prf";
+	
+	// 支付宝的RSA公钥，无需修改该值
+	public static String ali_public_key  = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB";
+
+	//↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+	//rsa_remark_url : http://www.oschina.net/question/163899_24007;
+	public static String rsa_private_key = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIiW3k0Pfm+j99P50H64zc5am1p/Posx1djqn7nqq0HFMhuaYuDlalr6NqEZmXn82Orp04hwrOFqJ0EmilJgIY1GsA2Zh5sLsPCjclHoMT9CwP5vV/dzSyhIreJXHc83Xvll/Bl5jCXLwEvf8KZDhdV+2d4ob/JZyWuLbytfSjTxAgMBAAECgYA1eSL0dkFggYfPc/ic88qWo8A4MKKSqeL3dfssNOPw7ruMNOfK9eWqUlS6wyPjrwpZBUusGbiE0yMlDWqPj1Tyv1dQk/ZG9ekCw4BtHdNeZSct3IYjC4Xk3tcMdGo/3SwPqalEu3KN/3RK/o3zX1E3odrmiw/BtrIK0b4SHdGscQJBANZTaaa2bZzs78TnSVT1wldGgxPOU+WIRYtE7YHmuS4k/6AQ/ao32r4OZkeEl89TBYS+in5GyvyTISmcGJMCqH0CQQCjJe7b47ym5BXRSmvSVkavdNMGfK6aQQp2zti4iDFUv8JrTQRGbmP/dCZc2vNFkQDRSEXTbQZff9oDtIXaVxyFAkA3DjhOlgA0Vn0FJLCmvXbNupRDSzYr+UR8ERm9y8n3+5MayCKRTkXHmqVVa88fd+EsB1JGO+M63IShTrLVWNJ1AkEAgYa5N2x8N0e4JpxeM/T5U419iJXujVr78s1P9Fl0SOOheE0CCuTTkVlmp6vRHjb8Hiux/CR/vcwki3KEHo+wfQJASdlMwK8z7k0BKsYl+IdSEtLzWPoQMrUgHEdor5sRH1AbMWFXGrM11mEW9AZCiF1DaezdCTaoUZ5DmzrGkcdzEQ==";
+	public static String rsa_public_key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCIlt5ND35vo/fT+dB+uM3OWptafz6LMdXY6p+56qtBxTIbmmLg5Wpa+jahGZl5/Njq6dOIcKzhaidBJopSYCGNRrANmYebC7Dwo3JR6DE/QsD+b1f3c0soSK3iVx3PN175ZfwZeYwly8BL3/CmQ4XVftneKG/yWclri28rX0o08QIDAQAB";
+
+	// 调试用，创建TXT日志文件夹路径
+	public static String log_path = "D:\\";
+
+	// 字符编码格式 目前支持 gbk 或 utf-8
+	public static String input_charset = "utf-8";
+	
+	// 签名方式 不需修改
+	public static String sign_type = "MD5";
+	
+	
+	public static final String  SIGN_ALGORITHMS = "SHA1WithRSA";
+	
+	private static final String ALGORITHM = "RSA";
+
+//	private static final String SIGN_ALGORITHMS = "SHA1WithRSA";
+
+	private static final String DEFAULT_CHARSET = "UTF-8";
+	
+	public static String getAlipayInfo(Bill bill){
+		// 签约合作者身份ID
+		String orderInfo = "partner=" + "\"" + partner + "\"";
+		// 签约卖家支付宝账号
+		orderInfo += "&seller_id=" + "\"" + seller_id + "\"";
+		// 商户网站唯一订单号
+		orderInfo += "&out_trade_no=" + "\"" + bill.getBillNo() + "\"";
+		// 商品名称
+		orderInfo += "&subject=" + "\"" + bill.getOrderSubject() + "\"";
+		// 商品详情
+		orderInfo += "&body=" + "\"" + bill.getOrderBody() + "\"";
+		// 商品金额
+		orderInfo += "&total_fee=" + "\"" + bill.getOrderAmount() + "\"";
+		// 服务器异步通知页面路径
+		orderInfo += "&notify_url=" + "\"" + bill.getNotifyUrl() + "\"";
+		// 服务接口名称， 固定值
+		orderInfo += "&service=\"mobile.securitypay.pay\"";
+		// 支付类型， 固定值
+		orderInfo += "&payment_type=\"1\"";
+		// 参数编码， 固定值
+		orderInfo += "&_input_charset=\""+ input_charset +"\"";
+		// 设置未付款交易的超时时间
+		// 默认30分钟，一旦超时，该笔交易就会自动被关闭。
+		// 取值范围：1m～15d。
+		// m-分钟，h-小时，d-天，1c-当天（无论交易何时创建，都在0点关闭）。
+		// 该参数数值不接受小数点，如1.5h，可转换为90m。
+		orderInfo += "&it_b_pay=\"30m\"";
+		// extern_token为经过快登授权获取到的alipay_open_id,带上此参数用户将使用授权的账户进行支付
+		// orderInfo += "&extern_token=" + "\"" + extern_token + "\"";
+		// 支付宝处理完请求后，当前页面跳转到商户指定页面的路径，可空
+		orderInfo += "&return_url=\""+ bill.getReturnUrl() +"\"";
+		// 调用银行卡支付，需配置此参数，参与签名， 固定值 （需要签约《无线银行卡快捷支付》才能使用）
+		// orderInfo += "&paymethod=\"expressGateway\"";
+//		String sign = sign(orderInfo, rsa_private_key);
+		String sign = md5sign(orderInfo, private_key, "utf-8");
+		
+		try {
+			sign = URLEncoder.encode(sign, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		final String payInfo = orderInfo+"&sign=\""+sign+"\"&sign_type=\"MD5\"";
+		return payInfo;
+	}
+	
+    /**
+     * 签名字符串
+     * @param text 需要签名的字符串
+     * @param key 密钥
+     * @param input_charset 编码格式
+     * @return 签名结果
+     */
+    public static String md5sign(String text, String key, String input_charset) {
+    	text = text + key;
+        return DigestUtils.md5Hex(getContentBytes(text, input_charset));
+    }
+    
+    /**
+     * 签名字符串
+     * @param text 需要签名的字符串
+     * @param sign 签名结果
+     * @param key 密钥
+     * @param input_charset 编码格式
+     * @return 签名结果
+     */
+    public static boolean verifyMD5(String text, String sign, String key, String input_charset) {
+    	text = text + key;
+    	String mysign = DigestUtils.md5Hex(getContentBytes(text, input_charset));
+    	if(mysign.equals(sign)) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
+    }
+
+    /**
+     * @param content
+     * @param charset
+     * @return
+     * @throws SignatureException
+     * @throws UnsupportedEncodingException 
+     */
+    private static byte[] getContentBytes(String content, String charset) {
+        if (charset == null || "".equals(charset)) {
+            return content.getBytes();
+        }
+        try {
+            return content.getBytes(charset);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("MD5签名过程中出现错误,指定的编码集不对,您目前指定的编码集是:" + charset);
+        }
+    }
+    
+    
+	/**
+	* RSA签名
+	* @param content 待签名数据
+	* @param privateKey 商户私钥
+	* @param input_charset 编码格式
+	* @return 签名值
+	*/
+	public static String sign(String content, String privateKey, String input_charset)
+	{
+        try 
+        {
+        	PKCS8EncodedKeySpec priPKCS8 	= new PKCS8EncodedKeySpec( Base64.decode(privateKey) ); 
+        	KeyFactory keyf 				= KeyFactory.getInstance("RSA");
+        	PrivateKey priKey 				= keyf.generatePrivate(priPKCS8);
+
+            java.security.Signature signature = java.security.Signature
+                .getInstance(SIGN_ALGORITHMS);
+
+            signature.initSign(priKey);
+            signature.update( content.getBytes(input_charset) );
+
+            byte[] signed = signature.sign();
+            
+            return Base64.encode(signed);
+        }
+        catch (Exception e) 
+        {
+        	e.printStackTrace();
+        }
+        
+        return null;
+    }
+	
+	/**
+	* RSA验签名检查
+	* @param content 待签名数据
+	* @param sign 签名值
+	* @param ali_public_key 支付宝公钥
+	* @param input_charset 编码格式
+	* @return 布尔值
+	*/
+	public static boolean verifyRSA(String content, String sign, String ali_public_key, String input_charset)
+	{
+		try 
+		{
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+	        byte[] encodedKey = Base64.decode(ali_public_key);
+	        PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(encodedKey));
+
+		
+			java.security.Signature signature = java.security.Signature
+			.getInstance(SIGN_ALGORITHMS);
+		
+			signature.initVerify(pubKey);
+			signature.update( content.getBytes(input_charset) );
+		
+			boolean bverify = signature.verify( Base64.decode(sign) );
+			return bverify;
+			
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	/**
+	* 解密
+	* @param content 密文
+	* @param private_key 商户私钥
+	* @param input_charset 编码格式
+	* @return 解密后的字符串
+	*/
+	public static String decrypt(String content, String private_key, String input_charset) throws Exception {
+        PrivateKey prikey = getPrivateKey(private_key);
+
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.DECRYPT_MODE, prikey);
+
+        InputStream ins = new ByteArrayInputStream(Base64.decode(content));
+        ByteArrayOutputStream writer = new ByteArrayOutputStream();
+        //rsa解密的字节大小最多是128，将需要解密的内容，按128位拆开解密
+        byte[] buf = new byte[128];
+        int bufl;
+
+        while ((bufl = ins.read(buf)) != -1) {
+            byte[] block = null;
+
+            if (buf.length == bufl) {
+                block = buf;
+            } else {
+                block = new byte[bufl];
+                for (int i = 0; i < bufl; i++) {
+                    block[i] = buf[i];
+                }
+            }
+
+            writer.write(cipher.doFinal(block));
+        }
+
+        return new String(writer.toByteArray(), input_charset);
+    }
+
+	
+	/**
+	* 得到私钥
+	* @param key 密钥字符串（经过base64编码）
+	* @throws Exception
+	*/
+	public static PrivateKey getPrivateKey(String key) throws Exception {
+
+		byte[] keyBytes;
+		
+		keyBytes = Base64.decode(key);
+		
+		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+		
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		
+		PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+		
+		return privateKey;
+	}
+	
+	public static String sign(String content, String privateKey) {
+		try {
+			PKCS8EncodedKeySpec priPKCS8 = new PKCS8EncodedKeySpec(
+					Base64.decode(privateKey));
+			KeyFactory keyf = KeyFactory.getInstance(ALGORITHM);
+			PrivateKey priKey = keyf.generatePrivate(priPKCS8);
+
+			java.security.Signature signature = java.security.Signature
+					.getInstance(SIGN_ALGORITHMS);
+
+			signature.initSign(priKey);
+			signature.update(content.getBytes(DEFAULT_CHARSET));
+
+			byte[] signed = signature.sign();
+
+			return Base64.encode(signed);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+}

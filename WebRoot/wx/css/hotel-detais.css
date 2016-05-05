@@ -1,0 +1,194 @@
+body{
+    color: #333;
+}
+.default-width{
+    width: 100%;
+    height: auto;
+}
+.hotel-top-img img,
+.ticket-top-img img{
+    width: 100%;
+    height: 15rem;
+    border: 0;
+    background-image: url("../images/default.png");
+	background-size: 100% 100%;
+}
+.hotel-list-block,.ticket-list-block{
+    font-size: 14px;
+}
+.hotel-list-block ul,.ticket-list-block ul{
+    background: #ffffff;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+.hotel-list-block li,.ticket-list-block li{
+    padding-left: 0.75rem;
+    width:96%;
+    height: 2rem;
+    border-bottom: 1px solid #e7e5e5;
+}
+.hotel-list-block .item-title,.ticket-list-block .item-title{
+    width: 90%;
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 19px;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    line-height:2rem;
+    font-weight: bold;
+    color: #333;
+
+}
+.icon-phone{
+    width: 2.3rem;
+    height: 2rem;
+    float: left;
+
+}
+.icon-phone img{
+    margin-top: 0.4rem;
+    width: 1.2rem;
+}
+.item-time{
+    color: #999;
+    line-height:2rem;
+    font-size: 13px;
+}
+.check-in,.check-in-data{
+    float: left;
+    line-height: 2rem;
+    font-size: 15px;
+}
+.check-in{
+    width: 25%;
+}
+.check-in-data{
+    width: 60%;
+    text-align: right;
+    color: #b31e23;
+
+}
+.item-content{
+    position:relative;
+}
+.icon-more{
+    float: right;
+    width: 0.5rem;
+    position: absolute;
+    right: 0.5rem;
+    top: 0.6rem;
+}
+.hotel-content-details,.ticket-content-details{
+    margin-top: 1rem;
+    display: table;
+}
+.place-order-info{
+    width: 100%;
+    height: 2.3rem;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+}
+.place-order-info a{
+    display: block;
+    text-align: center;
+    width: 50%;
+    float: left;
+    line-height: 2.3rem;
+    font-size: 15px;
+    color: #666;
+
+}
+.place-order-info .order-active{
+    border-bottom: 2px solid #b31e23;
+    color: #b31e23;
+}
+.room-list-item,.ticket-list-item{
+    background-color: #fff;
+    display: table;;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+.room-item-name,.ticket-item-name{
+    width: 45%;
+    padding-left: 0.75rem;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.room-item-name,.room-item-peice,.room-item-btn,
+.ticket-item-name,.ticket-item-peice,.ticket-item-btn
+{
+    height: 3rem;
+    float: left;
+    line-height: 3rem;
+}
+.room-item-peice,.room-item-btn,
+.ticket-item-peice ,.ticket-item-btn{
+    width: 24%;
+    font-size: 10px;
+}
+.room-item-btn,.ticket-item-btn{
+    text-align: right;
+    padding-right: 0.5rem;
+}
+.room-item-btn .order-btn,.room-item-btn .order-over-btn,
+.ticket-item-btn .order-btn,.ticket-item-btn .order-over-btn{
+    padding: 0.4rem 1.2rem;
+    color: #fff;
+    border: 0;
+    border-radius: 0.3rem;
+    font-size: 14px;
+}
+.room-item-btn .order-btn,.ticket-item-btn .order-btn{
+    background: #b31e23;
+
+}
+.room-item-btn .order-over-btn,.ticket-item-btn .order-over-btn{
+    background: #ccc;
+
+}
+.room-item-peice i,.ticket-item-peice i{
+    color: #b31e23;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: bold;
+}
+.room-list{
+    display: block;
+}
+.hotel-brief-introduction{
+    display: none;
+}
+.hotel-facilities,.ticket-facilities{;
+    height: 2.3rem;
+    line-height: 2.3rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid #b31e23;
+}
+.hotel-facilities-list,.ticket-facilities-list{
+    background-color: #fff;
+    display: table
+}
+.hotel-facilities-list li,.ticket-facilities-list li {
+    float: left;
+    padding: 0.5rem 0.9rem
+}
+.hotel-facilities-list li span,.ticket-facilities-list li span{
+    margin-left: 0.3rem;
+    float: left;
+}
+.hotel-facilities-box,.ticket-facilities-box{
+   margin-bottom: 1rem
+}
+
+.open-time{
+    float: left;
+    line-height: 2rem;
+    padding-right: 0.8rem;
+    color: #999;
+}

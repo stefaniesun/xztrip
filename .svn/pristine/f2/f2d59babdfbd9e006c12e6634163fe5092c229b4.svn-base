@@ -1,0 +1,342 @@
+package xyz.util;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.ConnectException;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+
+import xyz.filter.JSON;
+import xyz.model.wechat.request.AccessToken;
+import xyz.model.wechat.request.Menu;
+
+/**
+ * 微信通用常量信息包
+ * @author Administrator
+ *
+ */
+public class WeixinUtil {
+
+	//动态变更非固定值
+	public static String access_token = "";
+	//这个由自己定义，可以到MP上修改
+	public static final String Token = "xztrip";
+	public static final String appid = "wx6efb7f5562134755";
+	public static final String appsecret = "6f54277b87c630cc12c2877f625f6de5";
+	
+	/**
+	 * 获取access_token
+	 * https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+	 * get方式
+	 */
+	public static final String urlAccessToken = "https://api.weixin.qq.com/cgi-bin/token";
+	/**
+	 * 获取微信服务器ip列表
+	 * https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
+	 * get方式
+	 */
+	public static final String urlWeixinServerIps = "https://api.weixin.qq.com/cgi-bin/getcallbackip";
+	/**
+	 * 获取模板消息的模板id
+	 * https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN
+	 * post方式
+	 */
+	public static final String urlGetTemplateId = "https://api.weixin.qq.com/cgi-bin/template/api_add_template";
+	/**
+	 * 发送模板消息
+	 * https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
+	 * post方式
+	 */
+	public static final String urlSendTemplateMsg = "https://api.weixin.qq.com/cgi-bin/message/template/send";
+	
+	/**
+	 * 获取access_token的接口地址（GET） 限200（次/天）  
+	 */
+	public final static String access_token_url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";  
+	
+	/**
+	 * 获取用户基本信息
+	 * get方式
+	 */
+	public final static String get_user_info = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
+	
+	/**
+	 * 用户同意授权
+	 * scope参数两种：
+	 * 		1.snsapi_base：获取进入页面的用户的openid，静默授权用户无感知
+	 * 		2.snsapi_userinfo：获取用户的基本信息，需要用户手动同意
+	 */
+	public final static String user_accredit = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
+	
+	/**
+	 * 发送模板消息
+	 * POST方式
+	 */
+	public final static String sendTemplateMessage = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
+	
+	/**
+	 * 网页授权通过code获取access-token
+	 */
+	public final static String webPageAccessToken = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
+	
+    /**
+     * 加密/校验流程如下：
+     *
+     * 1. 将token、timestamp、nonce三个参数进行字典序排序
+     * 2.将三个参数字符串拼接成一个字符串进行sha1加密
+     * 3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+     *
+     * @param token Token验证密钥
+     * @param signature 微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数，nonce参数
+     * @param timestamp 时间戳
+     * @param nonce 随机数
+     * @return 验证成功返回true,否则返回false
+     */
+    public static boolean checkSignature(String token, String signature, String timestamp, String nonce) {
+    	if(token==null || token=="" || signature==null || signature=="" || timestamp==null || timestamp=="" || nonce==null || nonce==""){
+    		return false;
+    	}
+        List<String> params = new ArrayList<String>();
+        params.add(token);
+        params.add(timestamp);
+        params.add(nonce);
+        //1. 将token、timestamp、nonce三个参数进行字典序排序
+        Collections.sort(params, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        //2. 将三个参数字符串拼接成一个字符串进行sha1加密
+        String temp = SHA1encode(params.get(0) + params.get(1) + params.get(2));
+        //3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+        return temp.equals(signature);
+    }
+
+
+	private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    /**
+     * Takes the raw bytes from the digest and formats them correct.
+     *
+     * @param bytes the raw bytes from the digest.
+     * @return the formatted bytes.
+     */
+    private static String getFormattedText(byte[] bytes) {
+        int len = bytes.length;
+        StringBuilder buf = new StringBuilder(len * 2);
+        // 把密文转换成十六进制的字符串形式
+        for (int j = 0; j < len; j++) {
+            buf.append(HEX_DIGITS[(bytes[j] >> 4) & 0x0f]);
+            buf.append(HEX_DIGITS[bytes[j] & 0x0f]);
+        }
+        return buf.toString();
+    }
+
+    public static String SHA1encode(String str) {
+        if (str == null) {
+            return null;
+        }
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+            messageDigest.update(str.getBytes());
+            return getFormattedText(messageDigest.digest());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+	
+    private static Logger log = LoggerFactory.getLogger(WeixinUtil.class);  
+    
+    /** 
+     * 发起https请求并获取结果 
+     *  
+     * @param requestUrl 请求地址 
+     * @param requestMethod 请求方式（GET、POST） 
+     * @param outputStr 提交的数据 
+     * @return JSONObject(通过JSONObject.get(key)的方式获取json对象的属性值) 
+     */  
+    public static JSONObject httpRequest(String requestUrl, String requestMethod, String outputStr) {  
+        JSONObject jsonObject = null;  
+        StringBuffer buffer = new StringBuffer();  
+        try {  
+            // 创建SSLContext对象，并使用我们指定的信任管理器初始化  
+            TrustManager[] tm = { new MyX509TrustManager() };  
+            SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");  
+            sslContext.init(null, tm, new java.security.SecureRandom());  
+            // 从上述SSLContext对象中得到SSLSocketFactory对象  
+            SSLSocketFactory ssf = sslContext.getSocketFactory();  
+  
+            URL url = new URL(requestUrl);  
+            HttpsURLConnection httpUrlConn = (HttpsURLConnection) url.openConnection();  
+            httpUrlConn.setSSLSocketFactory(ssf);  
+  
+            httpUrlConn.setDoOutput(true);  
+            httpUrlConn.setDoInput(true);  
+            httpUrlConn.setUseCaches(false);  
+            // 设置请求方式（GET/POST）  
+            httpUrlConn.setRequestMethod(requestMethod);  
+  
+            if ("GET".equalsIgnoreCase(requestMethod))  
+                httpUrlConn.connect();  
+  
+            // 当有数据需要提交时  
+            if (null != outputStr) {  
+                OutputStream outputStream = httpUrlConn.getOutputStream();  
+                // 注意编码格式，防止中文乱码  
+                outputStream.write(outputStr.getBytes("UTF-8"));  
+                outputStream.close();  
+            }  
+  
+            // 将返回的输入流转换成字符串  
+            InputStream inputStream = httpUrlConn.getInputStream();  
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");  
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);  
+  
+            String str = null;  
+            while ((str = bufferedReader.readLine()) != null) {  
+                buffer.append(str);  
+            }  
+            bufferedReader.close();  
+            inputStreamReader.close();  
+            // 释放资源  
+            inputStream.close();  
+            inputStream = null;  
+            httpUrlConn.disconnect();  
+            
+            @SuppressWarnings("unchecked")
+			Map<String, Object> rseultMap = JSON.toObject(buffer.toString(), Map.class);
+            
+            
+            jsonObject = JSONObject.fromObject(buffer.toString());  
+        } catch (ConnectException ce) {  
+            log.error("Weixin server connection timed out.");  
+        } catch (Exception e) {  
+            log.error("https request error:{}", e);  
+        }  
+        return jsonObject;  
+    } 
+    
+    /** 
+     * 获取access_token 
+     *  
+     * @param appid 凭证 
+     * @param appsecret 密钥 
+     * @return 
+     */  
+    public static AccessToken getAccessToken(String appid, String appsecret) {  
+        AccessToken accessToken = null;  
+      
+        String requestUrl = access_token_url.replace("APPID", appid).replace("APPSECRET", appsecret);  
+        JSONObject jsonObject = httpRequest(requestUrl, "GET", null);  
+       
+        if (jsonObject != null) {   // 如果请求成功  
+            try {  
+                accessToken = new AccessToken();  
+                accessToken.setToken(jsonObject.getString("access_token"));  
+                accessToken.setExpiresIn(jsonObject.getInt("expires_in"));  
+            } catch (JSONException e) {  
+                accessToken = null;  
+                // 获取token失败  
+                log.error("获取token失败 errcode:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));  
+            }  
+        }  
+        return accessToken;  
+    }  
+    
+ // 菜单创建（POST） 限100（次/天）  
+    public static String menu_create_url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";  
+      
+    /** 
+     * 创建菜单 
+     *  
+     * @param menu 菜单实例 
+     * @param accessToken 有效的access_token 
+     * @return 0表示成功，其他值表示失败 
+     */  
+    public static int createMenu(Menu menu, String accessToken) {  
+        int result = 0;  
+      
+        // 拼装创建菜单的url  
+        String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);  
+        String jsonMenu = JSONObject.fromObject(menu).toString();  
+        // 调用接口创建菜单  
+        JSONObject jsonObject = httpRequest(url, "POST", jsonMenu);  
+      
+        if (null != jsonObject) {  
+            if (0 != jsonObject.getInt("errcode")) {  
+                result = jsonObject.getInt("errcode");  
+                log.error("创建菜单失败 errco de:{} errmsg:{}", jsonObject.getInt("errcode"), jsonObject.getString("errmsg"));  
+            }  
+        }  
+        return result;  
+    }  
+    
+    /**
+     * 主动向用户推送消息(模板消息)
+     * @param jsonData  回复内容
+     * @return	1：成功		0：失败
+     */
+    public static int sendTemplateMessage(String jsonData){
+		String accessToken = getAccessToken(appid, appsecret).getToken();	//获取token
+		JSONObject jsonObeject = httpRequest(sendTemplateMessage.replace("ACCESS_TOKEN", accessToken),"POST",jsonData);
+		if("0".equals(jsonObeject.getString("errcode")))		
+			return 1;
+		else		
+			return 0;
+    }
+    
+    /**
+     * 响应微信服务器
+     * @param map
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	public static String map2xml(Map<String, Object> map){
+		StringBuffer xmlString = new StringBuffer();
+		for(Map.Entry<String, Object> item : map.entrySet()){
+			String key = item.getKey();
+			Object value = item.getValue();
+			System.out.println(value.getClass().getName());
+			xmlString.append("<"+key+">");
+			if(value instanceof String){
+				if("ToUserName,FromUserName,MsgType,Content".indexOf(key)>-1){
+					xmlString.append("<![CDATA["+value+"]]>");
+				}else{
+					xmlString.append(value);
+				}
+			}else if(value instanceof Map){
+				xmlString.append(map2xml((Map<String, Object>)value));
+			}else{
+				xmlString.append("不支持的解析类型："+value.getClass().getName());
+			}
+			xmlString.append("</"+key+">");
+		}
+		return xmlString.toString();
+	}
+}
+
+
+
+
+
+
+

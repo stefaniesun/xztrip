@@ -1,0 +1,117 @@
+var o = xyz.getUrlparam();
+$(function(){
+	$('.back-left').click(function(){
+		xyz.back();
+	});
+	$('.go-right').click(function(){
+		window.location.href=xyz.setUrlparam(xyz.getFullurl('index.html'), {"openid":window.localStorage.openid?window.localStorage.openid:''});
+	});
+	loadData();
+	queryList();
+});
+
+function loadData(){
+	xyz.ajax({
+		url:'BuyerProviderWS/getProvider.app',
+		progress:false,
+		data : {
+			numberCode:o.numberCode
+		},
+		success : function(data) {
+			if(data.status==1){
+				document.querySelector('#headerImg').src = xyz.getMiddleImageUrl(data.content.imageUrl);
+				document.querySelector('#headerTitle').innerText = data.content.nameCn;
+				if(!xyz.isNull(data.content.address)){
+					document.querySelector('#hotelLinkaddress').innerText = data.content.address;
+				}
+				if(!xyz.isNull(data.content.phone)){
+					document.querySelector('#hotelLinkphone').innerText = data.content.phone;
+				}
+			}else{
+				alert(data.msg);
+			}
+		}
+	});
+}
+
+function queryList(){
+	var rows = 0; //记录条数
+	var page = 0; //每页数
+	$('#show_content_1').dropload({
+		scrollArea : window,
+		loadDownFn : function(me){
+			rows += 5; //记录以及加载的条数
+			page++ ; //没调用一次  页数加1
+			xyz.ajax({
+				url:'BuyerScenicWS/queryScenicList.app',
+				progress:false,
+				data : {
+					page : page,
+					rows : 5,
+					provider : o.numberCode
+				},
+				success : function(data) {
+					if(data.status==1){
+						var total = data.content.total; 
+						var result = data.content;
+						var table = document.body.querySelector('#tableList');
+    					if(page==1){
+    						table.innerHTML = '';
+    					}
+    					createHtml(table , result.rows);
+						if(rows >= total){ //每页数据
+							me.lock();
+							me.noData();
+						}
+						me.resetload();
+					}else{
+						alert(data.msg);
+					}
+					
+					
+				}
+			});
+		}
+	});
+}
+
+function createHtml(table , list){
+	for(var i=0; i<list.length; i++){
+		var o = list[i];
+		var div = document.createElement('div');
+		div.className = 'ticket-list-item default-width';
+		var url = xyz.setUrlparam(xyz.getFullurl('page/orderScenic.html'),{numberCode:o.numberCode});
+		var btnDisabled = 'disabled="disabled"';
+		var btnStyle = 'background:#D4D4D4;';
+		
+		var html='<div class="ticket-item-name">'+o.nameCn+'</div>';
+        html +='<div class="ticket-item-peice">';
+        if(o.price && !isNaN(o.price)){
+        	html +='<i>¥'+o.price+'</i>起';
+        	btnDisabled = '';
+        	btnStyle = '';
+        }else{
+        	html +='<i><font color="#ccc" size="1">暂无报价</font></i>';
+        	btnDisabled = 'disabled="disabled"';
+        	btnStyle = 'background:#D4D4D4;';
+        }
+        html +='</div>';
+		
+        html +='<div class="ticket-item-btn"><button '+btnDisabled+' class="order-btn" style="'+btnStyle+'" onclick="window.location.href=\''+url+'\'">预订</button></div>';
+		//html += '<span id="json_'+o.numberCode+'" style="display:none;">'+JSON.stringify(o)+'</span>';
+		div.innerHTML = html;
+		table.appendChild(div);
+	}
+}
+
+
+function showContent(index){
+	$("a[id^='show_title").each(function(){
+		$(this).removeAttr("class");
+	});
+	$(event.target).attr("class","order-active");
+	$("div[id^='show_content_']").each(function(){
+		$(this).hide();
+	});
+	$("#show_content_"+index).show();	
+}

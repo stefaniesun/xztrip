@@ -1,0 +1,456 @@
+$(document).ready(function() {
+	$("#productButton").click(function(){
+		loadTable();
+	});
+	
+	xyzCombobox({
+		combobox : 'providerLoadForm',
+		url : '../ListWS/getProviderList.do?type=HO'
+	});
+	
+	initTable();
+});
+
+function initTable(){
+	
+	var toolbar = [];
+	if(xyzControlButton('buttonCode_h20151215093701')){
+		toolbar[toolbar.length]={
+				text: '新增产品',
+				border:'1px solid #bbb',
+				iconCls: 'icon-add',
+				handler: function(){var title=$(this).text();addProductHotelButton(title);}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	if(xyzControlButton('buttonCode_h20151215093702')){
+		toolbar[toolbar.length]={
+				text: '编辑产品',
+				border:'1px solid #bbb',
+				iconCls: 'icon-edit',
+				handler: function(){var title=$(this).text();editProductHotelButton(title);}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	if(xyzControlButton('buttonCode_h20151215093703')){
+		toolbar[toolbar.length]={
+				text: '删除产品',
+				border:'1px solid #bbb',
+				iconCls: 'icon-remove',
+				handler: function(){deleteProductHotelButton();}
+		};
+		toolbar[toolbar.length]='-';
+	}	
+	
+	xyzgrid({
+		table : 'productHotelManagerTable',
+		title : '产品列表',
+		url:'../ProductHotelWS/queryProductHotelList.do',
+		pageList : [5,10,15,30,50],
+		pageSize : 5,
+		toolbar:toolbar,
+		singleSelect : false,
+		idField : 'numberCode',
+		height:'auto',
+		columns : [[
+		    {field:'checkboxTemp',checkbox:true},
+			{field:'numberCode',title:'产品编号',hidden:true},
+			{field:'nameCn',title:'产品名称',width:300},
+			{field:'providerNameCn',title:'供应商名称',width:100},
+			{field:'price',title:'当天价格',width:100},
+			{field:'imageUrl',title:'设置资源图片',
+				formatter: function(value,row){
+					if(value==""){
+						return "<a href='javascript:void(0);' onclick='editImageUrl(\""+row.numberCode+"\",\""+row.imageUrl+"\")'>设置</a>";
+					}else{
+						return "<a href='javascript:void(0);' onclick='editImageUrl(\""+row.numberCode+"\",\""+row.imageUrl+"\")'>重置</a>";
+					}
+				}	
+			},
+			{field:'isPms',title:'pms关联',
+				formatter: function(value,row){
+					if(value=="0"){
+						return "<a href='javascript:void(0);' onclick='editPms(\""+row.numberCode+"\")'>关联</a>";
+					}else{
+						return "<a href='javascript:void(0);' onclick='removePms(\""+row.numberCode+"\")'>解除关联</a>";
+					}
+				}	
+			},
+			{field:'isTag',title:'特价启用',
+				formatter: function(value,row){
+					if(value=="0"){
+						return "<a href='javascript:void(0);' onclick='editTagEnable(\""+row.numberCode+"\",\"1\")'>开启</a>";
+					}else{
+						return "<a href='javascript:void(0);' onclick='editTagEnable(\""+row.numberCode+"\",\"0\")'>关闭</a>";
+					}
+				}	
+			},
+			{field:'operTemp2',title:'特价设置',
+				formatter: function(value,row){
+					return "<a href='javascript:void(0);' onclick='editTag(\""+row.numberCode+"\")'>设置</a>";
+				}	
+			},
+			{field:'operTemp3',title:'库存',
+				formatter: function(value,row,index){
+					var btn1 = "<a href='javascript:void(0);' onclick='managerProductStock(\""+row.numberCode+"\",\""+row.nameCn+"\")'>库存管理</a>";
+					return btn1;
+				}
+			}
+		]]
+	});
+	
+}
+
+function loadTable(){
+	var nameCn = $("#nameCn").val();
+	var provider= $("#providerLoadForm").combobox("getValue");
+	$("#productHotelManagerTable").datagrid("load",{
+		nameCn : nameCn,
+		provider:provider
+	});
+}
+
+function addProductHotelButton(title){
+	xyzdialog({
+		dialog : 'dialogFormDiv_addProductHotel',
+		title : title,
+	    href : '../jsp_main/addProductHotel.html',
+	    buttons:[{
+			text:'确定',
+			handler:function(){
+				addProductHotelSubmit();
+			}
+		},{
+			text:'取消',
+			handler:function(){
+				$("#dialogFormDiv_addProductHotel").dialog("destroy");
+			}
+		}],onLoad:function(){
+			xyzCombobox({
+				combobox : 'providerForm',
+				url : '../ListWS/getProviderList.do?type=HO',
+				required:true,
+				lazy:false
+			});
+		
+		}
+	});
+	
+}
+
+function editProductHotelButton(title){
+	
+	var product = $("#productHotelManagerTable").datagrid("getChecked");
+	if(product.length != 1){
+		top.$.messager.alert("提示","请先选中单个对象！","info");
+		return;
+	}
+	var row = product[0];
+	
+	xyzdialog({
+		dialog : 'dialogFormDiv_editProductHotel',
+		title : title,
+	    href : '../jsp_main/editProductHotel.html',
+	    buttons:[{
+			text:'确定',
+			handler:function(){
+				editProductHotelSubmit(row.numberCode);
+			}
+		},{
+			text:'取消',
+			handler:function(){
+				$("#dialogFormDiv_editProductHotel").dialog("destroy");
+			}
+		}],
+		onLoad:function(){
+			xyzCombobox({
+				combobox : 'providerForm',
+				url : '../ListWS/getProviderList.do',
+				required:true,
+				lazy:false
+			});
+			$("#nameCnForm").val(row.nameCn);
+			$("#providerForm").combobox("setValue",row.provider);
+			$("#remarkForm").val(row.remark);
+			$("#refundTimeForm").numberbox("setValue",row.refundTime);
+			$("#maxDateForm").numberbox("setValue",row.maxDate);
+			
+		}
+	});
+}
+
+function addProductHotelSubmit(){
+	var nameCn=$("#nameCnForm").val();
+	var provider=$("#providerForm").combobox("getValue");
+	var remark=$("#remarkForm").val();
+	var refundTime=$("#refundTimeForm").numberbox("getValue");
+	var maxDate=$("#maxDateForm").numberbox("getValue");
+	if(xyzIsNull(refundTime)){
+		refundTime=0;
+	}
+	if(xyzIsNull(maxDate)){
+		maxDate=20;
+	}
+	if(!$("form").form('validate')){
+		return;
+	}
+	xyzAjax({
+		url:"../ProductHotelWS/addProductHotel.do",
+		data:{
+			nameCn:nameCn,
+			provider:provider,
+			remark:remark,
+			refundTime:refundTime,
+			maxDate:maxDate
+		},
+		success:function(data){
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#dialogFormDiv_addProductHotel").dialog("destroy");
+				$("#productHotelManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+}
+
+function editProductHotelSubmit(numberCode){
+	var nameCn=$("#nameCnForm").val();
+	var provider=$("#providerForm").combobox("getValue");
+	var remark=$("#remarkForm").val();
+	var refundTime=$("#refundTimeForm").numberbox("getValue");
+	var maxDate=$("#maxDateForm").numberbox("getValue");
+	if(xyzIsNull(refundTime)){
+		refundTime=0;
+	}
+	if(xyzIsNull(maxDate)){
+		maxDate=20;
+	}
+	if(!$("form").form('validate')){
+		return;
+	}
+	xyzAjax({
+		url:"../ProductHotelWS/editProductHotel.do",
+		data:{
+			numberCode:numberCode,
+			nameCn:nameCn,
+			provider:provider,
+			remark:remark,
+			refundTime:refundTime,
+			maxDate:maxDate
+		},
+		success:function(data){
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#dialogFormDiv_editProductHotel").dialog("destroy");
+				$("#productHotelManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+	
+}
+
+function deleteProductHotelButton(){
+	var products = $.map($("#productHotelManagerTable").datagrid("getChecked"),function(p){return p.numberCode;}).join(",");
+	if(products == null || products == ''){
+		top.$.messager.alert("提示","请先选中需要删除的对象！","info");
+		return;
+	}
+	if(!confirm("彻底删除对象，确定？")){
+		return;
+	}
+	
+	xyzAjax({
+		url : '../ProductHotelWS/deleteProductHotel.do',
+		data : {
+			numberCodes : products
+		},
+		success : function(data) {
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#productHotelManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+}
+
+function managerProductStock(numberCode,nameCn){
+	xyzdialog({
+		dialog : 'dialogFormDiv_managerProductStock',
+		title : "配置单品["+nameCn+"]",
+	    content : "<iframe id='dialogFormDiv_managerProductStockIframe' frameborder='0' name='"+numberCode+"'></iframe>",
+	    buttons:[{
+			text:'返回',
+			handler:function(){
+				$("#dialogFormDiv_managerProductStock").dialog("destroy");
+			}
+		}]
+	});
+	var tempWidth = $("#dialogFormDiv_managerProductStock").css("width");
+	var tempHeight = $("#dialogFormDiv_managerProductStock").css("height");
+	var tempWidth2 = parseInt(tempWidth.split("px")[0]);
+	var tempHeight2 = parseInt(tempHeight.split("px")[0]);
+	$("#dialogFormDiv_managerProductStockIframe").css("width",(tempWidth2-20)+"px");
+	$("#dialogFormDiv_managerProductStockIframe").css("height",(tempHeight2-50)+"px");
+	$("#dialogFormDiv_managerProductStockIframe").attr("src","../jsp_main/productStock.html");
+}
+
+function editPms(numberCode){
+
+	xyzdialog({
+		dialog : 'dialogFormDiv_editPms',
+		title : '关联PMS',
+	    href : '../jsp_main/editPms.html',
+	    fit:false,
+	    height:300,
+	    width:600,
+	    buttons:[{
+			text:'确定',
+			handler:function(){
+				editPmsSubmit(numberCode);
+			}
+		},{
+			text:'取消',
+			handler:function(){
+				$("#dialogFormDiv_editPms").dialog("destroy");
+			}
+		}],onLoad:function(){
+			
+			xyzCombobox({
+				combobox : 'hotelForm',
+				url:'../ListWS/getPmsHotelList.do',
+				lazy : false,
+				required : true,
+				onChange : function(newHotel, oldHotel){
+					xyzCombobox({
+						combobox : 'roomTypeForm',
+						url:'../ListWS/getPmsRoomTypeList.do',
+						lazy : false,
+						required : true,
+						onBeforeLoad: function(param){
+							param.hotelid = xyzOnChangeGetValue("hotelForm",newHotel);
+						}
+					});
+				}
+			});
+		
+		}
+	});
+	
+}
+
+
+function editPmsSubmit(numberCode){
+	if(!$("form").form('validate')){
+		return;
+	}
+	var hotel = $("#hotelForm").combobox("getValue");
+	var roomType = $("#roomTypeForm").combobox("getValue");
+	xyzAjax({
+		url : '../ProductHotelWS/editPms.do',
+		data : {
+			numberCode : numberCode,
+			hotel : hotel,
+			roomType : roomType
+		},
+		success : function(data) {
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#dialogFormDiv_editPms").dialog("destroy");
+				$("#productHotelManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+}
+
+function removePms(numberCode){
+	xyzAjax({
+		url : '../ProductHotelWS/deletePms.do',
+		data : {
+			numberCode : numberCode
+		},
+		success : function(data) {
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#productHotelManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+}
+
+function editImageUrl(numberCode,imageUrl){
+	
+/*	xyzdialog({
+		dialog : 'dialogFormDiv_editProductHotelImageUrl',
+		title : '编辑图片',
+	    href : 'editProductHotelImageUrl.html',
+	    fit:false,
+	    height:750,
+	    width:1150,
+	    buttons:[{
+			text:'关闭',
+			handler:function(){
+				$("#dialogFormDiv_editProductHotelImageUrl").dialog("destroy");
+			}
+		}]
+	});*/
+	
+	layer.open({
+		title:'上传图片',
+	    type: 2,
+	    area: ['1100px', '700px'],
+	    fix: true, //不固定
+	    maxmin: false,
+	    content: 'editProductHotelImageUrl.html?numberCode='+numberCode+'&imageUrl='+imageUrl
+	});
+	
+}
+
+
+function editTag(numberCode){
+	xyzdialog({
+		dialog : 'dialogFormDiv_managerProductUserTag',
+		title : "配置特殊价格",
+	    content : "<iframe id='dialogFormDiv_managerProductUserTagIframe' frameborder='0' name='"+numberCode+"'></iframe>",
+	    buttons:[{
+			text:'返回',
+			handler:function(){
+				$("#dialogFormDiv_managerProductUserTag").dialog("destroy");
+			}
+		}]
+	});
+	var tempWidth = $("#dialogFormDiv_managerProductUserTag").css("width");
+	var tempHeight = $("#dialogFormDiv_managerProductUserTag").css("height");
+	var tempWidth2 = parseInt(tempWidth.split("px")[0]);
+	var tempHeight2 = parseInt(tempHeight.split("px")[0]);
+	$("#dialogFormDiv_managerProductUserTagIframe").css("width",(tempWidth2-20)+"px");
+	$("#dialogFormDiv_managerProductUserTagIframe").css("height",(tempHeight2-50)+"px");
+	$("#dialogFormDiv_managerProductUserTagIframe").attr("src","../jsp_main/productUserTagManager.html");
+}
+
+function editTagEnable(numberCode,value){
+	xyzAjax({
+		url : '../ProductHotelWS/editUserTag.do',
+		data : {
+			numberCode : numberCode,
+			value : value
+		},
+		success : function(data) {
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#productHotelManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/orderDetail.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+<body>
+<header>
+    <a href="" class="pull-left back-inner" onclick="window.history.back();">
+        <i class="iconfont icon-fanhui"></i>
+    </a>
+    <h1 class="header-title">
+        订单详情
+    </h1>
+</header>
+<footer style="height: auto;padding-bottom: 6px;padding-top: 6px; background-color: #f2f3f4">
+    <p class="pay-ts">目前仅支持支付宝、微信支付，后续将开通其它支付通道</p>
+    <a href="" class="pay-immediately">
+        立即支付
+    </a>
+</footer>
+<div class="content-wrapper proup-height" style="padding-bottom: 100px">
+    <div class="orderDetail-list">
+        <ul>
+            <li>
+                <span class="pull-left">订单编号</span>
+                <span class="pull-right color-grey">NO12134567894</span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">景点名称</span>
+                <span class="pull-right color-grey">仙女山旅游景区</span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">预定日期</span>
+                <span class="pull-right color-grey">2016年4月5日</span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">出行日期</span>
+                <span class="pull-right color-grey">2016年4月7日</span>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <span class="pull-left">门票类型</span>
+                <span class="pull-right color-grey">仙女山一日游</span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">数量</span>
+                <span class="pull-right color-grey">2</span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">总金额</span>
+                <span class="pull-right color-org">¥3900.00</span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">订单状态</span>
+                <span class="pull-right color-red">【未支付】</span>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <span class="pull-left">联系人</span>
+                <span class="pull-right color-grey">张某某</span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <span class="pull-left">联系电话</span>
+                <span class="pull-right color-grey">13015647894</span>
+                <div style="clear:both;"></div>
+            </li>
+            <li>
+                <a href="editContacts.html" class="dk">
+                    <span href="" class="pull-left xg-inner">修改</span>
+                    <i class="iconfont icon-you pull-right color-grey"></i>
+                    <div style="clear:both;"></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+</html>

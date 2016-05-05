@@ -1,0 +1,286 @@
+$(document).ready(function() {
+	$("#productButton").click(function(){
+		loadTable();
+	});
+	
+	initTable();
+	
+});
+
+function initTable(){
+	var toolbar = [];
+	if(xyzControlButton('buttonCode_h20160317115001')){
+		toolbar[toolbar.length]={
+				text: '新增标签价格库存',
+				border:'1px solid #bbb',
+				iconCls: 'icon-add',
+				handler: function(){var title=$(this).text();addProductUserTagButton(title);}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	if(xyzControlButton('buttonCode_h20160317115002')){
+		toolbar[toolbar.length]={
+				text: '编辑标签价格库存',
+				border:'1px solid #bbb',
+				iconCls: 'icon-edit',
+				handler: function(){var title=$(this).text();editProviderButton(title);}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	if(xyzControlButton('buttonCode_h20160317115003')){
+		toolbar[toolbar.length]={
+				text: '删除标签价格库存',
+				border:'1px solid #bbb',
+				iconCls: 'icon-remove',
+				handler: function(){deleteProviderButton();}
+		};
+		toolbar[toolbar.length]='-';
+	}
+	
+	xyzgrid({
+		table : 'productUserTagManagerTable',
+		title : '产品列表',
+		url:'../ProductUserTagWS/queryProductUserTagList.do',
+		pageList : [5,10,15,30,50],
+		pageSize : 15,
+		toolbar:toolbar,
+		singleSelect : false,
+		idField : 'numberCode',
+		height:'auto',
+		columns : [[
+		    {field:'checkboxTemp',checkbox:true},
+			{field:'numberCode',title:'编号',hidden:true},
+			{field:'nameCn',title:'名称',width:100},
+		]]
+	});
+}
+
+function loadTable(){
+
+	$("#prductUserTagManagerTable").datagrid("load",{
+
+	});
+}
+
+function addProductUserTagButton(title){
+	
+	 var contentHtml = "<table>";
+	 contentHtml += "<tr>";
+	 contentHtml += "<td align='right'>";
+	 contentHtml += "特殊价格名称 ：";
+	 contentHtml += "</td>";
+	 contentHtml += "<td>";
+	 contentHtml += "<input type='text' id='nameCnForm' style='width:250px;' />";
+	 contentHtml += "</td>";
+	 contentHtml += "</tr>";
+	 contentHtml += "<tr>";
+	 contentHtml += "<td align='right'>";
+	 contentHtml += "用户标签 ：";
+	 contentHtml += "</td>";
+	 contentHtml += "<td>";
+	 contentHtml += '<input id="userTagForm" class="easyui-combobox" data-options="editable:false"  style="width:250px;"/>';
+	 contentHtml += "</td>";
+	 contentHtml += "</tr>";
+	 contentHtml += "</table>";
+	
+	xyzdialog({
+		dialog : 'dialogFormDiv_addProductUserTag',
+		title : title,
+	    content : contentHtml,
+	    fit:false,
+	    height:300,
+	    width:500,
+	    buttons:[{
+			text:'确定',
+			handler:function(){
+				addProductUserTagSubmit();
+			}
+		},{
+			text:'取消',
+			handler:function(){
+				$("#dialogFormDiv_addProductUserTag").dialog("destroy");
+			}
+		}],
+		onOpen:function(){
+			xyzCombobox({
+				combobox : 'userTagForm',
+				url : '../ListWS/getUserTagList.do',
+				lazy : false,
+				mode : 'remote'
+			});
+		}
+	});
+	
+}
+
+function editProviderButton(title){
+	
+	var provider = $("#providerManagerTable").datagrid("getChecked");
+	if(provider.length != 1){
+		top.$.messager.alert("提示","请先选中单个对象！","info");
+		return;
+	}
+	var row = provider[0];
+	
+	xyzdialog({
+		dialog : 'dialogFormDiv_editProvider',
+		title : title,
+	    href : '../jsp_main/editProvider.html',
+	    fit:false,
+	    height:600,
+	    width:600,
+	    buttons:[{
+			text:'确定',
+			handler:function(){
+				editProviderSubmit(row.numberCode);
+			}
+		},{
+			text:'取消',
+			handler:function(){
+				$("#dialogFormDiv_editProvider").dialog("destroy");
+			}
+		}],
+		onLoad:function(){
+			$("#typeForm").combobox('setValue',row.type);
+			$("#nameCnForm").val(row.nameCn);
+			$("#levelForm").val(row.level);
+			$("#levelSystemForm").val(row.levelSystem);
+			$("#phoneForm").val(row.phone);
+			$("#qqForm").val(row.qq);
+			$("#emailForm").val(row.email);
+			$("#linkmanForm").val(row.linkman);
+			$("#addressForm").val(row.address);
+			$("#remarkForm").val(row.remark);
+			
+		}
+	});
+}
+
+function addProductUserTagSubmit(target){
+	var nameCn=$("#nameCnForm").val();
+	var userTag=$("#userTagForm").combobox("getValue");
+	
+	if(!$("form").form('validate')){
+		return;
+	}
+	
+	xyzAjax({
+		url:"../ProductUserTagWS/addProductUserTag.do",
+		data:{
+			nameCn:nameCn,
+			userTag:userTag,
+			product:product
+		},
+		success:function(data){
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#dialogFormDiv_addProvider").dialog("destroy");
+				$("#providerManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+}
+
+function editProviderSubmit(numberCode){
+	var nameCn=$("#nameCnForm").val();
+	var type=$("#typeForm").combobox("getValue");
+	var level=$("#levelForm").val();
+	var levelSystem=$("#levelSystemForm").val();
+	var phone=$("#phoneForm").val();
+	var qq=$("#qqForm").val();
+	var email=$("#emailForm").val();
+	var linkman=$("#linkmanForm").val();
+	var address=$("#addressForm").val();
+	var remark=$("#remarkForm").val();
+	if(!$("form").form('validate')){
+		return;
+	}
+	
+	xyzAjax({
+		url:"../ProviderWS/editProvider.do",
+		data:{
+			numberCode:numberCode,
+			nameCn:nameCn,
+			type:type,
+			level:level,
+			levelSystem:levelSystem,
+			phone:phone,
+			qq:qq,
+			email:email,
+			linkman:linkman,
+			address:address,
+			remark:remark
+		},
+		success:function(data){
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#dialogFormDiv_editProvider").dialog("destroy");
+				$("#providerManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+	
+}
+
+function deleteProviderButton(){
+	var products = $.map($("#providerManagerTable").datagrid("getChecked"),function(p){return p.numberCode;}).join(",");
+	if(products == null || products == ''){
+		top.$.messager.alert("提示","请先选中需要删除的对象！","info");
+		return;
+	}
+	if(!confirm("彻底删除对象，确定？")){
+		return;
+	}
+	
+	xyzAjax({
+		url : '../ProviderWS/deleteProvider.do',
+		data : {
+			numberCodes : products
+		},
+		success : function(data) {
+			if(data.status==1){
+				top.$.messager.alert("提示","操作成功","info");
+				$("#providerManagerTable").datagrid("reload");
+			}else{
+				top.$.messager.alert("警告",data.msg,"warning");
+			}
+		}
+	});
+}
+
+
+function editImageUrl(numberCode,imageUrl){
+	
+	$("#numberCode").val(numberCode);
+	$("#url").val(imageUrl);
+	
+	xyzdialog({
+		dialog : 'dialogFormDiv_editProviderImageUrl',
+		title : '编辑图片',
+	    href : 'editProviderImageUrl.html?numberCode='+numberCode+'&url='+imageUrl,
+	    fit:false,
+	    height:750,
+	    width:1150,
+	    buttons:[{
+			text:'关闭',
+			handler:function(){
+				$("#dialogFormDiv_editProviderImageUrl").dialog("destroy");
+			}
+		}]
+	});
+	
+	/*
+	layer.open({
+		title:'上传图片',
+	    type: 2,
+	    area: ['1100px', '700px'],
+	    fix: true, //不固定
+	    maxmin: false,
+	    content: 'editProviderImageUrl.html?numberCode='+numberCode+'&url='+imageUrl
+	});*/
+	
+}

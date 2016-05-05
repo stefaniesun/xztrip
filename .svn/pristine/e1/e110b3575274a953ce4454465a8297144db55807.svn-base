@@ -1,0 +1,21 @@
+package xyz.svc.main;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface ProductUserTagSvc {
+
+	public Map<String, Object> queryProductUserTagList(int offset, int pagesize,
+			String product,String nameCn);
+
+	public Map<String, Object> addProductUserTag(String product, String nameCn,
+			String userTag);
+
+	public Map<String, Object> editProductUserTag(String numberCode, String nameCn,
+			String userTag);
+
+	public Map<String, Object> deleteProductUserTag(String numberCodes);
+
+}

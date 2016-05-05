@@ -1,0 +1,27 @@
+package xyz.ctrl.buyer;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import xyz.svc.buyer.CustermerSvc;
+
+
+@Controller
+@RequestMapping(value="/CustermerWS")
+public class CustermerWS {
+
+	@Autowired
+	CustermerSvc custermerSvc;
+	
+	/**
+	 * 获取登陆验证码
+	 */
+	public Map<String,Object> getRegisterCode(String phone){
+		return custermerSvc.getRegisterCode(phone);
+	}
+
+}

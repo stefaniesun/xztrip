@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/login.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+    <link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+<body>
+<header>
+    <a href="" class="pull-left back-inner" onclick="window.history.back();">
+        <i class="iconfont icon-fanhui"></i>
+    </a>
+    <h1 class="header-title">
+        请登录
+    </h1>
+</header>
+<div class="content-wrapper proup-height">
+    <div class="item-box">
+        <ul>
+            <li >
+                <span class="pull-left">账号</span>
+                <input type="text" placeholder="请输入账号" class="pull-left"/>
+                <div style="clear:both;"></div>
+            </li>
+            <li >
+                <span class="pull-left">密码</span>
+                <input type="password" placeholder="请输入账号" class="pull-left"/>
+                <i class="iconfont icon-yanjing icon-yj"></i>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="item-box">
+        <ul>
+            <li >
+                <span class="pull-left">七天自动登录</span>
+                <i class="iconfont icon-gouxuan icon-gx"></i>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="item-box">
+        <button class="login-btn">保存</button>
+        <div class="login-inner">
+            <a href="register.html" class="dk pull-left">注册账号</a>
+            <a href="" class="dk pull-left">忘记密码</a>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+</html>

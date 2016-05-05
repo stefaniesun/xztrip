@@ -1,0 +1,108 @@
+@CHARSET "UTF-8";
+*{
+    margin:0;
+    padding: 0;
+}
+body{
+    background-color: #f2f3f4;
+    font-family: 微软雅黑;
+}
+a{
+    text-decoration: none;
+}
+a,input,textarea{
+    outline: none;
+}
+ul{
+    list-style: none;
+}
+
+header{
+    background-color: #099fde;
+    height:44px;
+    padding: 0 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    font-family: "Tahoma,Arial,sans-serif";
+    z-index: 999;
+    box-shadow: 0 0 1px rgba(0,0,0,.85);
+}
+footer{
+    background-color: #fff;
+    height:44px;
+    padding: 0 10px;
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    font-size: 14px;
+}
+.footer-item{
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    width: 33%;
+    line-height: 2;
+    float: left;
+    font-family: 黑体;
+    color: #999;
+}
+footer .footer-item-active{
+    color: #099fde;
+}
+.footer-item .iconfont{
+    font-size: 20px;
+    line-height: 1.2;
+}
+.footer-title{
+    display: block;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.proup-height{
+    padding-top: 44px;
+    padding-bottom: 44px;
+}
+.content-wrapper{
+    width: 100%;
+}
+.pull-left{
+    float: left;
+}
+.pull-right{
+    float: right;
+}
+header .back-inner{
+    height: 42px;
+}
+header .icon-fanhui{
+    color: #fff;
+    font-size: 23px;
+    position: relative;
+    top: 0.4rem;
+}
+.header-title{
+    color: #fff;
+    font-size: 17px;
+    text-align: center;
+    position: absolute;
+    width: 80%;
+    height: 44px;
+    left: 50%;
+    margin-left: -40%;
+    line-height: 2.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.dk{
+    display: block;
+}
+.dn{
+    display: none;
+}

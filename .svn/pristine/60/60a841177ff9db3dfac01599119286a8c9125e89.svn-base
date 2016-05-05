@@ -1,0 +1,194 @@
+package xyz.ctrl.sql;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import xyz.exception.MyExceptionForXyz;
+import xyz.filter.ReturnUtil;
+import xyz.model.sql.SystemSql;
+import xyz.svc.sql.SystemSqlSvc;
+import xyz.util.Constant;
+import xyz.util.DateUtil;
+import xyz.util.ExcelTool;
+import xyz.util.JDBCUtil;
+import xyz.util.SysPropertyTool;
+
+@Controller
+@RequestMapping(value="/SystemSqlWS")
+public class SystemSqlWS{
+	
+	@Autowired
+	private SystemSqlSvc systemSqlSvc;
+	
+	@RequestMapping(value="querySystemSqlList")
+	@ResponseBody
+	public Map<String, Object> querySystemSqlList(
+			int page,
+			int rows,
+			String sqlTitle,
+			String nameCn){
+		
+		int pagesize = rows;
+		int offset = (page-1)*pagesize;
+		
+		return systemSqlSvc.querySystemSqlList(offset,pagesize,sqlTitle,nameCn);
+	}
+	
+	
+	@RequestMapping(value="getSystemSql")
+	@ResponseBody
+	public Map<String, Object> getSystemSql(String numberCode){
+		
+		return systemSqlSvc.getSystemSql(numberCode);
+	}
+	
+	@RequestMapping(value="addSystemSql")
+	@ResponseBody
+	public Map<String, Object> addSystemSql(
+			String nameCn,
+			String source,
+			String sqlTitle,
+			String sqlType,
+			String sqlContent,
+			String usernameRole){
+		return systemSqlSvc.addSystemSql(nameCn, source, sqlTitle, sqlType, sqlContent, usernameRole);
+	}
+	
+	@RequestMapping(value="editSystemSql")
+	@ResponseBody
+	public Map<String, Object> editSystemSql(
+			String numberCode,
+			String nameCn,
+			String source,
+			String sqlTitle,
+			String sqlType,
+			String sqlContent,
+			String usernameRole){
+		return systemSqlSvc.editSystemSql(numberCode, nameCn, source, sqlTitle, sqlType, sqlContent, usernameRole);
+	}
+	
+	@RequestMapping(value="deleteSystemSql")
+	@ResponseBody
+	public Map<String, Object> deleteSystemSql(String numberCodes){
+		
+		return systemSqlSvc.deleteSystemSql(numberCodes);
+	}
+	
+	@RequestMapping(value="queryDataBySystemSql")
+	@ResponseBody
+	public Map<String, Object> queryDataBySystemSql(
+			String numberCode,
+			int page,
+			int rows){
+		int pagesize = rows;
+		int offset = (page-1)*pagesize;
+		
+		Map<String, Object> pp = systemSqlSvc.getSystemSql(numberCode);
+		SystemSql systemSql = null;
+		if((Integer)pp.get(Constant.result_status)==1){
+			systemSql = (SystemSql)pp.get(Constant.result_content);
+		}
+		if(systemSql==null){
+			throw new MyExceptionForXyz("参数错误005！");
+		}
+		
+		String sourceKey = "";
+		if(systemSql.getSource() != null && !"".equals(systemSql.getSource() )){
+			if("local".equals(systemSql.getSource() )){
+				sourceKey = "localUrl";
+			}else{
+				throw new MyExceptionForXyz("数据地址有误！");
+			}
+		}
+		String connectionStr = SysPropertyTool.getValue(sourceKey);
+		
+		String[] sqlTitles = systemSql.getSqlTitle().split(",");
+		String sql = systemSql.getSqlContent().replaceAll("###danyinhao###","'");
+		
+		Map<String ,Object> resultMap = JDBCUtil.getDataForPage(systemSql.getSqlType(), connectionStr,sql, sqlTitles.length, offset, pagesize);
+		@SuppressWarnings("unchecked")
+		List<Object[]> dataList = (List<Object[]>) resultMap.get("rows");
+		List<Map<String,Object>> resultDataList = new ArrayList<Map<String ,Object>>();
+		
+		for(int i=0; i<dataList.size();i++){
+			Map<String ,Object> dataMap = new HashMap<String ,Object>();
+			for(int j=0; j<sqlTitles.length;j++){
+				dataMap.put(sqlTitles[j].split("@")[0], dataList.get(i)[j]);
+			}
+			resultDataList.add(dataMap);
+		}
+		
+		Map<String,Object> mapContent = new HashMap<String, Object>();
+		mapContent.put("total",resultMap.get("total"));
+		mapContent.put("rows",resultDataList);
+		return ReturnUtil.returnMap(1,mapContent);
+	}
+	
+	@RequestMapping(value="downloadExcelForSystemSql")
+	@ResponseBody
+	public Map<String, Object> downloadExcelForSystemSql(
+			String numberCode){
+		
+		Map<String, Object> pp = systemSqlSvc.getSystemSql(numberCode);
+		SystemSql systemSql = null;
+		if((Integer)pp.get(Constant.result_status)==1){
+			systemSql = (SystemSql)pp.get(Constant.result_content);
+		}
+		if(systemSql==null){
+			throw new MyExceptionForXyz("参数错误005！");
+		}
+		
+		String sourceKey = "";
+		if(systemSql.getSource() != null && !"".equals(systemSql.getSource() )){
+			if("local".equals(systemSql.getSource() )){
+				sourceKey = "localUrl";
+			}else{
+				throw new MyExceptionForXyz("数据地址有误！");
+			}
+		}
+		String connectionStr = SysPropertyTool.getValue(sourceKey);
+		
+		String[] sqlTitles = systemSql.getSqlTitle().split(",");
+		String sql = systemSql.getSqlContent().replaceAll("###danyinhao###","'");
+		
+		int sqlTitleLenth = sqlTitles.length;
+		
+		Object[][] titleList = new Object[sqlTitleLenth][2];
+		
+		for(int i=0;i<sqlTitleLenth;i++){
+			titleList[i] = sqlTitles[i].split("@");
+		}
+		
+		List<Object[]> dataList = JDBCUtil.getData(systemSql.getSqlType(), connectionStr,sql, sqlTitles.length);
+		
+		List<List<Object>> resultDataList = new ArrayList<List<Object>>();
+		
+		for(int i=0; i<dataList.size();i++){
+			List<Object> tempList = new ArrayList<Object>();
+			for(int j=0; j<sqlTitleLenth;j++){
+				tempList.add(dataList.get(i)[j]);
+			}
+			resultDataList.add(tempList);
+		}
+		
+		String fileName = systemSql.getNameCn()+DateUtil.dateToShortString(new Date())+".xls";
+		boolean flag = ExcelTool.createExcelForList(resultDataList, titleList, fileName);
+		
+		if(flag){
+			systemSqlSvc.addUseCountForSystemSql(numberCode);
+			return ReturnUtil.returnMap(1, fileName);
+		}else{
+			return ReturnUtil.returnMap(0, "导出excel文件失败，请联系管理员或稍后再试！");
+		}
+	}
+	
+	
+}

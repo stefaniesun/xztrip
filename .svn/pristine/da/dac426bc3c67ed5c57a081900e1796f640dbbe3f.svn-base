@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/login.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+    <link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+<body>
+<header>
+    <a href="" class="pull-left back-inner" onclick="window.history.back();">
+        <i class="iconfont icon-fanhui"></i>
+    </a>
+    <h1 class="header-title">
+        立即注册
+    </h1>
+</header>
+<div class="content-wrapper proup-height">
+    <div class="item-box">
+        <!-- 接收验证码 -->
+        <ul class="dk">
+            <li >
+                <span class="pull-left">账号</span>
+                <input type="text" placeholder="请输入账号" class="pull-right"/>
+                <div style="clear:both;"></div>
+            </li>
+            <li >
+                <span class="pull-left">验证码</span>
+                <input type="password" placeholder="请输入账号" class="pull-right"/>
+                <span class="yzm-btn">发送验证码</span>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+        <!-- 设置密码 -->
+        <ul class="dn">
+            <li >
+                <span class="pull-left">用户名</span>
+                <input type="text" placeholder="请输入用户名" class="pull-right"/>
+                <div style="clear:both;"></div>
+            </li>
+            <li >
+                <span class="pull-left">输入密码</span>
+                <input type="password" placeholder="请输入密码" class="pull-right"/>
+                <i class="iconfont icon-yanjing icon-yj"></i>
+                <div style="clear:both;"></div>
+            </li>
+            <li >
+                <span class="pull-left">重复密码</span>
+                <input type="password" placeholder="请再次输入密码" class="pull-right"/>
+                <i class="iconfont icon-yanjing icon-yj"></i>
+                <div style="clear:both;"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="item-box">
+        <button class="login-btn dk">下一步</button>
+        <button class="login-btn dn">立即注册</button>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+</html>

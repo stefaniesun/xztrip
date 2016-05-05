@@ -1,0 +1,30 @@
+package xyz.ctrl.main;
+
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import xyz.svc.main.ProductUserTagSvc;
+
+@Controller
+@RequestMapping(value="/ProductUserTagWS")
+public class ProductUserTagWS {
+
+	@Autowired
+	private ProductUserTagSvc productUserTagSvc;
+	
+	@RequestMapping(value="queryProductUserTagList")
+	@ResponseBody
+	public Map<String, Object> queryProductUserTagList(
+			int page,
+			int rows,
+			String product){
+		int pagesize = rows;
+		int offset = (page-1)*pagesize;
+		return productUserTagSvc.queryProductUserTagList(offset, pagesize, product);
+	}
+}

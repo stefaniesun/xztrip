@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>个人中心</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<link href="css/index.css" rel="stylesheet" type="text/css">
+<link href="css/user.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/tibet-wx.js"></script>
+<script type="text/javascript">
+    function F_Open_dialog()
+    {
+        document.getElementById("btn_file").click();
+    }
+</script>
+</head>
+<body>
+<div class="user-center">
+    <header class="tibet-header">
+        <div class="back-left icon-left">
+            <img src="images/icon-left.png"/>
+        </div>
+        <div class="center-name icon-left">
+            <h2>个人信息</h2>
+        </div>
+        <div class="go-right icon-right">
+            <img class="icon-house" src="images/icon-house.png" alt=""/>
+        </div>
+    </header>
+    <div class="prop-height"></div>
+
+    <div class="user-top">
+        <img src="images/lbg2.jpg" style=" width:100%; height:8rem">
+        <div class="user-top-box">
+            <a href="login.html" style="display: none;">登录/注册</a>
+            <img src="images/default-header-img.jpg" onclick="this.F_Open_dialog()"/>
+            <input type="file" id="btn_file" class="btn_file" style=""/>
+        </div>
+        <p  class="user-name" >张三张三张三</p>
+    </div>
+    <div class="user-list">
+        <ul>
+            <li>
+                <a href="#" class="user-list-m">我的订单</a>
+                <img class="icon-more" src="images/more.png" alt="">
+            </li>
+            <li>
+                <a href="#" class="user-list-m">个人信息</a>
+                <img class="icon-more" src="images/more.png" alt="">
+            </li>
+            <li>
+                <a href="#" class="user-list-m">修改资料</a>
+                <img class="icon-more" src="images/more.png" alt="">
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a href="#" class="user-list-m">关于</a>
+                <img class="icon-more" src="images/more.png" alt="">
+            </li>
+            <li>
+                <a href="#" class="user-list-m">联系电话</a>
+                <img class="icon-more" src="images/more.png" alt="">
+            </li>
+            <li>
+                <a href="#" class="user-list-m">退出登录</a>
+                <img class="icon-more" src="images/more.png" alt="">
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

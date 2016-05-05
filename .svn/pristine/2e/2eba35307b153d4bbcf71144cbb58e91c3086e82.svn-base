@@ -1,0 +1,12 @@
+package xyz.svc.buyer;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
+
+public interface BuyerOrderSvc {
+
+	Map<String, Object> createOrder(String product, String type, int count,BigDecimal price,
+			Date dateInfo, String personInfo, String remarkBuy);
+
+}

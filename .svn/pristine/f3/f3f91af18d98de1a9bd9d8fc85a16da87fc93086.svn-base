@@ -1,0 +1,206 @@
+package xyz.svc.pay.imp;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.MyRequestUtil;
+import xyz.filter.ReturnUtil;
+import xyz.model.core.Bill;
+import xyz.model.core.WxBill;
+import xyz.model.member.XyzSessionLogin;
+import xyz.svc.pay.PaySvc;
+import xyz.util.DateUtil;
+import xyz.util.UUIDUtil;
+
+@Service
+public class PaySvcImp implements PaySvc {
+
+	@Autowired
+	private CommonDao commonDao;
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> addWxBill(WxBill wxBill) {
+		String uuid = UUIDUtil.getUUIDStringFor32();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		long timeStart = System.currentTimeMillis();
+		long timeexpire = timeStart+1800000;
+		wxBill.setAppid(WxPayUtil.CORPID);
+		wxBill.setAttach("");
+		wxBill.setBillCreateTime(new Date());
+		wxBill.setBillNo(uuid);
+		wxBill.setBillStatus(0);
+//		wxBill.setBody("444");
+		wxBill.setDetail("");
+		wxBill.setDevice_info("");
+		wxBill.setFee_type("CNY");
+		wxBill.setGoods_tag("");
+		wxBill.setLimit_pay("");
+		wxBill.setMch_id(WxPayUtil.MCH_ID);
+		wxBill.setNonce_str(WxPayUtil.getNonceStr(15));
+		wxBill.setNotify_url(WxPayUtil.WXPAY_NOTFIY_URL);
+		wxBill.setOpenid("");
+		wxBill.setOut_trade_no(uuid);
+		wxBill.setProduct_id("");
+		wxBill.setSign("");
+//		wxBill.setSpbill_create_ip("192.168.1.10");
+		wxBill.setTime_expire(sdf.format(new Date(timeexpire)));
+		wxBill.setTime_start(sdf.format(new Date(timeStart)));
+//		wxBill.setTotal_fee(1);
+		wxBill.setTrade_type("APP");
+		
+		//创建订单
+		commonDao.save(wxBill);
+		
+		Map<String, Object> payResult = WxPayUtil.doWxPay(wxBill);
+		if("1".equals(payResult.get("status").toString())){
+			payResult = (Map<String, Object>)payResult.get("content");
+			String prepayid = payResult.get("prepay_id")==null?null:payResult.get("prepay_id").toString();
+			if(prepayid!=null && !"".equals(prepayid)){
+				SortedMap<String, String> prepayInfo = WxPayUtil.wxPayRequest2App(prepayid);
+				return ReturnUtil.returnMap(1, prepayInfo);
+			}
+			return ReturnUtil.returnMap(0, "服务器异常");
+		}
+		return ReturnUtil.returnMap(0, payResult.get("msg"));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> addWxBillByJs(WxBill wxBill) {
+		
+		XyzSessionLogin login = MyRequestUtil.getXyzSessionLogin();
+		
+		String uuid = UUIDUtil.getUUIDStringFor32();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		long timeStart = System.currentTimeMillis();
+		long timeexpire = timeStart+1800000;
+		wxBill.setAppid(WxJsPayUtil.corpid_js);
+		wxBill.setAttach("");
+		wxBill.setBillCreateTime(new Date());
+		wxBill.setBillNo(uuid);
+		wxBill.setBillStatus(0);
+//		wxBill.setBody("444");
+		wxBill.setDetail("");
+		wxBill.setDevice_info("");
+		wxBill.setFee_type("CNY");
+		wxBill.setGoods_tag("");
+		wxBill.setLimit_pay("");
+		wxBill.setMch_id(WxJsPayUtil.mch_id_js);
+		wxBill.setNonce_str(WxJsPayUtil.getNonceStr(16));
+		wxBill.setNotify_url(WxJsPayUtil.WXPAY_NOTFIY_URL);
+		/***********************************************注意openid，部署正式服要使用用户的openid************************************************************/
+		wxBill.setOpenid(login!=null?login.getOpenid():"");
+//		wxBill.setOpenid("owK5Ws-yQznRAzEN61JUGtv1bX_M");
+		/***********************************************注意openid，部署正式服要使用用户的openid************************************************************/
+		wxBill.setOut_trade_no(uuid);
+		wxBill.setProduct_id("");
+		wxBill.setSign("");
+//		wxBill.setSpbill_create_ip("192.168.1.10");
+		wxBill.setTime_expire(sdf.format(new Date(timeexpire)));
+		wxBill.setTime_start(sdf.format(new Date(timeStart)));
+//		wxBill.setTotal_fee(1);
+		wxBill.setTrade_type("JSAPI");
+		
+		//创建订单
+		commonDao.save(wxBill);
+		
+		Map<String, Object> payResult = WxJsPayUtil.doWxJsPay(wxBill);
+		if("1".equals(payResult.get("status").toString())){
+			payResult = (Map<String, Object>)payResult.get("content");
+			String prepayid = payResult.get("prepay_id")==null?null:payResult.get("prepay_id").toString();
+			if(prepayid!=null && !"".equals(prepayid)){
+				SortedMap<String, String> prepayInfo = WxJsPayUtil.wxPayRequest2WxWebApp(prepayid);
+				return ReturnUtil.returnMap(1, prepayInfo);
+			}
+			return ReturnUtil.returnMap(0, "服务器异常");
+		}
+		return ReturnUtil.returnMap(0, payResult.get("msg"));
+	}
+
+	@Override
+	public Map<String, Object> getWxBill(String billNo) {
+		WxBill wxBill = (WxBill)commonDao.getObjectByUniqueCode("WxBill", "billNo", billNo);
+		if(wxBill==null){
+			return ReturnUtil.returnMap(0, "数据不存在");
+		}
+		return ReturnUtil.returnMap(1, wxBill);
+	}
+
+	@Override
+	public Map<String, Object> updateWxBillStatus(String billNo) {
+		WxBill wxBill = (WxBill)commonDao.getObjectByUniqueCode("WxBill", "billNo", billNo);
+		if(wxBill!=null){
+			wxBill.setBillStatus(1);
+			commonDao.update(wxBill);
+		}
+		return ReturnUtil.returnMap(0, "billNo无效");
+	}
+
+	@Override
+	public Map<String, Object> wxPayCallbackOper(Map<String, Object> resultData) {
+		String result_code = resultData.get("result_code")==null?null:resultData.get("result_code").toString();
+		String out_trade_no = resultData.get("out_trade_no")==null?null:resultData.get("out_trade_no").toString();
+		int cash_fee = resultData.get("cash_fee")==null?-1:Integer.parseInt(resultData.get("cash_fee").toString());
+		if("SUCCESS".equals(result_code)){
+			@SuppressWarnings("unchecked")
+			List<WxBill> wxBill = commonDao.queryByHql("FROM WxBill WHERE billStatus=0 AND total_fee="+cash_fee+" AND billNo='"+out_trade_no+"'");
+			if(wxBill.size()==1){
+				int i = commonDao.getSqlQuery("UPDATE wx_bill SET bill_status = 1 WHERE bill_no = '"+out_trade_no+"'").executeUpdate();
+				if(i==1){
+					System.out.println("===============微信回调修改wx_bill状态"+i+"条==========");
+					return ReturnUtil.returnMap(1, wxBill.get(0));
+				}
+			}
+		}
+		return ReturnUtil.returnMap(0, null);
+	}
+
+	@Override
+	public Map<String, Object> addAliBill(Bill bill) {
+		String uuid = UUIDUtil.getUUIDStringFor32();
+    	bill.setBillNo(uuid);
+    	//支付类型
+    	bill.setPayType("01");
+//    	bill.setOrderNo(order_no);
+//    	bill.setOrderAmount(order_amount);
+//    	bill.setOrder_subject(order_subject);
+//    	bill.setOrder_body(order_body);
+    	bill.setBillStatus("0");
+    	bill.setBillCreateTime(new Date());
+    	bill.setBackUrl(AliPayUtil.backUrl);
+    	bill.setReturnUrl(AliPayUtil.returnUrl);
+    	bill.setNotifyUrl(AliPayUtil.notifyUrl);
+    	bill.setShowUrl(AliPayUtil.showUrl);
+    	bill.setSuccessUrl(AliPayUtil.successUrl);
+    	bill.setFailUrl(AliPayUtil.failUrl);
+    	
+    	commonDao.save(bill);
+    	
+    	//组装支付宝支付订单信息字符串
+    	String alipayInfo = AliPayUtil.getAlipayInfo(bill);
+		return ReturnUtil.returnMap(1, alipayInfo);
+	}
+
+	@Override
+	public Map<String, Object> aliPayCallbackOper(String totalFee, String billNo) {
+		@SuppressWarnings("unchecked")
+		List<Bill> bill = commonDao.queryByHql("FROM Bill WHERE billStatus=0 AND orderAmount='"+totalFee+"' AND billNo='"+billNo+"'");
+		if(bill.size()==1){
+			int i = commonDao.getSqlQuery("UPDATE bill SET bill_status = 5 WHERE bill_no = '"+billNo+"'").executeUpdate();
+			if(i==1){
+				System.out.println("===============支付宝回调修改bill状态"+i+"条==========");
+				return ReturnUtil.returnMap(1, bill.get(0));
+			}
+		}
+		return ReturnUtil.returnMap(0, null);
+	}
+
+}

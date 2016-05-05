@@ -1,0 +1,150 @@
+@CHARSET "UTF-8";
+*{
+    margin: 0;
+    padding:0;
+}
+body{
+    font-family:微软雅黑;
+    color: #666;
+    font-size: 14px;
+}
+
+/* 头部 */
+
+.header-item{
+    width: 80%;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    margin: 0 15px;
+    margin-top: 6px;
+}
+.header-item .pull-item{
+    color: #fff;
+    display: table-cell;
+    width: 1%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    line-height: 2;
+    border-left: 1px solid #fff;
+}
+.header-item .pull-item:first-child{
+    border-left: 0;
+}
+.header-item .pull-active{
+    color: #099fde;
+    background-color: #fff;
+}
+.header-item .iconfont{
+    font-size: 12px;
+    position: relative;
+}
+header .icon-sousuo{
+    font-size: 21px;
+    color: #fff;
+    line-height: 1.9;
+}
+
+
+/* 搜索框 */
+.search-show{
+    width: 100%;
+    height: auto;
+    background-color: #e3e3e3;
+    padding: 0.8rem 0;
+    opacity: 0.9;
+    display: none;
+}
+.con-search-box{
+    width: 90%;
+    height: 1.7rem;
+    margin: 0 auto;
+    border-radius: 1.3rem;
+    border: 1px solid #fff;
+    background: #fff;
+}
+.con-search-box .icon-sousuo{
+    float: right;
+    color: #ccc;
+    font-size: 18px;
+    margin-right: 0.5rem;
+}
+.con-search-input{
+    float: left;
+    width: 79%;
+    padding: 0.4rem;
+    border: 0px;
+    outline: none;
+    margin-left: 0.3rem;
+    background-color: transparent;
+}
+/* 产品列表 */
+.home-list,.home-list ul{
+    width: 100%;
+}
+.home-list-item{
+    background-color: #fff;
+    height: auto;
+    border-bottom: 1px solid #f2f3f4;
+    padding: 13px 0;
+    padding-left: 10px;
+    padding-right: 85px;
+    position: relative;
+}
+.home-list-item .item-img{
+    width: 100px;
+    height: 80px;
+    margin: 0;
+    float: left;
+}
+.home-list-item .item-img img{
+    width: 100px;
+    height: 80px;
+    margin: 0;;
+}
+.home-list-item .item-info{
+    height: auto;
+    padding: 0 10px;
+    overflow: hidden;
+}
+.home-list-item .item-info h3{
+    font-size: 16px;
+    height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.7;
+    margin: 0;
+    color:#333;
+}
+.home-list-item .item-info .home-item-decr{
+    font-size: 12px;
+    padding-top: 6px;
+    margin: 0;
+    height: 50px;
+    color: #999;
+	line-height: 1.5;
+	overflow: hidden;
+}
+.home-list-item .item-price{
+    position: absolute;
+    right: 0;
+    top: 40%;
+    font-size: 12px;
+    padding-right: 5px;
+    text-align: center;
+    font-family: 黑体;
+}
+.item-price .peice-icon{
+    font-size: 12px;
+}
+.item-price .peice-num{
+    font-size: 18px;;
+}
+.peice-icon.org-color, .peice-num.org-color{
+    color: #ff9a14;
+}
+.peice-icon.grey-color{
+    color: #999;
+}

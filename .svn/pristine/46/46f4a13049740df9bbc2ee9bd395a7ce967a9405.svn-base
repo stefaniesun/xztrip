@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>酒店列表页</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<meta name="full-screen" content="yes"><!-- UC强制全屏 -->
+<meta name="x5-fullscreen" content="true"><!-- QQ强制全屏 -->
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/hotel-detais.css" rel="stylesheet" type="text/css">
+<link href="../css/dropload.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="UTF-8" ></script>
+<script type="text/javascript" src="../js/tibet-wx.js"></script>
+<script type="text/javascript" src="../js/productHotelList.js"></script>
+</head>
+<body>
+<div class="hotel-detail default-width">
+    <header class="tibet-header">
+        <div class="back-left icon-left">
+            <img src="../images/icon-left.png"/>
+        </div>
+        <div class="center-name icon-left">
+            <h2 id="headerTitle">酒店详情</h2>
+        </div>
+        <div class="go-right icon-right">
+        </div>
+    </header>
+
+    <!-- 酒店顶部详情 -->
+    <div class="hotel-top-detail default-width">
+        <div class="hotel-top-img default-width">
+            <img id="headerImg" src="" />
+        </div>
+        <div class="hotel-list-block default-width">
+            <ul>
+                <li class="item-content">
+                    <div class="item-title" id="hotel_title"></div>
+                </li>
+               <!-- <li class="item-content">
+                    <div class="icon-phone">
+                        <img src="../images/icon-phone.png" alt="">
+                    </div>
+                    <div class="item-phone">023-1234567</div>
+                </li>-->
+                <!-- <li class="item-content">
+                    <div class="check-in">
+                        入住日期
+                    </div>
+                    <div class="check-in-data">
+                        <span>2016-03-01</span>
+                        <img class="icon-more" src="../images/more.png"/>
+                    </div>
+                </li>
+                <li class="item-content">
+                    <div class="check-in">
+                        退房日期
+                    </div>
+                    <div class="check-in-data">
+                        <span>2016-03-02</span>
+                        <img class="icon-more" src="../images/more.png"/>
+                    </div>
+                </li> -->
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- 酒店内容详情 -->
+    <div class="hotel-content-details default-width" >
+        <div class="content-chioce">
+            <div class="place-order-info">
+                <a class="hotel-yd order-active" href="javascript:void(0)" id="show_title_1" onclick="showContent(1)">酒店预订</a>
+                <a class="details-info" href="javascript:void(0)" id="show_title_2" onclick="showContent(2)">详情说明</a>
+            </div>
+            <!-- 酒店房间列表 -->
+            <div id="show_content_1" class="room-list default-width">
+            	<div id="tableList">
+<!-- 	                <div class="room-list-item default-width">
+	                    <div class="room-item-name"> 标准双人房 </div>
+	                    <div class="room-item-peice"><i>¥250</i>起</div>
+	                    <div class="room-item-but"><button class="order-but">预订</button></div>
+	                </div>
+	                <div class="room-list-item default-width">
+	                    <div class="room-item-name">特惠商务房</div>
+	                    <div class="room-item-peice"><i>¥250</i>起</div>
+	                    <div class="room-item-but"><button class="order-over-but">订完</button></div>
+	                </div> -->
+                </div>
+            </div>
+            <!--酒店详情-->
+            <div class="hotel-brief-introduction default-width" id="show_content_2">
+<!--                 <div class="hotel-facilities-box" >
+                    <div class="hotel-facilities card">
+                        酒店设施
+                    </div>
+                    <div class="hotel-facilities-list default-width" >
+                       <ul>
+                           <li>
+                               <img src="../images/hotel.jpg" style="width: 20px;float: left;margin-top: 0.2rem">
+                               <span >免费wifi</span>
+                           </li>
+                           <li>
+                               <img src="../images/hotel.jpg" style="width: 20px;float: left;margin-top: 0.2rem">
+                               <span >24小时热水</span>
+                           </li>
+                           <li>
+                               <img src="../images/hotel.jpg" style="width: 20px;float: left;margin-top: 0.2rem">
+                               <span >接机服务</span>
+                           </li> <li>
+                               <img src="../images/hotel.jpg" style="width: 20px;float: left;margin-top: 0.2rem">
+                               <span >会议室</span>
+                           </li> <li>
+                               <img src="../images/hotel.jpg" style="width: 20px;float: left;margin-top: 0.2rem">
+                               <span >停车场</span>
+                           </li>
+                       </ul>
+                    </div>
+                </div> -->
+                <div class="hotel-facilities-box">
+                    <div class="hotel-facilities card">
+                        联系方式
+                    </div>
+                    <div class="hotel-facilities-list default-width" style="background-color: #fff;display: table">
+                        <p id="hotelLinkphone" style="padding:0.5rem  0.75rem">未录入</p>
+                    </div>
+                </div>
+                <div class="hotel-facilities-box">
+                    <div class="hotel-facilities card">
+                        酒店地址
+                    </div>
+                    <div class="hotel-facilities-list default-width" style="background-color: #fff;display: table">
+                        <p id="hotelLinkaddress" style="padding:0.5rem  0.75rem">未录入</p>
+                    </div>
+                </div>
+<!--                 <div class="hotel-facilities-box">
+                    <div class="hotel-facilities card">
+                        酒店简介
+                    </div>
+                    <div class="hotel-facilities-list default-width" style="background-color: #fff;display: table">
+                        <p style="padding:0.5rem  0.75rem">如家快捷酒店（上海外滩城隍庙店）位于上海市复兴东路，近河南南路口。
+                            地铁8号线老西门站下、10号线豫园站下步行8分钟可达，酒店步行3分钟即到城隍庙（豫园），乘出租车10分钟可到淮海路新天地石库门风情和田子坊，
+                            领略海派文化去外滩，购物去南京东路步行街、淮海路商圈、人民广场。 如家快捷酒店（上海外滩城隍庙店）拥有各类房型，
+                            客房干净整洁，基本设施齐全。推窗远眺，东方明珠、金茂大厦、上海中心、环球金融中心等现代建筑饱览眼底。温馨的住宿环境，让您享受每一段自在旅程。
+                        </p>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+/**
+ * Created by Administrator on 2016/2/18.
+ */
+$(document).ready(function(){
+    $(".category-choice-hotel").click(function(){
+        $(this).addClass("category-choice-active");
+        $(".category-choice-ticket").removeClass("category-choice-active");
+        $(".index-hotel-card").css("display","block");
+        $(".index-ticket-card").css("display","none")
+    });
+    $(".category-choice-ticket").click(function(){
+        $(this).addClass("category-choice-active"),
+        $(".category-choice-hotel").removeClass("category-choice-active");
+        $(".index-hotel-card").css("display","none");
+        $(".index-ticket-card").css("display","block")
+    });
+
+
+/* 目录 */
+    $(".icon-menu").click(function(){
+        $(".menu-show").slideToggle("100");
+    });
+
+});

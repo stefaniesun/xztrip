@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>productHotelDetail</title>
+<link href="../css/mui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+<style>
+.mui-bar-nav~.mui-content .mui-pull-top-pocket {
+	top: 0px;
+}
+.mui-input-group:after{
+	height: 0px;
+}
+.mui-table-view:after{
+	height:0px;
+}
+li#form .mui-slider .mui-slider-group .mui-slider-item{
+	border-bottom:0;
+}
+</style>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	<h1 class="mui-title"></h1>
+</header>
+<nav class="mui-bar mui-bar-tab" style="background:#e4393c;height:40px;" id="footerNav">
+	<span style="width:100%;color:#ffffff; display:block; text-align: center;line-height:40px;">立即下单</span>
+</nav>
+<div class="mui-content">
+	<!--下拉刷新容器-->
+	<div id="pullrefresh_productDetail" class="mui-scroll-wrapper contentScrollWrapper">
+		<div class="mui-scroll">
+			<!--数据列表-->
+			<ul class="mui-table-view">
+				<li id="container" style="padding: 10px;">
+					<h3 id="nameCn"></h3>
+					<p id="numberCode"></p>
+					<br/>
+				</li>
+				<li id="form">
+					<div id="slider" class="mui-slider">
+						<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+							<a class="mui-control-item" href="#formDiv">产品下单</a>
+							<a class="mui-control-item" href="#remark">详情说明</a>
+						</div>
+						<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
+						<div class="mui-slider-group">
+							<div id="formDiv" class="mui-slider-item mui-control-content mui-active">
+								<form class="mui-input-group">
+									<ul class="mui-table-view mui-table-view-chevron">
+										<li class="mui-table-view-cell">
+											<a href="javascript:void(0);" class="mui-navigate-right" id="dateStartChoose">入住日期<span class="mui-pull-right update" id="dateStartForm"></span></a>
+										</li>
+									</ul>
+									<ul class="mui-table-view mui-table-view-chevron">
+										<li class="mui-table-view-cell">
+											<a href="javascript:void(0);" class="mui-navigate-right" id="dateEndChoose">离店日期<span class="mui-pull-right update" id="dateEndForm"></span></a>
+										</li>
+									</ul>
+									<div class="mui-input-row">
+										<label>购买数量</label>
+										<div class="mui-numbox" style="margin-right:19px;">
+											<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
+											<input id="countForm" class="mui-input-numbox" type="number" value="1" onchange="calcTotal()" onblur="calcTotal()"/>
+											<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
+										</div>
+									</div>
+								</form>
+								<div style="padding:20px;">
+									<p style="display:none;" id="allowCount">0</p>
+									<p style="display:none;" id="productPrice"></p>
+									<div  id="showResult"></div>
+									<div  id="showTotal"></div>
+								</div>
+								<p>联系人信息<span style="color:red;">【重要，请确保信息正确有效】</span></p>
+								<form class="mui-input-group">
+									<div class="mui-input-row">
+										<label>联系人</label>
+										<input id="linkmanForm" type="text" placeholder="请填写联系人姓名"/>
+									</div>
+									<div class="mui-input-row">
+										<label>联系电话</label>
+										<input id="linkPhoneForm" type="text" placeholder="请确保电话能够联络到您"/>
+									</div>
+									<div class="mui-input-row">
+										<label>备注说明</label>
+										<input id="remarkBuyForm" type="text" placeholder="无特殊说明可不填"/>
+									</div>
+								</form>
+							</div>
+							<div id="remark" class="mui-slider-item mui-control-content">
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<script src="../js/mui_20151228.js"></script>
+<script src="../js/mui.picker.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript">
+document.querySelector('.mui-scroll-wrapper').style.top='45px';
+document.querySelector('.mui-scroll-wrapper').style.bottom='45px';
+var current = new Date();
+var nextDay = new Date(current.getTime() + 86400000);
+xyz.id('dateStartForm').innerText = current.Format('yyyy-MM-dd');
+xyz.id('dateEndForm').innerText = nextDay.Format('yyyy-MM-dd');
+mui.init({
+	swipeBack: false,
+	pullRefresh: {
+		container: '#pullrefresh_productDetail',
+		down: {
+			callback: pulldown
+		}
+	}
+});
+
+xyz.id('dateStartChoose').addEventListener('tap', function() {
+	var dateStart = xyz.id('dateStartForm');
+	var dateEnd = xyz.id('dateEndForm');
+	var mpicker = new mui.DtPicker({
+		type : 'date',
+		beginYear : current.getFullYear(),
+		endYear : current.getFullYear()+5
+	});
+	mpicker.setSelectedValue(dateStart.innerText);
+	mpicker.show(function(rs) {
+		var dateStartTime = new Date(rs.value.replace(/-/g,"/")).getTime();
+		var dateEndTime = new Date(dateEnd.innerText.replace(/-/g,"/")).getTime();
+		if(dateStartTime<new Date(current.Format('yyyy-MM-dd').replace(/-/g,"/")).getTime()){
+			alert('不能选择已经过去的日期');
+			return ;
+		}
+		if(dateStartTime>=dateEndTime){
+			dateEnd.innerText = new Date(dateStartTime+86400000).Format('yyyy-MM-dd');
+		}
+		dateStart.innerText = rs.value;
+		mpicker.dispose();
+		getProductStock();
+	});
+}, false);
+
+xyz.id('dateEndChoose').addEventListener('tap', function() {
+	var dateStart = xyz.id('dateStartForm');
+	var dateEnd = xyz.id('dateEndForm');
+	var mpicker = new mui.DtPicker({
+		type : 'date',
+		beginYear : current.getFullYear(),
+		endYear : current.getFullYear()+5
+	});
+	mpicker.setSelectedValue(dateEnd.innerText);
+	mpicker.show(function(rs) {
+		var dateStartTime = new Date(dateStart.innerText.replace(/-/g,"/")).getTime();
+		var dateEndTime = new Date(rs.value.replace(/-/g,"/")).getTime();
+		if(dateEndTime>dateStartTime){
+			dateEnd.innerText = rs.value;
+			mpicker.dispose();
+			getProductStock();
+		}else{
+			alert('离店日期不能小于或等于入住日期（'+dateStart.innerText+'）');
+		}
+	});
+}, false);
+
+if(mui.os.plus){
+	mui.plusReady(function(){
+		setTimeout(function(){
+			pageInit();
+		}, 100);
+	});
+}else{
+	mui.ready(function(){
+		pageInit();
+	});
+}
+
+
+/**
+ * 下拉刷新具体业务实现
+ */
+function pulldown() {
+	pageInit();
+}
+
+function pageInit(){
+	var o = xyz.getUrlparam();
+	document.querySelector('.mui-title').innerText = o.nameCn;
+	xyz.id('nameCn').innerText = o.nameCn;
+	xyz.id('numberCode').innerText = o.numberCode;
+	xyz.id('remark').innerHTML = xyz.isNull(o.remark)?'<p style="text-align:center;"><br/><br/>暂无详情说明<br/><br/><br/></p>':o.remark;
+	setTimeout(function(){
+		mui('#pullrefresh_productDetail').pullRefresh().endPulldownToRefresh();
+	},500);
+	getProductStock();
+}
+
+function getProductStock(){
+	var dateStart = xyz.id('dateStartForm').innerText;
+	var dateEnd = xyz.id('dateEndForm').innerText;
+	/**var dateStartTime = new Date(dateStart.replace(/-/g,"/")).getTime();
+	var currentTime = new Date(new Date().Format('yyyy-MM-dd 00:00:00').replace(/-/g,"/")).getTime();
+	if(dateInfoTime<currentTime){
+		alert('您选择了一个过去时');
+		xyz.id('showResult').innerHTML='<p style="color:red;">您选择了一个已经过去的时间 -_-！</p>';
+		xyz.id('showTotal').innerHTML='';
+		return ;
+	}**/
+	xyz.ajax({
+		url:'ProductStockWS/queryProductStockList.app',
+		data:{
+			product:xyz.id('numberCode').innerText,
+			dateStart:dateStart,
+			dateEnd:dateEnd,
+			page:1,
+			rows:1000
+		},
+		success:function(data){
+			console.log(data);
+			/**
+			if(data.status==1){
+				var array = data.content.rows;
+				if(array.length==0){
+					xyz.id('showResult').innerHTML='<p style="color:red;">'+dateInfo+'暂无库存！</p>';
+					xyz.id('showTotal').innerHTML='';
+				}else if(array.length==1){
+					var obj = array[0];
+					xyz.id('allowCount').innerText = obj.count-obj.useCount;
+					xyz.id('productPrice').innerText = obj.price;
+					calcTotal();
+				}
+			}else{
+				alert(data.msg);
+			}
+			**/
+		}
+	});
+}
+
+function calcTotal(){
+	var price = xyz.id('productPrice').innerText;//单价
+	var allowCount = xyz.id('allowCount').innerText;//可用库存
+	var count = xyz.id('countForm').value;//购买数量
+	var dateInfo = xyz.id('dateInfoForm').innerText;//出行日期
+	
+	var showTotal = xyz.id('showTotal');
+	if(xyz.isNull(price) || isNaN(allowCount)){
+		showTotal.innerHTML='';
+		return ;
+	}
+	if(isNaN(count) || count<1){
+		showTotal.innerHTML='<span style="color:red;">请选择正确的购买数量！</span>';
+		return ;
+	}
+	count = new Number(count);
+	allowCount = new Number(allowCount);
+	
+	var stockTip = '';
+	if(allowCount<=0){
+		stockTop = '【<span style="color:red;">已售罄</span>】';
+	}else if(allowCount<count){
+		stockTop = '【<span style="color:red;">库存不足，仅剩'+allowCount+'张</span>】';
+	}else if(allowCount>count*2){
+		stockTop = '【库存充足】';
+	}else{
+		stockTop = '【还有<span style="color:red;">'+allowCount+'</span>张】';
+	}
+	xyz.id('showResult').innerHTML='<p style="color:black;">'+dateInfo+'门票价格：<span style="color:red;">'+new Number(price).toFixed(2)+'</span><span style="color:red;">元</span>'+stockTop+'</p>';
+	
+	var totalPrice = new Number(price * parseInt(count)).toFixed(2);
+	showTotal.innerHTML = '<p style="color:black;">金额合计：<span style="color:red;font-size:20px;">'+totalPrice+'</span><span style="color:red;">元</span></p>';
+}
+
+xyz.id('footerNav').addEventListener('tap', function() {
+	var apikey = window.localStorage.apikey;
+	if(xyz.isNull(apikey)){
+		//跳转登陆界面
+		if(window.plus){
+			plus.webview.getWebviewById('page/login.html').show("slide-in-right", 300);
+		}else{
+			alert('该功能需要下载APP才能使用哦！^_^');
+		}
+		return ;
+	}
+	var dateInfo = xyz.id('dateInfoForm').innerText;
+	var dateInfoTime = new Date(dateInfo.replace(/-/g,"/")).getTime();
+	var currentTime = new Date(new Date().Format('yyyy-MM-dd 00:00:00').replace(/-/g,"/")).getTime();
+	if(dateInfoTime<currentTime){
+		alert('您选择了一个过去时，请选择有效日期！');
+		return ;
+	}
+	var ppp = xyz.id('productPrice');
+	if(xyz.isNull(ppp) || xyz.isNull(ppp.innerText)){
+		alert('无法获取产品单价，请选择有效日期');
+		return ;
+	}
+	var count = xyz.id('countForm').value;
+	if(isNaN(count) || count<1){
+		alert('购买数量不能小于1');
+		return ;
+	}
+	var linkman = xyz.id('linkmanForm').value;
+	var linkPhone = xyz.id('linkPhoneForm').value;
+	if(xyz.isNull(linkman)){
+		alert('请填写联系人以便下单成功后可以联系到您');
+		return ;
+	}
+	if(xyz.isNull(linkPhone)){
+		alert('请填写联系电话以便下单成功后可以联系到您');
+		return ;
+	}
+	xyz.ajax({
+		url:'BuyerOrderWS/createOrder.cus',
+		data:{
+			apikey:apikey,
+			product:xyz.id('numberCode').innerText,
+			count:count,
+			dateInfo:dateInfo,
+			day:1,
+			linkman:linkman,
+			linkPhone:linkPhone,
+			remarkBuy:xyz.id('remarkBuyForm').value
+		},
+		success:function(data){
+			if(data.status==1){
+				alert('下单成功，请到订单界面支付您的订单~');
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					if(window.plus){
+						plus.webview.getWebviewById('page/login.html').show("slide-in-right", 300);
+					}else{
+						alert('该功能需要下载APP才能使用哦！^_^');
+					}
+				}else{
+					alert(data.msg);
+				}
+			}
+		}
+	});
+}, false);
+
+
+</script>
+</body>
+</html>

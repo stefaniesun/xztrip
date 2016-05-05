@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>productDetail</title>
+<link href="../css/mui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+<link rel="stylesheet" href="../css/customer.mui.theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.mui-bar-nav~.mui-content .mui-pull-top-pocket {
+	top: 0px;
+}
+.mui-input-group:after{
+	height: 0px;
+}
+.mui-table-view:after{
+	height:0px;
+}
+li#form .mui-slider .mui-slider-group .mui-slider-item{
+	border-bottom:0;
+}
+
+
+</style>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	<h1 class="mui-title">填写订单</h1>
+</header>
+<div class="mui-content">
+
+	<input type="hidden" id="numberCode">
+	<input type="hidden" id="stock">
+
+	<div class="container">
+		<div class="topBookInfo">
+			<div class="bookInfoTop">
+	                <h3 class="tName"></h3>
+	        </div>
+	        <div class="bookInfoMiddle">
+	            <span class="tLabel">在线支付</span>
+	            <span class="tPrice"><span class="tNum">¥<span id="price"></span></span>/ 张 </span>
+	    	</div>
+	    	<div class="bookInfoBottom">
+          
+        	</div>
+		</div>
+		
+		
+		
+		
+		<div class="w-item">
+			<div class="mui-input-row">
+				<label>出行日期</label>
+				<span id="dateInfoChoose"  style="text-align: right;display: block;font-size: 17px;color: #ccc;padding: 6px 15px;">请选择日期
+				<span class="mui-icon mui-icon-forward"></span>
+				</span>
+			</div>
+			<div class="mui-input-row">
+				<label>数量</label>
+				<div class="mui-numbox" data-numbox-min="1" data-numbox-max="20" style="width:110px;height:30px;">
+					<button id="minus" class="mui-btn mui-btn-numbox-minus" type="button" disabled="">-</button>
+					<input id="count" class="mui-input-numbox" type="number"  readonly="readonly" onchange="calcTotal()" onblur="calcTotal()">
+					<button id="plus" class="mui-btn mui-btn-numbox-plus" type="button">+</button>
+				</div>
+			</div>
+		</div>
+        
+        
+        
+        
+        <div id="contactBook">
+   			<div class="book_fill" style="opacity: 1;">
+   				<div class="w-item">
+   						<div class="mui-input-row">
+							<label>联系人</label>
+							<input type="text" id="linkmanForm" placeholder="姓名">
+						</div>
+						<div class="mui-input-row">
+							<label>联系电话</label>
+							<input type="text" id="linkPhoneForm" placeholder="手机">
+						</div>
+						<div class="mui-input-row">
+							<label>备注</label>
+							<input type="text" id="remarkBuyForm" placeholder="特殊需求">
+						</div>
+				</div>
+			</div>
+		</div>
+		
+		
+	</div>
+	
+	
+	
+	<div class="order-btn fn-clear">
+        <div class="submit-btn">
+            <div class="order-price" id="priceInfo">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td valign="vertical" style="height: 50px;">
+                                <span id="priceTotal"><span class="orderPrice">订单金额:</span> ¥<span class="totalPrice">0</span>
+				                  </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+                <a class="btn tcTraObj"  id="submitBtn" href="javascript:;">提交订单</a> 
+        </div>
+    </div>
+
+</div>
+<script src="../js/mui_20151228.min.js"></script>
+<script src="../js/mui.picker.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript">
+
+
+
+
+
+var o = xyz.getUrlparam();
+xyz.ajax({
+	url:'BuyerScenicWS/getScenicProduct.app',
+	data:{
+		numberCode:o.numberCode
+	},
+	success:function(data){
+		if(data.status==1){
+			xyz.id('numberCode').value=data.content.numberCode;
+			mui('.tName')[0].innerHTML=data.content.nameCn;
+			mui('.totalPrice')[0].innerHTML=parseInt(data.content.price);
+			mui('#price')[0].innerHTML=parseInt(data.content.price);
+			mui('#price')[0].value=parseInt(data.content.price);
+		}else{
+			alert(data.msg);
+		}
+	}
+});
+
+var current = new Date();
+xyz.id('dateInfoChoose').addEventListener('tap', function() {
+	var dateInfo = xyz.id('dateInfoChoose');
+	var mpicker = new mui.DtPicker({
+		type : 'date',
+		beginYear : current.getFullYear(),
+		endYear : current.getFullYear()+5
+	});
+	mpicker.setSelectedValue(dateInfo.innerText);
+	mpicker.show(function(rs) {
+		var dateInfoTime = new Date(rs.value.replace(/-/g,"/")).getTime();
+		var currentTime = new Date(new Date().Format('yyyy-MM-dd 00:00:00').replace(/-/g,"/")).getTime();
+		if(dateInfoTime<currentTime){
+			plus.nativeUI.alert("您选择了一个已经过去的时间");
+			dateInfo.value="";
+			return;
+		}
+		dateInfo.innerText = rs.value;
+		dateInfo.value = rs.value;
+		mpicker.dispose();
+		getProductStock();
+		
+	});
+}, false);
+
+
+function getProductStock(){
+	var dateInfo = xyz.id('dateInfoChoose').value;
+
+	xyz.ajax({
+		url:'ProductStockWS/queryProductStockList.app',
+		data:{
+			product:xyz.id('numberCode').value,
+			dateStart:dateInfo,
+			dateEnd:dateInfo,
+			page:1,
+			rows:1000
+		},
+		success:function(data){
+			if(data.status==1){
+				var array = data.content.rows;
+				if(array.length==0){
+					plus.nativeUI.alert("暂无库存,请选择其他日期");
+					dateInfo.value="";
+				}else if(array.length==1){
+					var obj = array[0];
+					console.log(obj);
+					 var count=obj.count-obj.useCount;
+					 if(count<=0){
+						 plus.nativeUI.alert("暂无库存,请选择其他日期");
+						 dateInfo.value="";
+					 }
+					 xyz.id('stock').value=count;
+					 xyz.id('price').value=obj.price;
+					calcTotal();
+				}
+			}else{
+				plus.nativeUI.alert(data.msg);
+			}
+		}
+	});
+}
+
+function calcTotal(){
+	var price = mui('#price')[0].value;//单价
+	var stock = xyz.id('stock').value;//可用库存
+	var count = xyz.id('count').value;//购买数量
+	total=(price*count);
+	mui('.totalPrice')[0].innerHTML=total;
+}
+
+
+xyz.id('plus').addEventListener('tap', function() {
+var dateInfo = xyz.id('dateInfoChoose').value;
+	if(xyz.isNull(dateInfo)){
+		 plus.nativeUI.alert('请选择出行日期');
+		 xyz.id('count').value=stock-1;
+		return ;
+	}
+	var stock = xyz.id('stock').value;//可用库存
+	var count = xyz.id('count').value;
+	if(count+1>stock){
+		 plus.nativeUI.alert("库存不足");
+		 xyz.id('count').value=stock-1;
+	}
+});
+
+
+
+xyz.id('submitBtn').addEventListener('tap', function() {
+	var apikey = window.localStorage.apikey;
+	if(xyz.isNull(apikey)){
+		//跳转登录界面
+		if(window.plus){
+			plus.webview.getWebviewById('page/login.html').show("slide-in-right", 300);
+		}else{
+			alert('该功能需要下载APP才能使用哦！^_^');
+		}
+		return ;
+	}
+	var dateInfo = xyz.id('dateInfoChoose').value;
+	
+	if(xyz.isNull(dateInfo)){
+		plus.nativeUI.alert('请选择出行日期');
+		return ;
+	}
+
+	var count=xyz.id('count').value;
+	var linkman = xyz.id('linkmanForm').value;
+	var linkPhone = xyz.id('linkPhoneForm').value;
+	if(xyz.isNull(linkman)){
+		plus.nativeUI.alert('请填写联系人以便下单成功后可以联系到您');
+		return ;
+	}
+	if(xyz.isNull(linkPhone)){
+		plus.nativeUI.alert('请填写联系电话以便下单成功后可以联系到您');
+		return ;
+	}
+	xyz.ajax({
+		url:'BuyerOrderWS/createOrder.cus',
+		data:{
+			apikey:apikey,
+			product:xyz.id('numberCode').value,
+			count:count,
+			dateInfo:dateInfo,
+			day:1,
+			linkman:linkman,
+			linkPhone:linkPhone,
+			remarkBuy:xyz.id('remarkBuyForm').value
+		},
+		success:function(data){
+			if(data.status==1){
+				alert('下单成功，请到订单界面支付您的订单~');
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					if(window.plus){
+						var loginWebview = plus.webview.getWebviewById('page/login.html');
+						loginWebview.evalJS('webviewId="";method=""');
+						loginWebview.show("slide-in-right", 300);
+					}else{
+						alert('该功能需要下载APP才能使用哦！^_^');
+					}
+				}else{
+					alert(data.msg);
+				}
+			}
+		}
+	})
+}, false); 
+
+
+</script>
+</body>
+</html>

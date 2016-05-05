@@ -1,0 +1,102 @@
+.login-wrap{
+    width:100%;
+    height: auto;
+}
+.login{
+    width: 14rem;
+    height: 16rem;
+    margin-left: -7rem;
+}
+.login,.register{
+    position: absolute;
+    top: 5rem;
+    left: 50%;
+}
+.head-box{
+    width: 100%;
+    height: 4.3rem;
+}
+.head-img-box{
+    position: absolute;
+    left: 50%;
+    margin-left: -2.1rem;
+}
+.head-img-box img{
+    width:4.3rem;
+    height: 4.2rem;
+    border-radius: 50%;
+}
+.login .list-block{
+    width: 100%;
+    margin: 0;
+    margin-top: 1.5rem;
+}
+.list-block ul{
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    display: table;
+}
+.list-block li {
+    box-sizing: border-box;
+    position: relative;
+
+}
+.item-title{
+    width: 2rem;
+    height:2.5rem ;
+    float: left;
+    text-align: center;
+}
+.item-title img{
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-top: 0.8rem;
+}
+.item-inner{
+    width: 11.8rem;
+    height: 2.5rem;
+    float:right;
+}
+.item-inner input{
+    width: 90%;
+    padding: 0.5rem;
+   margin-top: 0.5rem;
+    outline: none;
+    border: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.button{
+    text-decoration: none;
+    text-align: center;
+    display: block;
+    border-radius: 0.3rem;
+    box-sizing: border-box;
+    white-space: nowrap;
+    position: relative;
+    text-overflow: ellipsis;
+    font-family: inherit;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1rem;
+    background-color: #b31e23;
+    width: 100%;
+    margin-top: 1rem;
+    border: none;
+    color: #fff;
+    height: 1.7rem;
+}
+.forget-pwd{
+    width: 100%;
+    height: 2rem;
+}
+.forget-pwd a{
+    font-size: 13px;
+    margin-top: 0.5rem;
+    color: #cc9966;
+}

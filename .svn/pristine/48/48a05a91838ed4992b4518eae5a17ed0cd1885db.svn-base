@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>填写订单</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/order.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+    <link rel="stylesheet" href="../css/xyzCalendar.css"/>
+</head>
+<body>
+    <header>
+        <a href="javascript:window.history.back();" class="pull-left back-inner">
+            <i class="iconfont icon-fanhui"></i>
+        </a>
+        <h1 class="header-title">
+            填写订单
+        </h1>
+    </header>
+<footer>
+    <p class="order-price pull-left">
+        订单金额：<span>¥</span><span id="priceTotal">0.00</span>
+    </p>
+    <a href="javascript:void(0);" class="submit-order pull-right" id="submitOrder">
+        提交订单
+    </a>
+</footer>
+<div class="content-wrapper proup-height">
+	<p id="hideInfo" style="display: none;"></p>
+    <div class="order-info-item">
+        <p class="order-product-name" id="productNameCn">产品名称</p>
+        <p>
+            <span class="pay-type pull-left">在线支付</span>
+            <span class="pro-dj pull-right"><label class="color-org" id="showPrice">¥<label class="big-font" >0</label>.00</label>/张</span>
+            <div style="clear:both;"></div>
+        </p>
+    </div>
+    <div class="order-info-item">
+        <p class="order-product-date" id="chooseDateInfo">
+            出行日期 <span id="showDateInfo">-请选择-</span>
+            <span class="pull-right color-org">选择</span>
+            <i class="iconfont icon-you"></i>
+        </p>
+        <div class="order-product-num">
+            票数（张）
+            <span class="num-box pull-right" id="chooseCount">
+                <i class="iconfont icon-minus pull-left"></i>
+                <input class="pull-left"  type="tel" value="1" onblur="calcTotal()" id="count"/>
+                <i class="iconfont icon-jia pull-right"></i>
+            </span>
+        </div>
+    </div>
+    <div class="order-info-item">
+        <p class="contact-lm">
+            <span class="pull-left">联系人 </span>
+            <input type="text" placeholder="联系人姓名" id="linkmanForm">
+        </p>
+        <p class="contact-lm">
+            <span class="pull-left">联系电话 </span>
+            <input type="text" placeholder="用于联系你" id="linkPhoneForm">
+        </p>
+
+    </div>
+    <div class="order-info-item">
+        <textarea  placeholder="订单备注" id="remarkBuyForm"></textarea>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/xyzCalendar.js"></script>
+<script type="text/javascript">
+var o = xyz.getUrlparam();
+var dateStart = new Date();
+var dateEnd = new Date().xyzNextMonth().xyzNextMonth().xyzNextMonth();
+var cal;
+
+xyz.id('submitOrder').addEventListener('touchend', function(e){
+	//提交订单
+	submitOrder();
+}, false);
+
+xyz.id('chooseDateInfo').addEventListener('touchend', function(e){
+	var dateInfo = xyz.id('chooseDateInfo').getAttribute('data-date');
+	if(!xyz.isNull(dateInfo)){
+		cal.show(dateInfo);
+	}else{
+		cal.show();
+	}
+}, false);
+
+xyz.id('chooseCount').addEventListener('touchend', function(e){
+	if('I'!=e.target.nodeName){
+		return ;
+	}
+	var countEle = xyz.id('count');
+	var count = parseInt(xyz.id('count').value);
+	if(e.target.className.indexOf('icon-jia')>-1){
+		countEle.value = count+1;
+	}else{
+		countEle.value = count<=1?1:(count-1);
+	}
+	calcTotal();
+}, false);
+
+
+$(document).ready(function(){
+	getProduct();
+});
+
+var localLoginInfo = xyz.isNull(window.localStorage.localLoginInfo)?"":JSON.parse(window.localStorage.localLoginInfo);
+if(!xyz.isNull(localLoginInfo.linkman)){
+	xyz.id('linkmanForm').setAttribute('placeholder', localLoginInfo.linkman);
+}
+if(!xyz.isNull(localLoginInfo.linkPhone)){
+	xyz.id('linkPhoneForm').setAttribute('placeholder', localLoginInfo.linkPhone);
+}
+
+function getProduct(){
+	xyz.ajax({
+		url:'BuyerScenicWS/getScenicProduct.app',
+		data:{
+			numberCode:o.numberCode
+		},
+		success:function(data){
+			if(data.status==1){
+				var o = data.content;
+				//xyz.id('numberCode').value=data.content.numberCode;
+				xyz.id('productNameCn').innerHTML=o.nameCn;
+				if(!xyz.isNull(o.price)){
+					var price =new Number(o.price).toFixed(2);
+					var pp = price.split('.');
+					xyz.id('showPrice').innerHTML = '¥<label class="big-font" >'+pp[0]+'</label>.'+pp[1];
+				}
+				initCalendar(o.maxDate);
+			}else{
+				weui.toast(data.msg);
+			}
+		}
+	});
+}
+
+function initCalendar(maxDate){
+	cal = new xyzCalendar(
+			dateStart,
+			dateEnd,
+			function(date,data){
+				xyz.id('hideInfo').innerHTML = JSON.stringify(data);
+				xyz.id('showDateInfo').innerText = date.xyzFormat('yyyy年MM月dd日');
+				xyz.id('chooseDateInfo').setAttribute('data-date',date.xyzFormat('yyyy-MM-dd'));
+				cal.hide();
+				calcTotal();
+			},
+			false,
+			maxDate
+		);
+	//拉取库存
+	getStock();
+}
+
+function getStock(maxDate){
+	xyz.ajax({
+		url:'ProductStockWS/queryProductStockList.app',
+		data:{
+			/* apikey:window.localStorage.apikey, */
+			product:o.numberCode,
+			dateStart:dateStart.xyzFormat('yyyy-MM-dd'),
+			dateEnd:dateEnd.xyzFormat('yyyy-MM-dd')
+		},
+		success:function(data){
+ 			if(data.status==1){
+				var array = data.content.rows;
+				var len = array.length;
+				if(len==0){
+					weui.toast("本产品近期没有库存。");
+					//dateInfo.value="";
+				}else{
+					for(var i=0;i<len;i++){
+						var o = array[i];
+						var cc = o.count-o.useCount;
+						if(cc>0){
+							cal.bindData(o.dateInfo.split(' ')[0], {price:o.price, count:cc}, '<span>¥'+new Number(o.price).toFixed(2)+'</span><span>余'+cc+'</span>');
+						}
+					}
+				}
+			}else{
+				weui.toast(data.msg);
+			}
+		}
+	});
+}
+
+function calcTotal(){
+	var hideInfo = xyz.id('hideInfo').innerHTML;
+	var price = 0;
+	var stock = 0;
+	var count = xyz.id('count').value;//购买数量
+	if(hideInfo==""){
+		xyz.id('priceTotal').innerHTML = '0.00';
+		return ;
+	}
+	hideInfo = JSON.parse(hideInfo);
+	if(count>hideInfo.count){
+		weui.toast('库存仅余'+hideInfo.count+'张');
+		xyz.id('count').value = hideInfo.count;
+		calcTotal();
+		return ;
+	}
+	price = hideInfo.price;
+	
+	var mp = new Number(price).toFixed(2).split('.');
+	xyz.id('showPrice').innerHTML = '¥<label class="big-font" >'+mp[0]+'</label>.'+mp[1]+'</label>';
+	xyz.id('priceTotal').innerHTML = new Number(price*count).toFixed(2);
+}
+
+function submitOrder(){
+	var apikey = window.localStorage.apikey;
+	if(xyz.isNull(apikey)){
+		window.location.href=xyz.setUrlparam(xyz.getFullurl('page/login.html'), {'go': xyz.setUrlparam(xyz.getFullurl('page/scenicOrder.html'), {numberCode:o.numberCode})});
+		return ;
+	}
+	var dateInfo = xyz.id('chooseDateInfo').getAttribute('data-date');
+	
+	if(xyz.isNull(dateInfo)){
+		weui.toast('请选择出行日期');
+		return ;
+	}
+
+	var count=xyz.id('count').value;
+	var linkman = xyz.id('linkmanForm').value;
+	var linkPhone = xyz.id('linkPhoneForm').value;
+	var linkmanHolder = xyz.id('linkmanForm').getAttribute('placeholder');
+	var linkPhoneHolder = xyz.id('linkPhoneForm').getAttribute('placeholder');
+	if(xyz.isNull(linkman)){
+		linkman = linkmanHolder;
+	}
+	if(xyz.isNull(linkPhone)){
+		linkPhone = linkPhoneHolder;
+	}
+	if(xyz.isNull(linkman)){
+		weui.toast('请填写联系人以便下单成功后可以联系到您');
+		return ;
+	}
+	if(xyz.isNull(linkPhone)){
+		weui.toast('请填写联系电话以便下单成功后可以联系到您');
+		return ;
+	}
+	if(!xyz.isPhone(linkPhone)){
+		weui.toast('请填写11位正确的手机号码（仅支持中国大陆手机号）');
+		return ;
+	}
+	xyz.ajax({
+		url:'BuyerOrderWS/createOrder.cus',
+		data:{
+			apikey:apikey,
+			product:o.numberCode,
+			count:count,
+			dateInfo:dateInfo,
+			day:1,
+			linkman:linkman,
+			linkPhone:linkPhone,
+			remarkBuy:xyz.id('remarkBuyForm').innerHTML
+		},
+		success:function(data){
+			if(data.status==1){
+				//xyz.id('mui-back').setAttribute('data-ext',0);//关闭返回提示
+				weui.toast("<br/>下单成功<br/><br/>10分钟未支付订单将关闭。",function(){
+					if(!xyz.isNull(data.content)){
+						window.location.href=xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {orderNum:data.content});
+					}else{
+						window.location.href=xyz.getFullurl('page/orderList.html');
+					}
+				});
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					window.location.href=xyz.setUrlparam(xyz.getFullurl('page/login.html'), {'go': xyz.setUrlparam(xyz.getFullurl('page/scenicOrder.html'), {numberCode:o.numberCode})});
+				}else{
+					weui.toast(data.msg);
+				}
+			}
+		}
+	});
+}
+
+</script>
+</html>

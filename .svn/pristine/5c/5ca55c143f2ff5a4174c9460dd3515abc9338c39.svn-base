@@ -1,0 +1,137 @@
+@charset "UTF-8";
+footer{
+    font-family: 黑体;
+}
+.order-price{
+    width: 70%;
+    height: 44px;
+    line-height: 2;
+    font-size: 14px;
+}
+.order-price span{
+    color: #ff6600;
+    font-size: 22px;
+}
+.submit-order{
+    width: 30%;
+    height: 44px;
+    display: block;
+    background-color: #ff6600;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    text-align: center;
+    line-height:3;
+}
+.order-info-item{
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    font-family: 黑体;
+    border-bottom: 1px solid #e6e6e6;
+    border-top: 1px solid #e6e6e6;
+}
+.order-product-name{
+    font-weight: bold;
+}
+.order-info-item p{
+    padding: 7px 0;
+}
+.pay-type{
+    display: block;
+    font-size: 12px;
+    border:1px solid #ff9a14;
+    color: #ff9a14;
+    padding: 2px;
+    border-radius: 5px;
+    margin-top: 0.1rem;
+}
+.pro-dj{
+    font-size: 13px;
+    color: #999;
+}
+.color-org{
+    color: #ff9a14;
+}
+.big-font{
+    font-size: 20px;
+}
+.order-info-item .order-product-date {
+    padding-right: 20px;
+    position: relative;
+
+}
+.order-product-date .icon-you{
+    position: absolute;
+    right: 0;
+    color: #999;
+    font-size: 20px;
+}
+.order-product-date span{
+    color: #999;
+}
+.order-product-date .color-org{
+    color: #ff9a14;
+}
+.order-info-item .order-product-num{
+    padding: 10px 0;
+    height: 30px;
+}
+.num-box{
+    width:auto;
+    height: 27px;
+    border: 1px solid #ccc;
+    display: block;
+    border-radius: 5px;
+    background-color: #F9F9F9;
+}
+.num-box i{
+    display: block;
+    width: 32px;
+    height: 27px;
+    text-align: center;
+    border-left: 1px solid #ccc;
+}
+.num-box input{
+    display: block;
+    width: 40px;
+    height: 27px;
+    text-align: center;
+    border: 0;
+    background: #f2f3f4;
+}
+.num-box i:first-child{
+    border-left: 0;
+    border-right: 1px solid #ccc;
+}
+.num-box .iconfont{
+    font-size: 12px;
+    line-height: 2.4;
+    font-weight: bold;
+    color: #999;
+}
+.num-box label{
+    font-size: 18px;
+    line-height: 1.6;
+    background-color: #efefef;
+}
+.contact-lm span{
+    display: block;
+    width: 30%;
+    padding: 5px 0;
+}
+.contact-lm input{
+    padding: 5px;
+    border: 0;
+    font-size: 15px;
+}
+.order-info-item textarea{
+    resize: none;
+    width: 96%;
+    height: 60px;
+    padding: 7px 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 auto;
+}

@@ -1,0 +1,59 @@
+function getCustomerLoginCookie(){
+	var cookieValue = $.cookie('B2B_LOGIN_NAME');
+	if(cookieValue==null){
+		cookieValue = "";
+	}
+	return cookieValue;
+}
+
+function deleteCustomerLoginCookie(){
+	$.cookie('B2B_LOGIN_NAME',null,
+		{
+			path : '/'
+		}
+	);
+}
+
+function setCustomerLoginCookie(B2B_LOGIN_NAME){
+	$.cookie('B2B_LOGIN_NAME',B2B_LOGIN_NAME);
+}
+
+function addCookie(cookieKey,cookieValue,days){
+	if(days==0){
+		$.cookie(cookieKey,cookieValue, 
+				{
+			path : '/'
+				}
+		);
+	}else{
+		$.cookie(cookieKey,cookieValue, 
+				{
+			expires : days,
+			path : '/'
+				}
+		);
+	}
+}
+
+function getCookie(cookieKey){
+	var cookieValue = $.cookie(cookieKey);
+	if(cookieValue==null){
+		cookieValue = "";
+	}
+	return cookieValue;
+}
+
+function deleteCookie(cookieKey){
+	$.cookie(cookieKey,null,
+		{
+			path : '/'
+		}
+	);
+}
+
+function deleteB2bCookie(){
+	deleteCookie("SKU");
+	deleteCookie("PRODUCT");
+	deleteCookie("B2B_LOGIN_KEY");
+	deleteCookie("B2B_LOGIN_NAME");
+}

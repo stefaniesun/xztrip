@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单列表</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/orderList.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+<body>
+    <header>
+        <div class="header-orderlist-item pull-left" id="chooseTab">
+            <a href="javascript:void(0);" class="pull-item ol-active" data-ext="0">
+                未支付
+            </a>
+            <a href="javascript:void(0);" class="pull-item" data-ext="1">
+                已支付
+            </a>
+        </div>
+    </header>
+    <footer>
+        <a href="javascript:void(0);" data-ext="index.html" class="footer-item">
+            <i class="iconfont icon-shouyeshouye"></i>
+            <span class="footer-title">首页</span>
+        </a>
+        <a href="javascript:void(0);" data-ext="page/orderList.html" class="footer-item footer-item-active">
+            <i class="iconfont icon-liebiao"></i>
+            <span class="footer-title">订单</span>
+        </a>
+        <a href="javascript:void(0);" data-ext="page/userCenter.html" class="footer-item">
+            <i class="iconfont icon-gerenzhongxin"></i>
+            <span class="footer-title">我的</span>
+        </a>
+    </footer>
+
+    <div class="content-wrapper proup-height" >
+        <div class="orderlist-box" id="listContianer">
+            <ul id="orderList">
+
+            </ul>
+            <img src="../images/empty.png" alt="empty" style="width: 100%;display: none;" class="dataEmpty"/>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script type="text/javascript">
+document.querySelector('footer').addEventListener('touchend', function(e){
+	var target = 'A'===e.target.nodeName?e.target:e.target.parentNode;
+	var url = target.getAttribute('data-ext');
+	if(!xyz.isNull(url)){
+		if('page/orderList.html'==url && xyz.isNull(window.localStorage.apikey)){
+			url = 'page/login.html';
+		}
+		weui.loading(-1);
+		window.location.href=xyz.getFullurl(url);
+	}
+},false);
+
+xyz.id('chooseTab').addEventListener('touchend',function(e){
+	if('A'!==e.target.nodeName){
+		return ;
+	}
+	//var target = 'A'===e.target.nodeName?e.target:e.target.parentNode;
+	var dataExt = e.target.getAttribute('data-ext');
+	var oldtarget = xyz.id('chooseTab').querySelector('.ol-active');
+	oldtarget.className=oldtarget.className.replace(' ol-active', '');
+	e.target.className=e.target.className+" ol-active";
+	queryList(page=1);
+});
+
+var page = 0;
+$(document).ready(function(){
+	$('#listContianer').dropload({
+		scrollArea : window,
+		loadUpFn : function(me){
+			queryList(page=1,me);
+		},
+		loadDownFn : function(me){
+			queryList(++page,me);
+		}
+	});
+});
+
+
+function queryList(page,dropload){
+	var target = xyz.id('chooseTab').querySelector('.ol-active');
+	
+	xyz.ajax({
+		url:'BuyerOrderWS/queryOrderList.cus',
+		data : {
+			apikey: window.localStorage.apikey,
+			page : page,
+			rows : 10,
+			flagPay : target.getAttribute('data-ext')
+		},
+		success : function(data) {
+			if(data.status==1){
+				var result = data.content;//当前数据条数
+				var table = document.body.querySelector('#orderList');
+				if(page==1){
+					table.innerHTML = '';
+				}
+				if(data.content.total<=0){
+					document.querySelector('.dataEmpty').style.display='block';
+				}else{
+					document.querySelector('.dataEmpty').style.display='none';
+				}
+				var len = result.rows.length;
+				for(var i=0;i<len;i++){
+					var o = result.rows[i];
+					var type = o.product;
+					if(type.indexOf('SC')==0){
+						table.appendChild(createHtmlSc(o));
+					}else if(type.indexOf('HO')==0){
+						table.appendChild(createHtmlHo(o));
+					}/* else{
+						table.appendChild(showItemScenic(o));
+					} */
+				}
+				//createHtml(table , result.rows);
+				//重置
+				if(dropload){
+					dropload.resetload();
+					if(page==1){
+						dropload.unlock();
+						dropload.noData(false);
+					}
+					if(result.rows.length<10){
+						dropload.lock('down');
+						dropload.noData();
+					}
+				}
+			}else{
+				if(dropload){
+					dropload.lock();
+					dropload.noData();
+					dropload.resetload();
+				}
+				if(data.msg.indexOf('重新登录')>-1){
+					window.location.href=xyz.setUrlparam(xyz.getFullurl('page/login.html'), {'go': xyz.getFullurl('page/orderList.html')});
+				}else{
+					weui.toast(data.msg);
+				}
+			}
+		},
+		error: function(xhr, type){
+            weui.toast('无法访问服务器啦');
+            if(dropload){
+            	dropload.lock();
+				dropload.noData();
+				dropload.resetload();
+			}
+        }
+	});
+}
+
+/**
+ <li class="order-state-list">
+    <a href="orderDetail.html" class="dk">
+    <div class="order-state-lm">
+        <span class="icon-mp-type">门票</span>
+        <h3>仙女山一日游</h3>
+        <p class="lj-pay">立即支付</p>
+        <div style="clear: both"></div>
+    </div>
+    <div class="order-state-lm">
+        <span class="total-num">数量：5张</span>
+        <span class="cx-date">出行日期：2015年4月4日</span>
+        <div style="clear: both"></div>
+    </div>
+    <div class="order-state-lm">
+        <span class="total-price">总价：<label>¥12301.00</label></span>
+        <div style="clear: both"></div>
+    </div>
+    </a>
+</li>
+<li class="order-state-list">
+    <div class="order-state-lm">
+        <span class="icon-jd-type">酒店</span>
+        <h3>总统套房</h3>
+        <p class="lj-pay">立即支付</p>
+        <div style="clear: both"></div>
+    </div>
+    <div class="order-state-lm">
+        <span class="total-num">数量：1间房/天</span>
+        <span class="cx-date">出行日期：2015年4月4日</span>
+        <div style="clear: both"></div>
+    </div>
+    <div class="order-state-lm">
+        <span class="total-price">总价：<label>¥12301.00</label></span>
+        <span class="cx-date">离店日期：2015年4月4日</span>
+        <div style="clear: both"></div>
+    </div>
+</li>
+ **/
+
+ function createHtmlSc(o){
+	var li = document.createElement('li');
+	li.className = 'order-state-list';
+	var url = xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {'orderNum':o.orderNum});
+	var dateInfoStart = new Date(o.dateInfoStart.split(' ')[0].replace(/-/g,"/")).format('yyyy年MM月dd日');
+	var money = new Number(o.money).toFixed(2);
+	var tip = o.flagPay==1?'已支付':'立即支付';
+	var html = '<a href="'+url+'" class="dk">'
+	+'<div class="order-state-lm">'
+	+'<span class="icon-mp-type">门票</span>'
+	+'<h3>'+o.productNameCn+'</h3>'
+	+'<p class="lj-pay">'+tip+'</p>'
+	+'<div style="clear: both"></div>'
+	+'</div>'
+	+'<div class="order-state-lm">'
+	+'<span class="total-num">数量：'+o.count+'张</span>'
+	+'<span class="cx-date">出行日期：'+dateInfoStart+'</span>'
+	+'<div style="clear: both"></div>'
+	+'</div>'
+	+'<div class="order-state-lm">'
+	+'<span class="total-price">订单金额：<label>¥'+money+'</label></span>'
+	+'<div style="clear: both"></div>'
+	+'</div>'
+	+'</a>';
+	li.innerHTML = html;
+	return li;
+ }
+ 
+ function createHtmlHo(o){
+		var li = document.createElement('li');
+		li.className = 'order-state-list';
+		var url = xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {'orderNum':o.orderNum});
+		var dateInfoEnd = new Date(new Date(o.dateInfoEnd.split(' ')[0].replace(/-/g,"/")).getTime()+86400000).format('yyyy年MM月dd日');
+		var dateInfoStart = new Date(o.dateInfoStart.split(' ')[0].replace(/-/g,"/")).format('yyyy年MM月dd日');
+		var money = new Number(o.money).toFixed(2);
+		var tip = o.flagPay==1?'已支付':'立即支付';
+		var html = '<a href="'+url+'" class="dk">'
+	    +'<div class="order-state-lm">'
+        +'<span class="icon-jd-type">酒店</span>'
+        +'<h3>'+o.productNameCn+'</h3>'
+        +'<p class="lj-pay">'+tip+'</p>'
+        +'<div style="clear: both"></div>'
+    	+'</div>'
+    	+'<div class="order-state-lm">'
+        +'<span class="total-num">数量：'+o.count+'间房/天</span>'
+        +'<span class="cx-date">入住日期：'+dateInfoStart+'</span>'
+        +'<div style="clear: both"></div>'
+    	+'</div>'
+    	+'<div class="order-state-lm">'
+        +'<span class="total-price">总价：<label>¥'+money+'</label></span>'
+        +'<span class="cx-date">离店日期：'+dateInfoEnd+'</span>'
+        +'<div style="clear: both"></div>'
+    	+'</div>'
+    	+'</a>';
+		li.innerHTML = html;
+		return li;
+ }
+ 
+
+</script>
+</html>

@@ -1,0 +1,45 @@
+package xyz.svc.main.imp;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.ReturnUtil;
+import xyz.svc.main.ProductSvc;
+
+@Service
+public class ProductSvcImp implements ProductSvc{
+	@Autowired
+	CommonDao commonDao;
+	
+	@Override
+	public Map<String,Object> queryProductList(int offset,int pagesize,String provider){
+		if("".equals(provider) && provider == null){
+			return ReturnUtil.returnMap(0, "参数丢失");
+		}
+		
+		StringBuffer hql = new StringBuffer("from ProductHotel ph inner join ProductScenic ps where 1=1");
+		if(!"".equals(provider) && provider != null){
+			hql.append("and ph.provider = ps.provider");
+		}
+		Query queryNum = commonDao.getQuery("select count(ph.iidd)"+hql.toString());
+		Number countNum = (Number)queryNum.uniqueResult();
+		int count = countNum==null?0:countNum.intValue();
+		
+		Query query = commonDao.getQuery(hql.toString());
+		query.setMaxResults(pagesize);
+		query.setFirstResult(offset);
+		@SuppressWarnings("rawtypes")
+		List productList = query.list();
+		Map<String,Object> mapContent = new HashMap<String,Object>();
+		mapContent.put("total", count);
+		mapContent.put("rows", productList);
+		
+		return ReturnUtil.returnMap(1, mapContent);
+	}
+}

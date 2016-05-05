@@ -1,0 +1,80 @@
+$(function(){
+	queryList(1);
+});
+
+function queryList(){
+//	var protype = $("#protype").val();
+//	var fieldsJson = $("#fieldsJson").val();
+	var rows = 0; //记录条数
+	var page = 0; //每页数
+	$('#pullrefresh_order').dropload({
+		scrollArea : window,
+		domDown : {
+			domClass : 'dropload-down',
+			domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad : '<div class="dropload-load">○加载中...</div>',
+			domNoData : '<div class="dropload-noData">暂无数据</div>'
+		},
+		autoLoad : true, //自动加载
+		loadDownFn : function(me){
+			rows += 5; //记录以及加载的条数
+			page++ ; //没调用一次  页数加1
+			console.log(page);
+			xyz.ajax({
+				url:'BuyerProviderWS/queryProviderList.app',
+				progress:false,
+				data : {
+					page : page,
+					rows : 5,
+				},
+				success : function(data) {
+					if(data.status==1){
+						var total = data.content.total; 
+						var result = data.content;
+						var table = document.body.querySelector('#tableList');
+    					if(page==1){
+    						table.innerHTML = '';
+    					}
+    					createHtml(table , result.rows);
+						
+						if(rows >= total){ //每页数据
+							me.lock();
+							me.noData();
+						}
+						me.resetload();
+					}else{
+						alert(data.msg);
+					}
+				}
+			});
+		}
+	});
+}
+
+function createHtml(table , list){
+	for(var i=0; i<list.length; i++){
+		var o = list[i];
+		var li = document.createElement('li');
+		li.className = 'index-hotel-list';
+		var url = xyz.setUrlparam(xyz.getFullurl('hotel_detail.html'),{provider:o.numberCode});
+		var html = '<div class="index-hotel-img">';
+        html +='<a href="javascript:void(0);" title="" onclick="window.location.href=\''+url+'\'"><img src="images/hotel.jpg" alt=""/></a>';
+        html +='</div>';
+        html +='<div class="index-hotel-info">';
+        html +='<p class="index-hotel-name">';
+        html +='<a href="javascript:void(0);">'+o.nameCn+'</a>';
+        html +='</p>';
+        html +='<p class="index-hotel-price">';
+        if(o.price && !isNaN(o.price)){
+        	html +='<i>¥'+o.price+'</i>起';
+        }else{
+        	html +='<i>暂无报价</i>';
+        }
+        html +='</p>';
+        html +='</div>';
+		
+		//html += '<span id="json_'+o.numberCode+'" style="display:none;">'+JSON.stringify(o)+'</span>';
+		li.innerHTML = html;
+		table.appendChild(li);
+	}
+}

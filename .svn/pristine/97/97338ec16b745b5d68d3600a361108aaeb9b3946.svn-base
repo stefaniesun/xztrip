@@ -1,0 +1,41 @@
+package xyz.svc.sql;
+
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+
+@Service
+public interface SystemSqlSvc{
+	
+	public Map<String, Object> querySystemSqlList(
+			int offset,
+			int pagesize,
+			String sqlTitle,
+			String nameCn);
+	
+	public Map<String ,Object> getSystemSql(String numberCode);
+	
+	public Map<String, Object> addSystemSql(
+			String nameCn,
+			String source,
+			String sqlTitle,
+			String sqlType,
+			String sqlContent,
+			String usernameRole);
+	
+	public Map<String, Object> editSystemSql(
+			String numberCode,
+			String nameCn,
+			String source,
+			String sqlTitle,
+			String sqlType,
+			String sqlContent,
+			String usernameRole);
+	
+	public Map<String, Object> deleteSystemSql(String numberCodes); 
+	
+	public Map<String, Object> addUseCountForSystemSql(String numberCode); 
+	
+}

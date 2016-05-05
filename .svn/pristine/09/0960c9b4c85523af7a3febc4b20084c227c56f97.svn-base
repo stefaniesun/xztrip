@@ -1,0 +1,15 @@
+package xyz.svc.buyer;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface BuyerScenicSvc {
+
+	public Map<String, Object> queryScenicList(String nameCn, String provider,
+			int offset, int pagesize);
+
+	public Map<String, Object> getScenicProduct(String numberCode);
+
+}

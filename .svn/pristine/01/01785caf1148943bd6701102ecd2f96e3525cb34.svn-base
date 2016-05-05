@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../css/xieyaozhong.css"></link>
+<script type="text/javascript" src="../js/library/jquery-1.7.2.js"></script>
+<link rel="stylesheet" type="text/css" href="../js/library/easyui/themes/bootstrap/easyui.css"></link>
+<link rel="stylesheet" type="text/css" href="../js/library/easyui/themes/icon.css"></link>
+<link rel="stylesheet" href="../css/css_seller/font-awesome.css" />
+ <link rel="stylesheet" href="../css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="../js/library/layer/skin/layer.css"></link>
+<link  href="../js/library/cropperjs/css/cropper.min.css" rel="stylesheet"/>
+<link  href="../js/library/cropperjs/css/main.css" rel="stylesheet"/>
+
+<script type="text/javascript" src="../js/library/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../js/library/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../js/library/common/common.js"></script>
+<script type="text/javascript" src="../js/library/common/customUi.js" defer="defer"></script>
+
+<script type="text/javascript" src="../js/library/ckeditor/ckeditor.js" defer="defer"></script>
+<script type="text/javascript" src="../js/library/ckeditor/adapters/jquery.js" defer="defer"></script>
+<script type="text/javascript" src="../js/library/cropperjs/cropper.min.js" defer="defer"></script>
+<script type="text/javascript" src="../js/js_main/productUserTagManager.js" defer="defer"></script>
+
+<style type="text/css">
+body{
+	margin: 0;padding: 0;border: 0;font-size: 14px;
+}
+div{
+	margin: 0;padding: 0;border: 0;
+}
+</style>
+</head>
+<body>
+	<div>
+		<table>
+			<tbody>
+				<tr>
+				<td>
+					供应商名称【模】
+				</td>
+				<td>
+					<input type="text" id="nameCn" style="width:120px;"/>
+				</td>
+				<td>
+					供应商类型【模】
+				</td>
+				<td>
+					<select id="type" class="easyui-combobox" data-options="editable:false" name="dept" style="width:200px;">   
+					<option value="">全部</option>
+				    <option value="HO">酒店</option>
+				    <option value="SC">景点</option>   
+					</select>  
+				</td>
+				</tr>  
+				
+			</tbody>
+		</table>
+	</div>		
+
+		<div style="z-index: 100;position: fixed;left: 800px;">
+			<a href="javascript:void(0);" class="easyui-linkbutton" 
+				data-options="iconCls:'icon-search'"
+				id="productButton"
+			>查询</a>	
+		</div>	
+
+	<table id="productUserTagManagerTable"></table>
+	
+	
+</body>
+</html>

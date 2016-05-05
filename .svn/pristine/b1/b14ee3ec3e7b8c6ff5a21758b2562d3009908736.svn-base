@@ -1,0 +1,70 @@
+package xyz.svc.core.imp;
+
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.ReturnUtil;
+import xyz.model.core.SeekHelp;
+import xyz.model.member.WeixinUserInfo;
+import xyz.svc.core.SeekHelpSvc;
+
+@Service
+public class SeekHelpSvcImp implements SeekHelpSvc {
+
+	@Autowired
+	private CommonDao commonDao;
+	
+	@Override
+	public Map<String, Object> querySeekHelp() {
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> addSeekHelp(String openid, String location_x,
+			String location_y, String label, String scale) {
+		if(openid==null || "".equals(openid)){
+			return ReturnUtil.returnMap(0, "缺少openid");
+		}
+		if(location_x==null || "".equals(location_x)){
+			return ReturnUtil.returnMap(0, "经纬度获取异常");
+		}
+		if(location_y==null || "".equals(location_y)){
+			return ReturnUtil.returnMap(0, "经纬度获取异常");
+		}
+		WeixinUserInfo userInfo = (WeixinUserInfo)commonDao.getObjectByUniqueCode("WeixinUserInfo", "openid", openid);
+		SeekHelp seekHelp = new SeekHelp();
+		if(userInfo!=null){
+			seekHelp.setHeadimgurl(userInfo.getHeadimgurl());
+			seekHelp.setNickname(userInfo.getNickname());
+		}
+		Date date = new Date();
+		seekHelp.setLabel(label);
+		seekHelp.setLocationX(location_x);
+		seekHelp.setLocationY(location_y);
+		seekHelp.setScale(scale);
+		seekHelp.setStatus(0);
+		seekHelp.setAddDate(date);
+		seekHelp.setAlterDate(date);
+		commonDao.save(seekHelp);
+		String tips = "求助已发出！";
+		if(userInfo!=null && userInfo.getPhone()!=null && "".equals(userInfo.getPhone())){
+			tips += "\n我们将尽快与您取得联系，您预留的联系手机号是【"+userInfo.getPhone()+"】";
+		}
+		return ReturnUtil.returnMap(1, tips);
+	}
+
+	@Override
+	public Map<String, Object> updateSeekHelp() {
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> deleteSeekHelp() {
+		return null;
+	}
+
+}

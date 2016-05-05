@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<title></title>
+</head>
+<body>
+<center>
+	<div class="xieyaozhong">
+		<form>
+		<table>
+			<tr>
+				<td>名称:</td>
+				<td><input type="text" id="nameCnForm" style="width: 500px" class="easyui-validatebox"  data-options="required:true,validType:'length[2,200]'"/></td>
+			</tr>
+			<tr>
+				<td>选择库</td>
+				<td><input id="sourceForm" type="text" style="width: 500px" class="easyui-validatebox"  data-options="required:true,validType:'length[2,100]'"/></td>
+			</tr>
+			<tr>
+				<td>sql类型</td>
+				<td><input id="sqlTypeForm" type="text" style="width: 500px" class="easyui-validatebox"  data-options="required:true,validType:'length[2,100]'"/></td>
+			</tr>
+			<tr>
+				<td>SQL标题</td>
+				<td><textarea  id="sqlTitleForm" style="width: 750px;height: 100px" class="easyui-validatebox"  data-options="required:true,validType:'length[2,5000]'"></textarea></td>
+			</tr>
+			<tr>
+				<td>SQL内容</td>
+				<td>
+				<textarea  id="sqlContentForm" style="width: 750px;height: 250px" class="easyui-validatebox"  data-options="required:true,validType:'length[2,5000]'"></textarea>
+				<a href="#" onclick="$('#sqlContentForm').val($('#sqlContentForm').val().replace(/\'/g,'###danyinhao###'));">点我清洗正文单引号</a>
+				</td>
+			</tr>
+			<tr>
+				<td>选择共享人</td>
+				<td><input type="text" id="usernameRoleChoiceForm" style="width: 500px" /></td>
+			</tr>
+			<tr>
+				<td><input id="usernameRoleForm" type="hidden"  /></td>
+				<td id="usernameRoleDivForm" style="width: 500px"></td>
+			</tr>
+		</table>
+		</form>
+		<p style="color:red">温馨提醒:SQL所查询的内容列数请一定与SQL标题的个数一致(以","分割!), 且顺序也必须一致!</p>
+		<p style="color:red">SQL标题示例:nameCn@50 前面为列名, 后面为Excel 和 DataGrid 的长度!</p>
+	</div>
+</center>
+</body>
+</html>

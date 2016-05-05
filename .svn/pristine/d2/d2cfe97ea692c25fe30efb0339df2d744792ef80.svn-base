@@ -1,0 +1,179 @@
+package xyz.svc.main.imp;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.ReturnUtil;
+import xyz.model.main.ProductHotel;
+import xyz.model.main.ProductScenic;
+import xyz.model.main.Provider;
+import xyz.svc.main.ProviderSvc;
+import xyz.util.StringTool;
+import xyz.util.StringUtil;
+
+@Service
+public class ProviderSvcImp implements ProviderSvc {
+
+	@Autowired
+	CommonDao commonDao;
+	
+
+	@Override
+	public Map<String,Object> addProvider(String nameCn,
+			int isScenic,
+			int isHotel,
+			int isCar,
+			String level,
+			String levelSystem,
+			String phone,
+			String qq,
+			String email,
+			String linkman,
+			String address,
+			String remark,
+			String longitudeLatitude
+			){
+		Provider provider =new Provider();
+		Date date = new Date();
+		provider.setNumberCode(StringUtil.get_new_provider());
+		provider.setNameCn(nameCn);
+		provider.setIsScenic(isScenic);
+		provider.setIsHotel(isHotel);
+		provider.setIsCar(isCar);
+		provider.setLevel(level);
+		provider.setLevelSystem(levelSystem);
+		provider.setPhone(phone);
+		provider.setQq(qq);
+		provider.setOnlineFlag(0);
+		provider.setEmail(email);
+		provider.setLinkman(linkman);
+		provider.setAddress(address);
+		provider.setRemark(remark);
+		provider.setAddDate(date);
+		provider.setAlterDate(date);
+		provider.setLongitudeLatitude(longitudeLatitude);
+		commonDao.save(provider);
+		return ReturnUtil.returnMap(1, null);
+	}
+
+	@Override
+	public Map<String,Object> queryProviderList(String nameCn,
+			String type,
+			int offset,
+			int pagesize){
+		String hql=" from Provider where 1=1  ";
+		if(nameCn!=null&&!"".equals(nameCn)){
+			hql+=" and nameCn like '%"+nameCn+"%' ";
+		}
+		
+		if(type!=null&&!"".equals(type)){
+			if("SC".equals(type)){
+				hql+=" and isScenic =1 ";
+			}else if ("HO".equals(type)) {
+				hql+=" and isHotel =1 ";
+			}else if ("CA".equals(type)) {
+				hql+=" and isCar =1 ";
+			}
+		}
+		
+		hql+="order by alterDate desc";
+		
+		String countHql = "select count(numberCode) "+hql;
+		Query countQuery = commonDao.getQuery(countHql);
+		Number countTemp = (Number)countQuery.uniqueResult();
+		int count = countTemp==null?0:countTemp.intValue();
+		
+		Query query = commonDao.getQuery(hql);
+		query.setMaxResults(pagesize);
+		query.setFirstResult(offset);
+		@SuppressWarnings("unchecked")
+		List<Provider> productScenicList=query.list();
+		Map<String,Object> mapContent=new HashMap<String, Object>();
+		mapContent.put("total", count);
+		mapContent.put("rows",productScenicList);
+		return ReturnUtil.returnMap(1, mapContent);
+	}
+
+
+	@Override
+	public Map<String, Object> editProvider(String numberCode,
+			String nameCn,
+			int isScenic,
+			int isHotel,
+			int isCar,
+			String level,
+			String levelSystem, 
+			String phone,
+			String qq, 
+			String email, 
+			String linkman,
+			String address,
+			String remark,
+			String longitudeLatitude) {
+		Provider provider=(Provider)commonDao.getObjectByUniqueCode("Provider", "numberCode", numberCode);
+		provider.setNameCn(nameCn);
+		provider.setIsScenic(isScenic);
+		provider.setIsHotel(isHotel);
+		provider.setIsCar(isCar);
+		provider.setLevel(level);
+		provider.setLevelSystem(levelSystem);
+		provider.setPhone(phone);
+		provider.setQq(qq);
+		provider.setEmail(email);
+		provider.setLinkman(linkman);
+		provider.setAddress(address);
+		provider.setRemark(remark);
+		provider.setAlterDate(new Date());
+		provider.setLongitudeLatitude(longitudeLatitude);
+		commonDao.update(provider);
+		return ReturnUtil.returnMap(1, null);
+	}
+
+	@Override
+	public Map<String, Object> deleteProvider(String numberCodes) {
+		if(!"".equals(numberCodes)&&numberCodes!=null){
+			String hql="from ProductScenic where provider IN("+StringTool.StrToSqlString(numberCodes)+")";
+			String hql1="from ProductHotel where provider IN("+StringTool.StrToSqlString(numberCodes)+")";
+			@SuppressWarnings("unchecked")
+			List<ProductScenic> productScenicList=commonDao.queryByHql(hql);
+			@SuppressWarnings("unchecked")
+			List<ProductHotel> productHotelList=commonDao.queryByHql(hql1);
+			if(productScenicList.size()>0||productHotelList.size()>0){
+				return ReturnUtil.returnMap(0, "当前选中的供应商下存在已创建的产品请删除对应产品后在删除供应商！");
+			}else{
+				String sql = "delete from provider where number_code in ("+StringTool.StrToSqlString(numberCodes)+")";
+				commonDao.getSqlQuery(sql).executeUpdate();
+				return ReturnUtil.returnMap(1, null);
+			}
+		}else{
+			return ReturnUtil.returnMap(0, "请先选中需要删除的对象！");
+		}
+	}
+
+	@Override
+	public Map<String, Object> editProviderImage(String numberCode,
+			String imageUrl) {
+		Provider provider=(Provider) commonDao.getObjectByUniqueCode("Provider", "numberCode", numberCode);
+		if(provider==null){
+			return ReturnUtil.returnMap(0,"对象不存在");
+		}
+		provider.setImageUrl(imageUrl);
+		commonDao.update(provider);
+		return ReturnUtil.returnMap(1,null);
+	}
+	
+	@Override
+	public Map<String, Object> editOnlineFlag(String numberCode, int value) {
+		Provider provider=(Provider) commonDao.getObjectByUniqueCode("Provider", "numberCode", numberCode);
+		provider.setOnlineFlag(value);
+		commonDao.update(provider);
+		return ReturnUtil.returnMap(1, null);
+	}
+}

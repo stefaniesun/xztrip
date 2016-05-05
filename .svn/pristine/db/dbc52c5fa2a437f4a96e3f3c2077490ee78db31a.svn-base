@@ -1,0 +1,274 @@
+package xyz.svc.core.imp;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.ReturnUtil;
+import xyz.model.core.OrderContent;
+import xyz.model.form.Q_OrderContent;
+import xyz.svc.core.OrderContentSvc;
+
+@Service
+public class OrderContentSvcImp implements OrderContentSvc {
+
+	@Autowired
+	CommonDao commonDao;
+	
+	@Override
+	public Map<String, Object> queryOrderContentList(int offset,
+			int pagesize,Q_OrderContent q_OrderContent) {
+		String hql=" from OrderContent "+getOrderContentWhere(q_OrderContent)+" ";
+		
+		String countHql = "select count(iidd) "+hql;
+		Query countQuery = commonDao.getQuery(countHql);
+		Number countTemp = (Number)countQuery.uniqueResult();
+		int count = countTemp==null?0:countTemp.intValue();
+		
+		Query query = commonDao.getQuery(hql);
+		query.setMaxResults(pagesize);
+		query.setFirstResult(offset);
+		@SuppressWarnings("unchecked")
+		List<OrderContent> orderContentList=query.list();
+		Map<String,Object> mapContent=new HashMap<String, Object>();
+		mapContent.put("total", count);
+		mapContent.put("rows",orderContentList);
+		return ReturnUtil.returnMap(1, mapContent);
+	}
+
+	@Override
+	public Map<String, Object> updateOrderContentForFlagClient(
+			String orderContents) {
+		int flag=0;
+		if(!"".equals(orderContents)&&orderContents!=null){
+			String[] orderContentArray=orderContents.split(",");
+			for(int i=0;i<orderContentArray.length;i++){
+				OrderContent orderContent=(OrderContent)commonDao.getObjectByUniqueCode("OrderContent", "clientCode", orderContentArray[i].toString());
+				if(orderContent.getFlagPay()==0){
+					flag=1;
+					return ReturnUtil.returnMap(0, "您选中的订单中有未支付票单请支付后出票！");
+				}else if(orderContent.getFlagClient()==1){
+					flag=1;
+					return ReturnUtil.returnMap(0, "您选中的订单下有票单已经出票无法重复出票");
+				}
+			}
+			
+			if(flag==0){
+				for(int ii=0;ii<orderContentArray.length;ii++){
+					OrderContent orderContent=(OrderContent)commonDao.getObjectByUniqueCode("OrderContent", "clientCode", orderContentArray[ii].toString());
+					orderContent.setFlagRefund(1);
+					commonDao.update(orderContent);
+				}
+				return ReturnUtil.returnMap(1, null);
+			}else{
+				return ReturnUtil.returnMap(0,"订单出现异常，请联系管理员!");
+			}
+		}else{
+			return ReturnUtil.returnMap(0, "请选择出票对象！");
+		}
+	}
+
+	@Override
+	public Map<String, Object> updateOrderContentForFlagRefund(
+			String orderContents) {
+		int flag=0;
+		if(!"".equals(orderContents)&&orderContents!=null){
+			String[] orderContentArray=orderContents.split(",");
+			//验证
+			for(int i=0;i<orderContentArray.length;i++){
+				OrderContent orderContent=(OrderContent)commonDao.getObjectByUniqueCode("OrderContent", "clientCode", orderContentArray[i].toString());
+				if(orderContent.getFlagApply()==0){
+					flag=1;
+					return ReturnUtil.returnMap(0, "该订单下票单未申请退款无法进行退款操作！");
+				}else if(orderContent.getFlagPay()==0){
+					flag=1;
+					return ReturnUtil.returnMap(0, "您选中的订单中有未支付票单请支付后进行退款操作！");
+				}else if(orderContent.getFlagRefund()==1){
+					flag=1;
+					return ReturnUtil.returnMap(0, "您选中的订单下票单已经退款无法重复退款！");
+				}
+			}
+			if(flag==0){
+				for(int ii=0;ii<orderContentArray.length;ii++){
+					OrderContent orderContent=(OrderContent)commonDao.getObjectByUniqueCode("OrderContent", "clientCode", orderContentArray[ii].toString());
+					orderContent.setFlagRefund(1);
+					commonDao.update(orderContent);
+				}
+				return ReturnUtil.returnMap(1, null);
+			}else{
+				return ReturnUtil.returnMap(0,"订单出现异常，请联系管理员!");
+			}
+		}else{
+			return ReturnUtil.returnMap(0, "请选择退款对象！");
+		}
+	}
+	
+	private String getOrderContentWhere(Q_OrderContent q_OrderContent){
+		StringBuffer resultStr = new StringBuffer();
+		resultStr.append("  WHERE 1=1 ");
+		String orderNum = q_OrderContent.getOrderNum();
+		if(orderNum!=null && !"".equals(orderNum)){
+			resultStr.append(" and orderNum = '"+orderNum+"'");
+			
+		}
+		
+		String clientCode = q_OrderContent.getClientCode();
+		if(clientCode!=null && !"".equals(clientCode)){
+			resultStr.append(" and clientCode = '"+clientCode+"'");
+		}
+//
+//		String provider = q_OrderContent.getProvider();
+//		if(provider!=null && !"".equals(provider)){
+//			resultStr.append(" and t.provider = '"+provider+"'");
+//		}
+//		
+//		
+//		
+//		String flagStr = q_OrderContent.getFlagStr();
+//		if(flagStr!=null && !"".equals(flagStr)){
+//			String[] tt = flagStr.split(",");
+//			for(int i=0;i<tt.length;i++){
+//				if("noInit".equals(tt[i])){
+//					resultStr.append(" and t.flag_init = 0");
+//				}else if("yesInit".equals(tt[i])){
+//					resultStr.append(" and t.flag_init = 1");
+//				}else if("noClient".equals(tt[i])){
+//					resultStr.append(" and t.flag_client = 0");
+//				}else if("yesClient".equals(tt[i])){
+//					resultStr.append(" and t.flag_client = 1");
+//				}else if("noRefund".equals(tt[i])){
+//					resultStr.append(" and t.flag_refund = 0");
+//				}else if("yesRefund".equals(tt[i])){
+//					resultStr.append(" and t.flag_refund = 1");
+//				}else if("noUse".equals(tt[i])){
+//					resultStr.append(" and t.flag_use = 0");
+//				}else if("yesUse".equals(tt[i])){
+//					resultStr.append(" and t.flag_use = 1");
+//				}else if("noAccount".equals(tt[i])){
+//					resultStr.append(" and t.flag_account = 0");
+//				}else if("yesAccount".equals(tt[i])){
+//					resultStr.append(" and t.flag_account = 1");
+//				}else if("noCheck".equals(tt[i])){
+//					resultStr.append(" and t.flag_check = 0");
+//				}else if("yesCheck".equals(tt[i])){
+//					resultStr.append(" and t.flag_check = 1");
+//				}else if("noOver".equals(tt[i])){
+//					resultStr.append(" and t.flag_over = 0");
+//				}else if("yesOver".equals(tt[i])){
+//					resultStr.append(" and t.flag_over = 1");
+//				}else if("noProvider".equals(tt[i])){
+//					resultStr.append(" and t.provider is null");
+//				}else if("yesProvider".equals(tt[i])){
+//					resultStr.append(" and t.provider is not null");
+//				}else if("noDateInfo".equals(tt[i])){
+//					resultStr.append(" and t.date_info is null");
+//				}else if("yesDateInfo".equals(tt[i])){
+//					resultStr.append(" and t.date_info is not null");
+//				}else if("noPriceShouldOut".equals(tt[i])){
+//					resultStr.append(" and t.price_should_out is null");
+//				}else if("yesPriceShouldOut".equals(tt[i])){
+//					resultStr.append(" and t.price_should_out is not null");
+//				}else if("noPriceZhifubaoIn".equals(tt[i])){
+//					resultStr.append(" and (t.price_should_zhifubao_in is null or t.price_should_zhifubao_in = 0)");
+//				}else if("yesPriceZhifubaoIn".equals(tt[i])){
+//					resultStr.append(" and t.price_should_zhifubao_in is not null and t.price_should_zhifubao_in != 0");
+//				}else if("noPriceChannelIn".equals(tt[i])){
+//					resultStr.append(" and (t.price_should_channel_in is null or t.price_should_channel_in = 0)");
+//				}else if("yesPriceChannelIn".equals(tt[i])){
+//					resultStr.append(" and t.price_should_channel_in is not null and t.price_should_channel_in !=0");
+//				}else{
+//					throw new MyExceptionForRole("订单状态指示不明！");
+//				}
+//			}
+//		}
+//		
+//		String dateStr = q_OrderContent.getDateStr();
+//		
+//		Date dateStart = q_OrderContent.getDateStart();
+//		if(dateStart!=null){
+//			if("createDate".equals(dateStr)){
+//				resultStr.append(" and t.create_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("dateInfo".equals(dateStr)){
+//				resultStr.append(" and t.date_info >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("addDate".equals(dateStr)){
+//				resultStr.append(" and t.add_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("initDate".equals(dateStr)){
+//				resultStr.append(" and t.init_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("clientDate".equals(dateStr)){
+//				resultStr.append(" and t.client_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("useDate".equals(dateStr)){
+//				resultStr.append(" and t.use_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("refundDate".equals(dateStr)){
+//				resultStr.append(" and t.refund_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("accountDate".equals(dateStr)){
+//				resultStr.append(" and t.account_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("sendDate".equals(dateStr)){
+//				resultStr.append(" and t.send_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("checkDate".equals(dateStr)){
+//				resultStr.append(" and t.check_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("overDate".equals(dateStr)){
+//				resultStr.append(" and t.over_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else if("alterDate".equals(dateStr)){
+//				resultStr.append(" and t.alter_date >= '"+DateUtil.dateToShortString(dateStart)+"'");
+//			}else{
+//				throw new MyExceptionForRole("日期指示不明！");
+//			}
+//		}
+//		
+//		Date dateEnd = q_OrderContent.getDateEnd();
+//		if(dateEnd!=null){
+//			if("createDate".equals(dateStr)){
+//				resultStr.append(" and t.create_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("dateInfo".equals(dateStr)){
+//				resultStr.append(" and t.date_info <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("addDate".equals(dateStr)){
+//				resultStr.append(" and t.add_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("initDate".equals(dateStr)){
+//				resultStr.append(" and t.init_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("clientDate".equals(dateStr)){
+//				resultStr.append(" and t.client_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("useDate".equals(dateStr)){
+//				resultStr.append(" and t.use_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("accountDate".equals(dateStr)){
+//				resultStr.append(" and t.account_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("refundDate".equals(dateStr)){
+//				resultStr.append(" and t.refund_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("sendDate".equals(dateStr)){
+//				resultStr.append(" and t.send_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("checkDate".equals(dateStr)){
+//				resultStr.append(" and t.check_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("overDate".equals(dateStr)){
+//				resultStr.append(" and t.over_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else if("alterDate".equals(dateStr)){
+//				resultStr.append(" and t.alter_date <= '"+DateUtil.getDateEndForQuery(dateEnd)+"'");
+//			}else{
+//				throw new MyExceptionForRole("日期指示不明！");
+//			}
+//		}
+//		
+//		
+//		String remarkStr = q_OrderContent.getRemarkStr();
+//		String remark = q_OrderContent.getRemark();
+//		if(remark!=null && !"".equals(remark)){
+//			if("remark".equals(remarkStr)){
+//				resultStr.append(" and concat(IFNULL(t.remark,''),IFNULL(t.remark_client,''),IFNULL(t.remark_refund,'')) like '%"+remark+"%'");
+//			}else if("remarkAppend".equals(remarkStr)){
+//				resultStr.append(" and concat(IFNULL(t.append_channel_detail,''),IFNULL(t.append_zhifubao_detail,''),IFNULL(t.channel_detail,''),IFNULL(t.zhifubao_detail,'')) like '%"+remark+"%'");
+//			}else{
+//				throw new MyExceptionForRole("备注类型指示不明！");
+//			}
+//		}
+//		
+//		
+//		String buyer = q_OrderContent.getBuyer();
+//		if(buyer!=null && !"".equals(buyer)){
+//			resultStr.append(" and concat(IFNULL(t.append_channel_detail,''),IFNULL(t.append_zhifubao_detail,''),IFNULL(t.channel_detail,''),IFNULL(t.zhifubao_detail,'')) like '%"+buyer+"%'");
+//		}
+		return resultStr.toString();
+	}
+}

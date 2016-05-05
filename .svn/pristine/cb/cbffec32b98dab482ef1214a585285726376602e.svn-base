@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>酒店列表页</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<meta name="full-screen" content="yes"><!-- UC强制全屏 -->
+<meta name="x5-fullscreen" content="true"><!-- QQ强制全屏 -->
+<link href="../css/hotel-index.css" rel="stylesheet" type="text/css">
+<link href="../css/dropload.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/dropload.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/providerHotelList.js"></script>
+</head>
+<body>
+<div class="tibet-hotel">
+    <header class="tibet-header">
+        <div class="back-left icon-left">
+            <img src="../images/icon-left.png"/>
+        </div>
+        <div class="center-name icon-left">
+            <h2>酒  店</h2>
+        </div>
+        <div class="go-right icon-right" >
+            <img src="../images/icon-search.png" class="icon-search">
+        </div>
+    </header>
+    <div class="prop-height" ></div>
+    <div class="hotel-content">
+        <!-- 搜索框 -->
+        <div class="search-show">
+            <form class="cont-search-box" onsubmit="return false;">
+                <img class="icon-search-black" src="../images/search-icon-black.png"  id="search"/>
+                <input class="cont-search-input" type="text" placeholder="请输入酒店或景点名称" id="spotNameForm" onkeyup="submitForm()"/>
+            </form>
+        </div>
+
+        <!-- 酒店列表 -->
+        <div id="pullrefresh_order" class="hotel-content-list" style="margin-top: 1rem">
+            <div class="index-hotel-card">
+                <ul id="tableList">
+                	<!-- <li style="text-align: center; height: 100px; line-height: 100px;">加载中...</li> -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,246 @@
+/* 旅游详情页面 */
+.pic {
+display: block;
+position: relative;
+}
+.pic a {
+display: block;
+min-height: 150px;
+}
+.pic img {
+width: 100%;
+}
+.pic_mask {
+width: 100%;
+position: absolute;
+left: 0;
+bottom: 0;
+color: #fff;
+background: linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+background: -moz-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+background: -webkit-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+background: -o-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+background: -ms-linear-gradient(top,rgba(0,0,0,0),rgba(0,0,0,0.6));
+box-sizing: border-box;
+padding: 10px;
+}
+.pic_mask h3 {
+font-size: 18px;
+}
+.mui-scroll-wrapper{
+position:inherit;
+}
+.ticket {
+position: relative;
+background-color: #f5f5f5;
+font-size: 14px;
+}
+.ticket dd {
+padding: 10px 10px 10px 0;
+margin-left: 10px;
+border-bottom: 1px solid #dcdcdc;
+background: #f5f5f5;
+position: relative;
+display: none;
+}
+.ticket.return dd {
+display: block;
+}
+.ticket:last-child dd:last-child {
+border-bottom: 1px solid #C7D2DC;
+}
+.ticket h4 {
+color: #333;
+font-size: 15px;
+max-height: 45px;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.ticket .other_detail {
+position: absolute;
+right: 82px;
+bottom: 9%;
+}
+.ticket .tc-price {
+color: #f63;
+font-size: 20px;
+}
+.ticket .other_detail span {
+display: block;
+text-align: right;
+line-height: 20px;
+}
+.lbl {
+padding-bottom: 0;
+}
+.lbl .today {
+color: #999;
+line-height: 16px;
+height: 16px;
+font-size: 12px;
+border-radius: 2px;
+display: inline-block;
+}
+.btn-box {
+position: absolute;
+right: 10px;
+bottom: 10%;
+margin-top: -27px;
+height: 40px;
+display: table;
+}
+.btn-box li {
+display: table-cell;
+vertical-align: middle;
+height: 40px;
+}
+.ticket .btn {
+display: block;
+border-radius: 3px;
+color: #fff;
+width: 54px;
+font-size: 16px;
+line-height: 23px;
+height: 22px;
+text-align: center;
+overflow: hidden;
+}
+.ticket .line_btn {
+background: #FF6D4F;
+}
+.bottomBox_contain {
+background: #fff;
+border-bottom: 1px solid #dcdcdc;
+}
+.bottomBox {
+padding: 12px 15px 12px 2px;
+clear: both;
+font-size: 14px;
+line-height: 18px;
+position: relative;
+border-bottom: 1px solid #dcdcdc;
+background: #fff;
+margin-left: 15px;
+}
+.bottomBox a {
+color: #434d59;
+display: inline;
+width: 90%;
+display: block;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+background-repeat: no-repeat;
+padding: 0 0 0 25px;
+}
+.bottomBox .a_phone {
+
+background-size: 18px 17px;
+}
+.bottomBox .a_address {
+
+background-size: 18px 17px;
+}
+/* 订单下单页面 */
+.container {
+padding-bottom: 60px;
+}
+.topBookInfo {
+padding: 0 15px;
+margin-bottom: 10px;
+border-bottom: 1px solid #dcdcdc;
+background: #fff;
+}
+.bookInfoTop {
+padding: 15px 0 10px;
+}
+.bookInfoTop .tName {
+font-size: 16px;
+color: #333;
+}
+.bookInfoMiddle {
+font-size: 12px;
+position: relative;
+}
+.bookInfoMiddle .tLabel {
+border: 1px solid #ff8400;
+border-radius: 3px;
+padding: 1px;
+color: #ff8400;
+font-size: 10px;
+}
+.bookInfoMiddle .tPrice {
+color: #999;
+position: absolute;
+right: 0;
+top: -4px;
+}
+.bookInfoMiddle .tPrice .tNum span {
+font-size: 18px;
+}
+.bookInfoMiddle .tPrice .tNum {
+color: #f63;
+}
+.bookInfoBottom {
+padding: 12px 0 13px;
+}
+
+.book_fill {
+position: relative;
+}
+.w-item {
+padding: 0 0 0 15px;
+background: #fff;
+margin-bottom: 10px;
+line-height: 1.5em;
+border-bottom: 1px solid #dcdcdc;
+border-top: 1px solid #dcdcdc;
+}
+.order-btn {
+height: 50px;
+font-size: 18px;
+text-align: center;
+color: #fff;
+position: fixed;
+bottom: 0;
+z-index: 5;
+width: 100%;
+}
+.submit-btn {
+display: -webkit-box;
+display: -moz-box;
+width: 100%;
+}
+.order-price {
+text-align: left;
+font-size: 16px;
+padding-left: 10px;
+height: 50px;
+background: #fe932b;
+box-flex: 1;
+-moz-box-flex: 1;
+-webkit-box-flex: 1;
+box-align: start;
+-moz-box-align: start;
+-webkit-box-align: start;
+vertical-align: middle;
+display: box;
+display: -moz-box;
+display: -webkit-box;
+box-orient: vertical;
+-moz-box-orient: vertical;
+-webkit-box-orient: vertical;
+}
+.order-btn .btn {
+padding: 0 10px;
+height: 50px;
+border: 0;
+color: #fff;
+background: #f60;
+display: block;
+line-height: 50px;
+font-size: 20px;
+}
+
+
+

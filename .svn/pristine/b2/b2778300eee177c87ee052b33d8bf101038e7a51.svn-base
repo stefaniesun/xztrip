@@ -1,0 +1,29 @@
+.order-details{
+    width: 100%;
+    height: auto;
+}
+.order-details ul{
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+.order-details ul li{
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+ }
+.order-num-m{
+    padding: 0.6rem 0.4rem;
+    border-bottom: 0;
+    font-size: 13px;
+    margin: 0;
+}
+.order-details .order-struts{
+    position: absolute;
+    right: 0.4rem;
+    top: 0.5rem;
+    font-size: 13px;
+    color: #f6383a;
+}

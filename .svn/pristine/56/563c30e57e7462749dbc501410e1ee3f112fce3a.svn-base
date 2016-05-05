@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<title>productDetail</title>
+<link href="../css/mui.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+<style>
+.mui-bar-nav~.mui-content .mui-pull-top-pocket {
+	top: 0px;
+}
+</style>
+</head>
+
+<body>
+<header class="mui-bar mui-bar-nav">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	<h1 class="mui-title"></h1>
+</header>
+<nav class="mui-bar mui-bar-tab" style="background:#e4393c;height:40px;">
+	<span style="width:100%;color:#ffffff; display:block; text-align: center;line-height:40px;">立即下单</span>
+</nav>
+<div class="mui-content">
+	<!--下拉刷新容器-->
+	<div id="pullrefresh_productDetail" class="mui-scroll-wrapper contentScrollWrapper">
+		<div class="mui-scroll">
+			<!--数据列表-->
+			<ul class="mui-table-view">
+				<li id="container" style="padding: 10px;">
+					<h3 id="nameCn"></h3>
+					<p id="numberCode"></p>
+					<br/>
+				</li>
+				<li id="form">
+					<div id="slider" class="mui-slider">
+						<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+							<a class="mui-control-item" href="#item1mobile">产品下单</a>
+							<a class="mui-control-item" href="#item2mobile">详情说明</a>
+						</div>
+						<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
+						<div class="mui-slider-group">
+							<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+								<form class="mui-input-group">
+									<ul class="mui-table-view mui-table-view-chevron">
+										<li class="mui-table-view-cell">
+											<a href="javascript:void(0);" class="mui-navigate-right" id="dateInfoChoose">出行日期<span class="mui-pull-right update" id="dateInfoForm"></span></a>
+										</li>
+									</ul>
+									<div class="mui-input-row">
+										<label>账号</label>
+										<input id='username' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+									</div>
+									<div class="mui-input-row">
+										<label>密码</label>
+										<input id='password' type="password" class="mui-input-password mui-input" placeholder="请输入密码">
+									</div>
+								</form>
+							</div>
+							<div id="remark" class="mui-slider-item mui-control-content">
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<script src="../js/mui_20151228.js"></script>
+<script src="../js/mui.picker.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript">
+document.querySelector('.mui-scroll-wrapper').style.top='45px';
+var current = new Date();
+document.getElementById('dateInfoForm').innerText = current.Format('yyyy-MM-dd');
+mui.init({
+	swipeBack: false,
+	pullRefresh: {
+		container: '#pullrefresh_productDetail',
+		down: {
+			callback: pulldown
+		}
+	}
+});
+
+document.getElementById('dateInfoChoose').addEventListener('tap', function() {
+	var dateStart = document.getElementById('dateInfoForm');
+	var mpicker = new mui.DtPicker({
+		type : 'date',
+		beginYear : current.getFullYear(),
+		endYear : current.getFullYear()+5
+	});
+	mpicker.setSelectedValue(dateStart.innerText);
+	mpicker.show(function(rs) {
+		dateStart.innerText = rs.value;
+		mpicker.dispose();
+	});
+}, false);
+
+if(mui.os.plus){
+	mui.plusReady(function(){
+		setTimeout(function(){
+			pageInit();
+		}, 100);
+	});
+}else{
+	mui.ready(function(){
+		pageInit();
+	});
+}
+
+
+/**
+ * 下拉刷新具体业务实现
+ */
+function pulldown() {
+	pageInit();
+}
+
+function pageInit(){
+	var o = xyz.getUrlparam();
+	document.querySelector('.mui-title').innerText = o.nameCn;
+	document.getElementById('nameCn').innerText = o.nameCn;
+	document.getElementById('numberCode').innerText = o.numberCode;
+	document.getElementById('remark').innerHTML = xyz.isNull(o.remark)?'<p>暂无详情说明<br/><br/><br/></p>':o.remark;
+	setTimeout(function(){
+		mui('#pullrefresh_productDetail').pullRefresh().endPulldownToRefresh();
+	},500);
+}
+</script>
+</body>
+</html>

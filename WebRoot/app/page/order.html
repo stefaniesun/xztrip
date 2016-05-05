@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Order</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<link href="../css/dropload.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="../css/customer.mui.theme.css">
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<style>
+	html,
+	body {
+		background-color: #efeff4;
+	}
+	.title {
+		padding: 20px 15px 10px;
+		color: #6d6d72;
+		font-size: 15px;
+		background-color: #fff;
+	}
+	.mui-bar .mui-segmented-control {
+		top: 7px;
+		width: 150px;
+		margin: 0 auto;
+	}
+	.mui-segmented-control .mui-control-item {
+		line-height: 28px;
+	}
+	.mui-checkbox.mui-left input[type=checkbox], .mui-radio.mui-left input[type=radio] {
+	left: 5px;
+	}
+	.mui-table-view-cell.mui-checkbox input[type=checkbox], .mui-table-view-cell.mui-radio input[type=radio] {
+	top: 15px;
+	}
+	.mui-table-view-cell.mui-checkbox.mui-left, .mui-table-view-cell.mui-radio.mui-left {
+	padding-left: 40px;
+	}
+
+
+
+	/* 订单状态 */
+	.home-block-list ul{
+		background-color: #efeff4;
+	}
+	.order-state-list{
+		background-color: #fff;
+		height: auto;
+		border-top: 1px solid #e6e6e6;
+		border-bottom: 1px solid #e6e6e6;
+		padding: 13px 10px;
+		width: 100%;
+		position: relative;
+		font-family: 黑体;
+		margin-bottom: 10px;;
+	}
+	.order-state-list .order-state-lm{
+		width: 100%;
+		height: auto;
+		position: relative;
+	}
+	.order-state-lm .icon-mp-type{
+		background-color: #099fed;
+	}
+	.order-state-lm .icon-jd-type{
+		background-color: #ff9a14;
+	}
+	.order-state-lm .icon-mp-type,.order-state-lm .icon-jd-type{
+		display: block;
+		color: #fff;
+		font-size: 12px;
+		width: 30px;
+		text-align: center;
+		border-radius: 5px;
+		float: left;
+	}
+	.order-state-lm h3{
+		font-size: 17px;
+		line-height: 1.2;
+		height: 30px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		margin: 0;
+		padding: 0 10px;;
+		width: 70%;
+		float: left;
+	}
+	.order-state-lm .lj-pay{
+		float: right;
+		margin: 0;
+		border:1px solid #ff9a14;
+		font-size: 12px;
+		color: #ff9a14;
+		border-radius: 3px;
+		padding: 0 3px;;
+	}
+	.order-state-lm .total-num{
+		font-size: 13px;
+		float: left;
+		color: #999;
+	}
+	.order-state-lm .cx-date{
+		font-size: 13px;
+		float: right;
+		color: #999;
+	}
+	.order-state-lm .total-price{
+		font-size: 13px;
+		color: #999;
+		float: left;
+	}
+	.order-state-lm .total-price label{
+		color: #333;
+		font-weight: bold;
+	}
+	</style>
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
+		<div id="segmentedControl_order" class="mui-segmented-control" >
+			<a id="nopay" class="mui-control-item mui-active" href="javascript:void(0);">未支付</a>
+			<a id="ispay" class="mui-control-item" href="javascript:void(0);">已支付</a>
+		</div>
+	</header>
+<!-- 	<div class="mui-content">
+		<div class="title">
+			这里可以写些订单支付的提醒什么的，但是要根据这里的高度来动态设置下面mui-scroll-wrapper的top值
+		</div>
+	</div> -->
+	<div id="pullrefresh_order" class="mui-content" >
+		<div class="home-block-list">
+			<ul id="tableList" >
+			</ul>
+		</div>
+	</div>
+<script src="../js/mui_20151228.min.js"></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+<script src="../js/xyzCommon.js"></script>
+<script src="../js/weui.js"></script>
+<!-- <script src="http://192.168.1.10:8080/xztrip/pay/js/common.js"></script> -->
+<script>
+
+var page = 0;
+if(mui.os.plus){
+	mui.plusReady(function() {
+		setTimeout(function() {
+			pageInit();
+		}, 100);
+	});
+}else{
+	mui.ready(function() {
+		pageInit();
+	});
+}
+$('#pullrefresh_order').dropload({
+	scrollArea : window,
+	loadUpFn : function(me){
+		queryList(page=1,me);
+	},
+	loadDownFn : function(me){
+		queryList(++page,me);
+	}
+});
+
+function pageInit(){
+	//mui('#pullrefresh_order').pullRefresh().pulldownLoading();
+	mui.each(document.querySelectorAll('#segmentedControl_order a'), function(index, ele) {
+		ele.addEventListener('tap',function () {
+			queryList(page=1,ele.id);
+		});
+	},true);
+	//queryList(page=1);
+}
+
+function queryList(page,dropload){
+	$(".dropload-down").remove();
+	var flag = (typeof dropload == 'string')?dropload:mui('#segmentedControl_order .mui-active')[0].id;
+	var flagPay = flag=='ispay'?1:0;
+	dropload = (typeof dropload == 'string')?false:dropload;
+	xyz.ajax({
+		url:'BuyerOrderWS/queryOrderList.cus',
+		progress:false,
+		data : {
+			apikey: window.localStorage.apikey,
+			page : page,
+			rows : 10,
+			flagPay : flagPay
+		},
+		success : function(data) {
+			if(data.status==1){
+				var list = data.content.rows;
+				var table = document.body.querySelector('#tableList');
+				if(page==1){
+					table.innerHTML = '';
+				}
+				for(var i=0; i<list.length; i++){
+					var o = list[i];
+					var type = o.product;
+					if(type.indexOf('SC')==0){
+						table.appendChild(showItemScenic(o));
+					}else if(type.indexOf('HO')==0){
+						table.appendChild(showItemHotel(o));
+					}else{
+						table.appendChild(showItemScenic(o));
+					}
+				}
+
+				//重置
+				if(dropload){
+					dropload.resetload();
+					if(page==1){
+						dropload.unlock();
+						dropload.noData(false);
+					}
+					if(data.content.rows.length<10){
+						dropload.lock('down');
+						dropload.noData(true);
+					}
+				}
+			}else{
+				if(dropload){
+					dropload.lock();
+					dropload.noData();
+					dropload.resetload();
+				}
+				if(data.msg.indexOf('重新登录')>-1){
+					if(window.plus){
+						var loginWebview = plus.webview.getWebviewById('page/login.html');
+						loginWebview.evalJS('webviewId="page/order.html";method="pageInit()"');
+						loginWebview.show("slide-in-right", 300);
+					}else{
+						mui.toast('该功能需要下载APP才能使用哦！^_^');
+					}
+				}else{
+					mui.toast(data.msg);
+				}
+			}
+		},error: function(xhr, type){
+            mui.toast('无法访问服务器啦');
+            if(dropload){
+            	dropload.lock();
+				dropload.noData();
+				dropload.resetload();
+			}
+        }
+	});
+}
+ 
+function showItemHotel(o){
+	var dateInfoEnd = new Date(new Date(o.dateInfoEnd.split(' ')[0].replace(/-/g,"/")).getTime()+86400000).Format('yyyy年MM月dd日');
+	var dateInfoStart = new Date(o.dateInfoStart.split(' ')[0].replace(/-/g,"/")).Format('yyyy年MM月dd日');
+	var li = document.createElement('li');
+	li.className = 'order-state-list';
+	li.title = o.orderNum;
+	var html = ''
+		+'<div class="order-state-lm">'
+		+'<span class="icon-jd-type">酒店</span>'
+		+'<h3>'+o.productNameCn+'</h3>'
+		+'<p class="lj-pay">立即支付</p>'
+		+'<div style="clear: both"></div>'
+		+'</div>'
+		+'<div class="order-state-lm">'
+		+'<span class="total-num">数量：'+o.count+'间房/天</span>'
+		+'<span class="cx-date">出行日期：'+dateInfoStart+'</span>'
+		+'<div style="clear: both"></div>'
+		+'</div>'
+		+'<div class="order-state-lm">'
+		+'<span class="total-price">总价：<label>¥'+new Number(o.money).toFixed(2)+'</label></span>'
+		+'<span class="cx-date">离店日期：'+dateInfoEnd+'</span>'
+		+'<div style="clear: both"></div>'
+		+'</div>';
+	li.innerHTML = html;
+	return li;
+}
+
+function showItemScenic(o){
+	var dateInfoStart = new Date(o.dateInfoStart.split(' ')[0].replace(/-/g,"/")).Format('yyyy年MM月dd日');
+	var li = document.createElement('li');
+	li.className = 'order-state-list';
+	li.title = o.orderNum;
+	var html = '<div class="order-state-lm">'
+		+'<span class="icon-mp-type">门票</span>'
+		+'<h3>'+o.productNameCn+'</h3>'
+		+'<p class="lj-pay">立即支付</p>'
+		+'<div style="clear: both"></div>'
+		+'</div>'
+		+'<div class="order-state-lm">'
+		+'<span class="total-num">数量：'+o.count+'张</span>'
+		+'<span class="cx-date">出行日期：'+dateInfoStart+'</span>'
+		+'<div style="clear: both"></div>'
+		+'</div>'
+		+'<div class="order-state-lm">'
+		+'<span class="total-price">总价：<label>¥'+new Number(o.money).toFixed(2)+'</label></span>'
+		+'<div style="clear: both"></div>'
+		+'</div>';
+	li.innerHTML = html;
+	return li;
+}
+/* 
+//删除事件
+mui('#tableList').on('tap', '.deleteBtn', function(event) {
+	event.stopPropagation();
+	var elem = this;
+	var li = elem.parentNode.parentNode;
+	var orderNum = elem.title;
+	mui.confirm('确认删除该订单？删除后无法恢复。', '确认提示', ['确认', '取消'], function(e) {
+		if(e.index == 0){
+			xyz.ajax({
+				url:'BuyerOrderWS/deleteOrder.cus',
+				data:{
+					apikey:window.localStorage.apikey,
+					orderNum:orderNum
+				},
+				success:function(data){
+					if(data.status==1){
+						li.parentNode.removeChild(li);
+						mui.toast('删除成功');
+					}else{
+						if(data.msg.indexOf('重新登录')>-1){
+							if(window.plus){
+								var loginWebview = plus.webview.getWebviewById('page/login.html');
+								loginWebview.evalJS('webviewId="page/order.html";method="pageInit()"');
+								loginWebview.show("slide-in-right", 300);
+							}else{
+								mui.toast('该功能需要下载APP才能使用哦！^_^');
+							}
+						}else{
+							mui.toast(data.msg);
+						}
+					}
+				}
+			});
+		}else{
+			mui.swipeoutClose(li);
+		}
+	});
+});
+
+//ITEM点击事件
+mui('#tableList').on('tap', '.mui-slider-handle', function(event) {
+	event.stopPropagation();
+	mui.swipeoutClose(this.parentNode);
+	mui.openWindow({
+		id: 'page/orderDetail.html',
+		url: xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {'orderNum':this.title}),
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+});
+ */
+ 
+//主列表触摸事件
+ mui('#tableList').on('tap', 'li', function() {
+	mui.openWindow({
+		id: 'page/orderDetail.html',
+		url: xyz.setUrlparam(xyz.getFullurl('page/orderDetail.html'), {'orderNum':this.title}),
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+ });
+</script>
+</body>
+</html>

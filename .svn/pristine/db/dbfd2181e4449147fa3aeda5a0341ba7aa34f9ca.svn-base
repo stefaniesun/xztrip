@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>门票列表页</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<meta name="full-screen" content="yes"><!-- UC强制全屏 -->
+<meta name="x5-fullscreen" content="true"><!-- QQ强制全屏 -->
+
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/dropload.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="js/dropload.min.js"></script> -->
+ <script type="text/javascript" src="../js/dropload.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/tibet-wx.js"></script>
+<script type="text/javascript" src="../js/providerScenicList.js"></script>
+</head>
+<body>
+<div class="tibet-ticket">
+    <header class="tibet-header">
+        <div class="back-left icon-left">
+            <img src="../images/icon-left.png"/>
+        </div>
+        <div class="center-name icon-left">
+            <h2>门  票</h2>
+        </div>
+        <div class="go-right icon-right">
+            <img src="../images/icon-search.png" class="icon-search">
+        </div>
+    </header>
+    <div class="prop-height" ></div>
+    <div class="ticket-content">
+        <!-- 搜索框 -->
+        <div class="search-show">
+            <form class="cont-search-box" onsubmit="return false;">
+                <img class="icon-search-black" src="../images/search-icon-black.png" id="search"/>
+                <input class="cont-search-input" type="text" placeholder="请输入景点名称" id="spotNameForm" onkeyup="submitForm()"/>
+            </form>
+        </div>
+
+        <!-- 景点门票列表 -->
+        <div id="pullrefresh_order" class="ticket-content-list" >
+            <div class="index-hotel-card" style="margin-top: 1rem">
+                <ul id="tableList">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

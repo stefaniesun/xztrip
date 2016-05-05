@@ -1,0 +1,99 @@
+package xyz.ctrl.pay;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import xyz.filter.JSON;
+import xyz.filter.MyRequestUtil;
+import xyz.filter.ReturnUtil;
+import xyz.model.core.WxBill;
+import xyz.svc.buyer.BuyerOrderSvc;
+import xyz.svc.core.WxBillSvc;
+import xyz.svc.pay.imp.WxPayUtil;
+
+@Controller
+@RequestMapping(value="/PayWS")
+public class PayWS {
+	@Autowired
+	private WxBillSvc wxBillSvc;
+	@Autowired
+	private BuyerOrderSvc buyerOrderSvc;
+	
+	/**
+	 * 获得微信支付订单信息
+	 * @return
+	 */
+	@RequestMapping(value="getWxPayOrderInfo")
+	@ResponseBody
+	public Map<String, Object> getWxPayOrderInfo(String orderNo, BigDecimal totalFee, String body){
+		if(totalFee==null || totalFee.compareTo(new BigDecimal("0"))<=0){
+			return ReturnUtil.returnMap(0, "金额不能少于一分");
+		}
+		WxBill bill = new WxBill();
+		bill.setOrderNo(orderNo);
+		bill.setTotal_fee(totalFee.multiply(new BigDecimal("100")).intValue());//乘以100转成整型
+		bill.setBody(body);
+		bill.setSpbill_create_ip(MyRequestUtil.getIp());
+		
+		return wxBillSvc.addWxBillSvc(bill);
+	}
+	
+	@RequestMapping(value="getAliPayOrderInfo")
+	@ResponseBody
+	public Map<String, Object> getAliPayOrderInfo(String orderNo, BigDecimal totalFee, String body){
+		if(totalFee==null || totalFee.compareTo(new BigDecimal("0"))<=0){
+			return ReturnUtil.returnMap(0, "金额不能少于一分");
+		}
+		return null;
+	}
+	
+	@RequestMapping(value="wxPayNotify")
+	@ResponseBody
+	public void wxPayNotify(HttpServletRequest request,HttpServletResponse response) throws IOException{
+		request.setCharacterEncoding("UTF-8");  
+		response.setCharacterEncoding("UTF-8");	//防止中文乱码
+		Map<String, Object> map = WxPayUtil.xml2map(request.getInputStream());
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println("===============微信支付回调成功【"+format.format(new Date())+"】==============");
+		System.out.println(JSON.toJosn(map));
+		System.out.println("===============微信支付回调成功【END】==============");
+		
+		Map<String, Object> returnContent = new HashMap<String, Object>();
+		returnContent.put("return_msg", "OK");
+		
+		Map<String, Object> resultMap = wxBillSvc.wxPayCallbackOper(map);
+		if(resultMap.get("status")!=null && 1==Integer.parseInt(resultMap.get("status").toString())){
+			buyerOrderSvc.paySuccessOper();//通知处理支付成功的订单
+			returnContent.put("return_code", "SUCCESS");//失败返回  FAIL
+		}else{
+			returnContent.put("return_code", "FAIL");//失败返回  FAIL
+		}
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		returnMap.put("xml", returnContent);
+		
+		String outxml = WxPayUtil.map2xml(returnMap);
+		System.out.println(outxml);
+		
+		PrintWriter out = response.getWriter();
+		out.write(outxml);
+		out.flush();
+		out.close();
+	}
+	
+	
+
+}

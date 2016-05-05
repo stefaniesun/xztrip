@@ -1,0 +1,32 @@
+/**主题颜色定制**/
+.mui-bar{
+	background-color:#b31e23
+}
+
+.mui-title {
+	color:#ffffff;
+}
+
+.mui-segmented-control{
+	border: 1px solid #fff;
+}
+.mui-segmented-control .mui-control-item{
+	color: #ffffff;
+	border-color: #ffffff;
+	border-left: 1px solid #ffffff;
+}
+.mui-segmented-control .mui-control-item.mui-active {
+	color: #b31e23;
+	background-color: #ffffff;
+}
+
+a {
+	color: #ffffff;
+}
+a:active {
+color: #efeff4;
+}
+
+.mui-bar-tab .mui-tab-item.mui-active {
+	color: #ffffff;
+}

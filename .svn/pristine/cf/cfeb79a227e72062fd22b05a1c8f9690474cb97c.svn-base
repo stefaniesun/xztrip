@@ -1,0 +1,56 @@
+$(document).ready(function(){
+
+	$(".dropdown").mouseover(function(){
+		$(this).attr("class","dropdown dropdown_hover");
+	});
+	
+	
+	$(".lv_link").mouseout(function(){
+		$(this).parent("li").attr("class","dropdown");
+	});
+	
+	$(".top_down").mouseout(function(){
+		$(".dropdown_hover").attr("class","dropdown");
+	});
+	
+	var key = getCookie("B2B_LOGIN_KEY");
+	
+	if(!xyzIsNull(key))
+	{	
+		var username = getCookie("B2B_LOGIN_NAME");
+		var html= "<a onclick='logout()' class=\"usertop_exit fr\">[安全退出]</a>尊敬的用户 <span style=\"color:#ed0946\">" + rawurldecode(username) + "</span> 欢迎您来到B2B销售平台！";
+		$("#user_logined_welcome").html(html);
+	}else{
+		window.location.href="../login.html";
+	}
+
+	var url = location.href;
+	var start=url.indexOf("product_");
+	if(start>0){
+		url=url.substring(start,url.length);
+		var end=url.indexOf("/");
+		var tab=url.substring(0, end);
+		$(".m li").remove(".selected");
+		$("#"+tab+"_Tab").attr("class","selected");
+	}
+	
+	
+});
+
+
+function logout(){
+	deleteB2bCookie();
+	window.location.href="../login.html";
+}
+
+function rawurldecode(string)
+{
+	string = string.replace(/"%21"/g, "\!");
+	string = string.replace(/"%2A"/g, "\*");
+	string = string.replace(/"%28"/g, "\(");
+	string = string.replace(/"%29"/g, "\)");
+	string = string.replace(/"%7E"/g, "\~");
+	string = string.replace(/"%27"/g, "\'");
+	
+	return decodeURIComponent(string);
+}

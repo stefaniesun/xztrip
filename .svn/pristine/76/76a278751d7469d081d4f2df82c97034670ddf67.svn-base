@@ -1,0 +1,118 @@
+﻿﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<title></title>
+</head>
+<body>
+<center>
+	<div class="xieyaozhong">
+		<div id="contentDiv">
+		
+			<div align="left">
+				<table>
+					<tr>
+						<td>查询库存<input type="text"  class="easyui-datebox" id="queryDate"/></td>
+						<td><a href="javascript:void(0)"  id="queryProductUserTagStockForCalendarButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a></td>
+						<td><a href="javascript:void(0)"  id="queryCurrerentProductUserTagStockForCalendarButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">显示当天</a></td>
+					</tr>
+				</table>
+			</div>
+			
+			<div id="productUserTagStockCalendar" class="easyui-calendar"  style="width:700px;height:500px;float: left;"></div> 
+ 			
+ 			<div style="float:left;width: 320px;height: 300px;" >
+ 			<form id="deleteForm">
+ 				<table width="370" height="439">
+ 				  <tr>
+				    <td>共计【<span id="totalDay">0</span>】天</td>
+				    <td align="right"><h4 width="184" align="left">配置库存价格</h4></td>
+				  </tr>
+				  <tr>
+				    <td width="143" height="252" align="right" valign="top">
+						<textarea cols="22" rows="28" id="dateInfoForm" style="resize:none" class="easyui-validatebox" readonly data-options="required:true"></textarea>
+					</td>
+				    <td width="184" align="left" valign="top">
+					  <table width="184">
+					  	  <tr>
+					  	  	<td width="184" align="left">模式
+					  			<input id="chanageTypeForm" type="text" class="easyui-combobox"  value ="0" style="width:115px;" data-options="editable:false,required:true,valueField: 'value',textField: 'text',data: [{value: '0',text: '添加/减少库存'},{value: '1',text: '删除库存/价格'}]"/>
+						  	</td>
+						  </tr>
+						  <tbody id="priceStockForm">
+						  <tr>
+							<td width="184" align="left" style="color: red;font-size: 12px;">
+								ps:将覆盖以前的价格
+							</td>
+						  </tr>
+						  <tr>
+							<td align="left">价格
+							  <input id="priceForm" type="text" class="easyui-numberbox" style="width: 115px;" data-options="min:0,precision:2,required:true"/></td>
+						  </tr>
+						  <tr>
+						  	<td align="left">
+						  		<input id="keepPrice" type="checkbox"/>保存原价,只改库存
+							</td>
+						  </tr>
+						  <tr>
+							<td align="left" style="color: red;font-size: 12px;">
+								ps:在原有的基础上增加/减少
+							</td>
+						  </tr>
+						  <tr>
+							<td align="left">
+							<input id="stockCommboxForm" type="text" class="easyui-combobox" style="width:65px;" value="+" data-options="editable:false,valueField: 'value',textField: 'text',data: [{value: '+',text: '加库存'},{value: '-',text: '减库存'}]"/>
+						    <input id="countForm" type="text" class="easyui-numberbox" style="width: 75px;" data-options="min:0,precision:0,required:true"/>个</td>
+						  </tr>
+						  </tbody>
+						  <tr>
+							<td align="left">
+								<a href="#" class="easyui-linkbutton" style="width:70px;margin-top: 10px;height: 24px;" onclick="productUserTagStockButtonSubmit()">确定</a> 
+								<a href="#" class="easyui-linkbutton" style="width:70px;margin-top: 10px;height: 24px;" onclick="productUserTagStockReset()">重新选择</a>
+							</td>
+						  </tr>
+						  <tr>
+							<td align="left" style="color: red;font-size: 12px;"><br/><br/>
+								<table width="200">
+	                              <tr>
+	                                <td colspan="3" valign="bottom">【操作说明】</td>
+	                              </tr>
+	                              <tr>
+	                                <td width="65" valign="bottom">单击日期</td>
+	                                <td width="25" rowspan="2">--></td>
+	                                <td width="96" rowspan="2">连续选中</td>
+	                              </tr>
+	                              <tr>
+	                                <td valign="top">(按住s键)</td>
+	                              </tr>
+	                              <tr>
+	                                <td>单击日期</td>
+	                                <td>--></td>
+	                                <td>选择/取消</td>
+	                              </tr>
+	                              <tr>
+	                                <td width="70">点击星期几</td>
+	                                <td>--></td>
+	                                <td>选中星期几 </td>
+	                              </tr>
+	                              <tr>
+	                                <td colspan="3" valign="bottom">
+	                                  		【注意】<br/>今天(不含)以前的日期不能选
+	                                  </td>
+	                              </tr>
+	                            </table>
+							</td>
+						  </tr>
+					  </table>	
+					</td>
+				  </tr>
+				</table>
+			</form>	
+			</div>
+ 		</div>
+	</div>
+</center>
+</body>
+</html>

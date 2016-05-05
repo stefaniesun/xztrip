@@ -1,0 +1,179 @@
+package xyz.model.main;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name="product_specialty",uniqueConstraints = {@UniqueConstraint(columnNames={"provider","name_cn"})})
+public class ProductSpecialty {
+
+	
+	@Id
+	@Column(name="iidd",unique=true,nullable=false)
+	@GeneratedValue(generator = "paymentableGenerator")       
+    @GenericGenerator(name = "paymentableGenerator", strategy = "uuid")   
+	private String iidd;//主键
+	
+	
+	@Column(name="provider")
+	private String provider;//
+	
+	@Column(name="number_code",unique=true,nullable=false)
+	private String numberCode;//
+	
+	@Column(name="name_cn")
+	private String nameCn;//名称
+	
+	@Column(name="image_url")
+	private String imageUrl;
+	
+	@Column(name="is_tag")
+	private int isTag;//是否关联标签库存价格，0否  1是
+	
+	@Column(name="price")
+	private BigDecimal price;//参考价格
+	
+	@Column(name="remark",length=5000)
+	private String remark;
+	
+	@Column(name="refund_time")
+	private int refundTime;
+	
+	@Column(name="max_date")
+	private int maxDate;
+	
+	@Column(name="online_flag")
+	private int onlineFlag;
+	
+	@Column(name="add_date")
+	private Date addDate;
+	
+	@Column(name="alert_date")
+	private Date alertDate;
+	
+	@Transient
+	private String providerNameCn;
+
+	public String getIidd() {
+		return iidd;
+	}
+
+	public void setIidd(String iidd) {
+		this.iidd = iidd;
+	}
+
+	public String getProvider() {
+		return provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
+	public String getNumberCode() {
+		return numberCode;
+	}
+
+	public void setNumberCode(String numberCode) {
+		this.numberCode = numberCode;
+	}
+
+	public String getNameCn() {
+		return nameCn;
+	}
+
+	public void setNameCn(String nameCn) {
+		this.nameCn = nameCn;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public int getIsTag() {
+		return isTag;
+	}
+
+	public void setIsTag(int isTag) {
+		this.isTag = isTag;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public int getRefundTime() {
+		return refundTime;
+	}
+
+	public void setRefundTime(int refundTime) {
+		this.refundTime = refundTime;
+	}
+
+	public int getMaxDate() {
+		return maxDate;
+	}
+
+	public void setMaxDate(int maxDate) {
+		this.maxDate = maxDate;
+	}
+
+	public int getOnlineFlag() {
+		return onlineFlag;
+	}
+
+	public void setOnlineFlag(int onlineFlag) {
+		this.onlineFlag = onlineFlag;
+	}
+
+	public Date getAddDate() {
+		return addDate;
+	}
+
+	public void setAddDate(Date addDate) {
+		this.addDate = addDate;
+	}
+
+	public Date getAlertDate() {
+		return alertDate;
+	}
+
+	public void setAlertDate(Date alertDate) {
+		this.alertDate = alertDate;
+	}
+
+	public String getProviderNameCn() {
+		return providerNameCn;
+	}
+
+	public void setProviderNameCn(String providerNameCn) {
+		this.providerNameCn = providerNameCn;
+	}
+	
+}

@@ -1,0 +1,21 @@
+package xyz.svc.pay;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import xyz.model.core.Bill;
+import xyz.model.core.WxBill;
+
+@Service
+public interface PaySvc {
+	public Map<String , Object> addWxBill(WxBill wxBill);
+	
+	public Map<String , Object> addAliBill(Bill bill);
+	
+	public Map<String, Object> getWxBill(String billNo);
+	
+	public Map<String, Object> updateWxBillStatus(String billNo);
+	
+	public Map<String, Object> wxPayCallbackOper(Map<String, Object> resultData);
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	
+		<function groupCn="管理员" numberCode="a_userManager" nameCn="用户管理" url="/xyzsecurity/a_userManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_h20151214155700" nameCn="查询用户列表" url="/AdminUserWS/queryUserList.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_h20151214155701" nameCn="新增用户" url="/AdminUserWS/addUser.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_h20151214155702" nameCn="编辑用户" url="/AdminUserWS/editUser.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_h20151214155703" nameCn="删除用户" url="/AdminUserWS/deleteUser.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_h20151214155704" nameCn="重设密码" url="/AdminUserWS/editUserPassword.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_h20151214155705" nameCn="开关用户" url="/AdminUserWS/editUserEnabled.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_h20151214155706" nameCn="设置用户岗位" url="/AdminUserWS/setUserPosition.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_h20151214155707" nameCn="设置用户令牌" url="/AdminUserWS/setUserOtp.do"/>
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_h20151214155708" nameCn="获取岗位" url="/AdminUserWS/getAllPosition.do"/>
+		<api flagServer="0" isWork="1" buttonCode="buttonCode_h20151214155709" nameCn="给用户设置资源组" url="/AdminUserWS/setUserPossessor.do"/>
+	</function>
+	
+	<function groupCn="产品管理" numberCode="productManager" nameCn="产品" url="/jsp_main/productManager.html">
+		<api flagServer="0" isWork="0" buttonCode="buttonCode_h20151214181000" nameCn="产品列表" url="/ProductWS/queryProductList.do"/>
+	</function>
+	
+	
+	
+	<list>
+		<api flagServer="0" isWork="1" nameCn="安全退出" url="/LoginWS/safeQuit.do"/>
+		<api flagServer="0" isWork="1" nameCn="登录验证" url="/LoginWS/decideLogin.do"/>
+	</list>
+	
+</root>

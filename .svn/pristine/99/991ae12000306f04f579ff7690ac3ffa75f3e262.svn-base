@@ -1,0 +1,80 @@
+$(function(){
+	var o = xyz.getUrlparam();
+	urlprovider = o.provider;
+	$('.back-left').click(function(){
+		xyz.back();
+	});
+	queryList(1);
+});
+
+function queryList(){
+//	var protype = $("#protype").val();
+//	var fieldsJson = $("#fieldsJson").val();
+	var rows = 0; //记录条数
+	var page = 0; //每页数
+	$('#pullrefresh_room').dropload({
+		scrollArea : window,
+		domDown : {
+			domClass : 'dropload-down',
+			domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+			domLoad : '<div class="dropload-load">○加载中...</div>',
+			domNoData : '<div class="dropload-noData">暂无数据</div>'
+		},
+		autoLoad : true, //自动加载
+		loadDownFn : function(me){
+			rows += 5; //记录以及加载的条数
+			page++ ; //没调用一次  页数加1
+			console.log(page);
+			xyz.ajax({
+				url:'BuyerHotelWS/queryHotelList.app',
+				progress:false,
+				data : {
+					page : page,
+					rows : 5,
+					provider : urlprovider
+				},
+				success : function(data) {
+					if(data.status==1){
+						var total = data.content.total; 
+						var result = data.content;
+						var table = document.body.querySelector('#tableList');
+    					if(page==1){
+    						table.innerHTML = '';
+    					}
+    					createHtml(table , result.rows);
+						
+						if(rows >= total){ //每页数据
+							me.lock();
+							me.noData();
+						}
+						me.resetload();
+					}else{
+						alert(data.msg);
+					}
+				}
+			});
+		}
+	});
+}
+
+function createHtml(table , list){
+	for(var i=0; i<list.length; i++){
+		var o = list[i];
+		var div = document.createElement('div');
+		div.className = 'room-list-item default-width';
+		var url = xyz.getFullurl(xyz.setUrlparam('hotel_detail.html',{provider:o.numberCode}));
+		var html = '<div class="room-item-name">'+o.nameCn+'</div>';
+        html +='<div class="room-item-peice">';
+        if(o.price && !isNaN(o.price)){
+        	html +='<i>¥'+o.price+'</i>起';
+        }else{
+        	html +='<i>暂无报价</i>';
+        }
+        html +='</div>';
+        
+        html +='<div class="room-item-but"><button class="order-but" onclick="window.location.href=\'hotelReservation.html\'">预订</button></div>';
+		//html += '<span id="json_'+o.numberCode+'" style="display:none;">'+JSON.stringify(o)+'</span>';
+		div.innerHTML = html;
+		table.appendChild(div);
+	}
+}

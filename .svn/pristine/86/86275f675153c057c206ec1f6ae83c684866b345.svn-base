@@ -1,0 +1,226 @@
+package xyz.ctrl.wechat;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.dom4j.DocumentException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import xyz.model.member.WeixinUserInfo;
+import xyz.model.wechat.response.TextMessage;
+import xyz.svc.core.SeekHelpSvc;
+import xyz.svc.member.MemberSvc;
+import xyz.util.MessageUtil;
+import xyz.util.WeixinUtil;
+
+
+@Controller
+@RequestMapping(value="/WeChatWS")
+public class WeChatWS {
+	
+	Map<String,String> location_select = new HashMap<String,String>();	//存储location_select事件创建时间 key:openid  value:createtime
+	
+	@Autowired
+	private MemberSvc memberSvc;
+	@Autowired
+	private SeekHelpSvc seekHelpSvc;
+	
+	/**
+	 * 微信商城
+	 * @throws Exception 
+	 */
+	@RequestMapping(value="mall")
+	@ResponseBody
+	public void weChatMall(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String type = request.getMethod();	//请求类型
+		if("GET".equals(type))
+			doGet(request, response);
+		else
+			doPost(request,response);
+	}
+	
+	
+	/**
+	 * 处理get请求(初次调用接口验证接入)
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 */
+	public void doGet(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		String token="xztrip";	//标识符
+	    String signature =  request.getParameter("signature");		//微信加密签名
+	    String timestamp = request.getParameter("timestamp");	//时间戳
+	    String nonce = request.getParameter("nonce");		//随机数
+	    String echostr = request.getParameter("echostr");	//随机字符串
+	    
+        boolean result =  WeixinUtil.checkSignature(token, signature,timestamp,nonce);
+        PrintWriter out = response.getWriter();
+	    if(result)
+			out.write(echostr);
+	    else
+			out.write("");
+	    out.close();
+	}
+	
+	
+	/**
+	 * 处理post请求(处理用户发送的请求)
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 * @throws DocumentException 
+	 */
+	public void doPost(HttpServletRequest request,HttpServletResponse response) throws DocumentException, IOException{
+		request.setCharacterEncoding("UTF-8");  
+		response.setCharacterEncoding("UTF-8");	//防止中文乱码
+		Map<String,Object> requestMap = MessageUtil.parseXml(request);		//请求相关信息
+		String msgType = requestMap.get("MsgType").toString();	//消息类型
+		  
+		if(MessageUtil.REQ_MESSAGE_TYPE_TEXT.equals(msgType)){		//接收的text类型
+			handleTextMessage(request,response,requestMap);
+		}else if(MessageUtil.REQ_MESSAGE_TYPE_EVENT.equals(msgType)){	//接收的event类型
+			
+			String event = requestMap.get("Event").toString();	//事件类型
+			String eventKey = requestMap.get("EventKey").toString();
+			
+			if("subscribe".equals(event)){		//订阅公众号
+				handleSubscribeMessage(request,response,requestMap);
+			}else if("location_select".equals(event) && "2".equals(eventKey)){		//我要求助菜单
+				
+				@SuppressWarnings("unchecked")
+				Map<String, Object> infoMap = (Map<String, Object>)requestMap.get("SendLocationInfo");
+				
+				String label = infoMap.get("Label").toString();
+				String scale = infoMap.get("Scale").toString();
+				String location_X = infoMap.get("Location_X").toString();
+				String location_Y = infoMap.get("Location_Y").toString();
+				
+				Map<String,Object> returnInfo = seekHelpSvc.addSeekHelp(requestMap.get("FromUserName").toString(), location_X, location_Y, label, scale);
+				if((Integer)returnInfo.get("status") == 1)
+					location_select.put(requestMap.get("FromUserName").toString(),requestMap.get("CreateTime").toString()+"-scuess-"+returnInfo.get("content"));
+				else
+					location_select.put(requestMap.get("FromUserName").toString(),requestMap.get("CreateTime").toString()+"-fail-"+returnInfo.get("content"));
+			}else if("VIEW".equals(event)){	//商城菜单
+
+			}else if("CLICK".equals(event) && "32".equals(eventKey)){		//修改绑定
+				
+			}
+		}else if(MessageUtil.REQ_MESSAGE_TYPE_LOCATION.equals(msgType)){	//接收的location类型
+			if(location_select.get(requestMap.get("FromUserName")) != null){		//处理location_select类型
+				int location_select_time = Integer.parseInt(location_select.get(requestMap.get("FromUserName")).split("-")[0]);
+				int location_time = Integer.parseInt(requestMap.get("CreateTime").toString());
+				if(location_time - location_select_time < 10){
+					PrintWriter out = response.getWriter();
+					String fromUserName = requestMap.get("FromUserName").toString();
+					String toUserName = requestMap.get("ToUserName").toString();
+					TextMessage textMessage = null;
+					String contents[] = location_select.get(requestMap.get("FromUserName")).split("-");
+					textMessage = MessageUtil.returnTextMessage(fromUserName, toUserName, contents[contents.length-1]);
+					String responseMessage = MessageUtil.textMessageToXml(textMessage);
+					out.write(responseMessage);
+					out.close();
+					location_select.remove(requestMap.get("FromUserName"));
+				}
+			}
+		}	
+	}
+	
+	/**
+	 * 处理用户关注公众号
+	 * @param request
+	 * @param response
+	 * @param requestMap
+	 * @throws IOException 
+	 */
+	private void handleSubscribeMessage(HttpServletRequest request,HttpServletResponse response,Map<String,Object> requestMap) throws IOException{
+		String accessToken = WeixinUtil.getAccessToken(WeixinUtil.appid, WeixinUtil.appsecret).getToken();	//获取token
+		String requestUrl = WeixinUtil.get_user_info.replaceAll("ACCESS_TOKEN", accessToken).replaceAll("OPENID", requestMap.get("FromUserName").toString());
+		JSONObject jsonObject = WeixinUtil.httpRequest(requestUrl,"GET",null);	//获取关注者的用户信息
+		
+		WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+		weixinUserInfo.setSubscribe(jsonObject.getString("subscribe"));
+		weixinUserInfo.setOpenid(jsonObject.getString("openid"));
+		weixinUserInfo.setNickname(jsonObject.getString("nickname"));
+		weixinUserInfo.setSex(jsonObject.getString("sex"));
+		weixinUserInfo.setCity(jsonObject.getString("city"));
+		weixinUserInfo.setCountry(jsonObject.getString("country"));
+		weixinUserInfo.setProvince(jsonObject.getString("province"));
+		weixinUserInfo.setLanguage(jsonObject.getString("language"));
+		weixinUserInfo.setRemark(jsonObject.getString("remark"));
+		weixinUserInfo.setHeadimgurl(jsonObject.getString("headimgurl"));
+		weixinUserInfo.setSubscribe_time(jsonObject.getString("subscribe_time"));
+		weixinUserInfo.setUnionid(jsonObject.get("unionid")==null?"":jsonObject.getString("unionid"));
+		weixinUserInfo.setGroupid(jsonObject.getString("groupid"));
+		
+		memberSvc.addWeixinUserInfo(weixinUserInfo);	//保存关注者信息
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("欢迎关注西藏旅游！！！为了让您能够更好的享受到我们的服务，我们强烈建议您");
+		sb.append("绑定手机。<a href=\"http://testdis.oicp.net/xztrip/wx/index.html?openid=OPENID\">点击绑定</a>，");
+		sb.append("我们将竭诚为您服务。");
+		String  content = sb.toString().replaceAll("OPENID",  requestMap.get("FromUserName").toString());
+		
+		PrintWriter out = response.getWriter();
+		TextMessage textMessage = MessageUtil.returnTextMessage(requestMap.get("FromUserName").toString(), requestMap.get("ToUserName").toString(), content);
+		String responseMessgae  = MessageUtil.textMessageToXml(textMessage);
+		out.write(responseMessgae);
+		out.close();
+	}
+	
+	/**
+	 * 响应用户发送的文本信息,
+	 * 当发送文本格式为"【绑定或修改手机号】15700001111"时，
+	 * 将其视为绑定或修改手机号码
+	 * @throws IOException 
+	 */
+	private void handleTextMessage(HttpServletRequest request,HttpServletResponse response,Map<String,Object> requestMap) throws IOException{
+		String fromUserName = requestMap.get("FromUserName").toString();	//发送方账号
+		String toUserName = requestMap.get("ToUserName").toString();	//公众号账号
+		
+		String content = requestMap.get("Content").toString();
+		String example = "【绑定或修改手机号】15700001111";	//示例
+		String regex = "^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";	//验证手机
+		
+		PrintWriter out = response.getWriter();
+		TextMessage textMessage = null;
+		String responseMessgae = "";
+		
+		if(content.length() == example.length()){
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(content.substring(10, content.length()));
+			if("【绑定或修改手机号】".equals(content.substring(0, 10)) && matcher.matches()){	//格式匹配
+				String phone = content.substring(10, content.length());
+				Map<String,Object> result = memberSvc.addUserRelation(fromUserName, phone);
+				if((Integer)result.get("status") == 1){	//绑定成功
+					textMessage = MessageUtil.returnTextMessage(fromUserName, toUserName, "恭喜你绑定成功！");
+				}else{	//绑定失败
+					textMessage = MessageUtil.returnTextMessage(fromUserName, toUserName, "绑定失败，请重试！");
+				}
+			}else{	//格式不匹配
+				textMessage = MessageUtil.returnTextMessage(fromUserName, toUserName, "你输入的格式不对，示例：“【绑定或修改手机号】15700001111”");
+			}
+			responseMessgae = MessageUtil.textMessageToXml(textMessage);
+			out.write(responseMessgae);
+			out.close();
+			return;
+		}
+		
+		textMessage = MessageUtil.returnTextMessage(fromUserName, toUserName, "绑定或修改手机号请按以下格式：“【绑定或修改手机号】15700001111”");
+		responseMessgae = MessageUtil.textMessageToXml(textMessage);
+		out.write(responseMessgae);
+		out.close();
+	}
+}
+

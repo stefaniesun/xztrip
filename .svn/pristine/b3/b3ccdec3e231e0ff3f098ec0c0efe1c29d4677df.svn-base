@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>订单详情</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+	<link rel="stylesheet" href="../css/customer.mui.theme.css">
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+<style>
+	/**重写**/
+.mui-card{
+	margin: 0 10px;
+}
+.title {
+	margin: 10px 15px 2px;
+	color: #6d6d72;
+	font-size: 15px;
+}
+.edit-btn{
+	line-height: 1.0;
+	font-size: 12px;
+	margin-left: 15px;
+}
+#infoContianer div ul li{
+	float:left;
+	width: 25%;
+	list-style: none;
+	text-align: right;
+	font-size: 12px;
+}
+</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">订单详情</h1>
+	</header>
+	<div class="mui-content">
+		<div class="mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<div style="height: 50px;"></div>
+				<p id="orderInfo" style="display: none;"></p>
+				<!-- 订单信息 -->
+				<div class="mui-card" style="padding: 10px;">
+					<h5>订单编号：<span id="orderNumShow"></span></h5>
+					<h5>当前状态：<span id="flagStatusShow"></span></h5>
+				</div>
+				<!-- 购买产品信息 -->
+				<div class="title">
+					购买产品信息
+				</div>
+				<div id="infoContianer">
+					<div class="mui-card" style="padding: 10px;">
+						<h4 id="productNameCnShow"></h4>
+						<div class="mui-table">
+							<div class="mui-table-cell mui-col-xs-6">
+								<h5>单价：<span style="color:red;" id="priceShow"></span>元</h5>
+							</div>
+							<div class="mui-table-cell mui-col-xs-6">
+								<h5>购买数量：<span id="countShow"></span></h5>
+							</div>
+						</div>
+						<h5>出行日期：<span id="dateInfoShow"></span></h5>
+					</div>
+				</div>
+				<!-- 联系人信息 -->
+				<div class="title" style="vertical-align: bottom;">
+					联系人信息
+					<span class="mui-btn mui-btn-primary mui-btn-outlined edit-btn" id="editOrderLinkmanInfoBtn">编辑</span>
+				</div>
+				<div class="mui-card" style="padding: 10px;">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-6">
+							<h5>联系人：</h5>
+						</div>
+						<div class="mui-table-cell mui-col-xs-6">
+							<h5 id="linkmanShow"></h5>
+						</div>
+					</div>
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-6">
+							<h5>联系电话：</h5>
+						</div>
+						<div class="mui-table-cell mui-col-xs-6">
+							<h5 id="linkPhoneShow"></h5>
+						</div>
+					</div>
+				</div>
+				<!-- 出行人信息 
+				<div class="title" style="vertical-align: bottom;">
+					出行人信息
+					<span class="mui-btn mui-btn-primary mui-btn-outlined edit-btn">编辑</span>
+				</div>
+				<div class="mui-card" style="padding: 10px;" id="chuxingrenInfoShow">
+					<h5 style="text-align: center;">您还没有填写出行人信息</h5>
+				</div>
+				-->
+				<div class="title" style="vertical-align: bottom;">
+					订单总金额：
+					<span style="color: red; font-size: 20px;" id="moneyShow"></span>
+					元
+				</div>
+				<!-- 付款前提示 -->
+				<div class="mui-card" style="padding: 5px;margin-top: 20px;background-color: aliceblue; display:none;" id="payTips">
+					<p style="text-align: center;font-size: 12px;margin-bottom: 0;">目前仅支持支付宝付款，后续将开通其他支付通道~</p>
+				</div>
+				<!-- 支付按钮 -->
+				<div class="mui-content-padded" style="display:none;" id="payBtnDiv">
+					<button type="button" class="mui-btn mui-btn-danger mui-btn-block" id="payBtn">立即付款，完成购买</button>
+				</div>
+				<!-- 客服热线 -->
+				<div class="mui-content-padded">
+					<div class="mui-table">
+						<div class="mui-table-cell mui-col-xs-6">
+							<h6>西藏旅游客服热线</h6>
+						</div>
+						<div class="mui-table-cell mui-col-xs-6" style="text-align: right;">
+							<a href="tel:400000000" >400-000-000</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="../js/mui_20151228.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../../pay/js/common.js"></script>
+<script type="text/javascript">
+mui('.mui-scroll-wrapper').scroll();
+var o = xyz.getUrlparam();
+var orderNum = o?o.orderNum:o;
+if(mui.os.plus){
+	mui.plusReady(function() {
+		setTimeout(function() {
+			pageInit();
+		}, 100);
+	});
+}else{
+	mui.ready(function() {
+		pageInit();
+	});
+}
+
+/**
+ * 初始化页面信息
+ */
+function pageInit(){
+	if(!orderNum){
+		mui.toast('缺少必要参数，刷新列表后重试');
+		mui.back();
+		return;
+	}
+	xyz.ajax({
+		url:'BuyerOrderWS/getOrder.cus',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNum:orderNum
+		},
+		success:function(data){
+			if(data.status==1){
+				var o = data.content.orderContentForm;
+				var rows = data.content.orderContentList;
+				xyz.id('orderInfo').innerText = JSON.stringify(o);
+				xyz.id('orderNumShow').innerText = o.orderNum;
+				var productNameCn = o.productNameCn;
+				var product = o.product;
+				if(product.indexOf('SC')>-1){
+					orderDetailScenic(rows);
+				}else if(product.indexOf('HO')>-1){
+					orderDetailHotel(rows);
+				}
+				xyz.id('linkmanShow').innerText = o.linkman;
+				xyz.id('linkPhoneShow').innerText = o.linkPhone;
+				xyz.id('moneyShow').innerText = new Number(o.money).toFixed(2);
+				if(o.flagPay==0){
+					xyz.id('payTips').style.display = 'block';
+					xyz.id('payBtnDiv').style.display = 'block';
+					xyz.id('flagStatusShow').innerHTML = '<span style="color:red;">【未付款】</span>请核实信息后支付订单完成交易';
+				}else{
+					xyz.id('payTips').style.display = 'none';
+					xyz.id('payBtnDiv').style.display = 'none';
+					xyz.id('flagStatusShow').innerHTML = '<span style="color:green;">【已支付】</span>';
+				}
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					if(window.plus){
+						var loginWebview = plus.webview.getWebviewById('page/login.html');
+						loginWebview.evalJS('webviewId="page/orderDetail.html";method="pageInit()"');
+						loginWebview.show("slide-in-right", 300);
+					}else{
+						alert('该功能需要下载APP才能使用哦！^_^');
+					}
+				}else{
+					alert(data.msg);
+				}
+			}
+		}
+	});
+}
+
+function orderDetailHotel(rows){
+	var html = '';
+	for(var i=0;i<rows.length;i++){
+		var o = rows[i];
+		console.log(o);
+		html+='<div class="mui-card" style="padding: 10px;">';
+		html+='<h4>【酒店】'+o.productNameCn+'</h4>';
+		html+='<div class="mui-table">';
+		html+='<div class="mui-table-cell mui-col-xs-6">';
+		html+='<h5>单价：<span style="color:red;">'+o.price+'</span>元</h5>';
+		html+='</div>';
+		html+='<div class="mui-table-cell mui-col-xs-6">';
+		html+='<h5>房间数量：<span>'+o.count+'间</span></h5>';
+		html+='</div>';
+		html+='</div>';
+		html+='<h5>入住日期：<span>'+o.dateInfo.split(' ')[0]+'</span></h5>';
+		var progress = 25;
+		if(o.flagPay==1){
+			progress = 50;
+			if(o.flagClient==1){
+				progress = 75;
+				if(o.flagUse==1){
+					progress = 100;
+				}
+			}
+		}
+		html+='<div style="width:300px;height:15px;border:1px solid #000;border-radius:5px;"><div style="width:'+progress+'%;height:13px;border-radius:5px;background:green;"></div></div>';
+		html+='<div style="width:300px;height:15px;"><ul style="margin:0px;padding:0px;margin-top:5px;"><li>下单</li><li>已支付</li><li>已出票</li><li>已使用</li></ul></div>';
+		if(progress>=75){
+			html+='<div style="width:300px;">票号：'+o.clientCode+'</div>';
+		}
+		html+='</div>';
+	}
+	xyz.id('infoContianer').innerHTML=html;
+}
+
+function orderDetailScenic(rows){
+	var html = '';
+	for(var i=0;i<rows.length;i++){
+		var o = rows[i];
+		html+='<div class="mui-card" style="padding: 10px;">';
+		html+='<h4>【门票】'+o.productNameCn+'</h4>';
+		html+='<div class="mui-table">';
+		html+='<div class="mui-table-cell mui-col-xs-6">';
+		html+='<h5>单价：<span style="color:red;">'+o.price+'</span>元</h5>';
+		html+='</div>';
+		html+='<div class="mui-table-cell mui-col-xs-6">';
+		html+='<h5>数量：<span>'+o.count+'张</span></h5>';
+		html+='</div>';
+		html+='</div>';
+		html+='<h5>出行日期：<span>'+o.dateInfo.split(' ')[0]+'</span></h5>';
+		var progress = 25;
+		if(o.flagPay==1){
+			progress = 50;
+			if(o.flagClient==1){
+				progress = 75;
+				if(o.flagUse==1){
+					progress = 100;
+				}
+			}
+		}
+		html+='<div style="width:300px;height:15px;border:1px solid #000;border-radius:5px;"><div style="width:'+progress+'%;height:13px;border-radius:5px;background:green;"></div></div>';
+		html+='<div style="width:300px;height:15px;"><ul style="margin:0px;padding:0px;margin-top:5px;"><li>下单</li><li>已支付</li><li>已出票</li><li>已使用</li></ul></div>';
+		if(progress>=75){
+			html+='<div style="width:300px;">票号：'+o.clientCode+'</div>';
+		}
+		html+='</div>';
+	}
+	xyz.id('infoContianer').innerHTML=html;
+}
+
+//编辑订单联系人信息
+xyz.id('editOrderLinkmanInfoBtn').addEventListener('tap', function() {
+	var o = JSON.parse(xyz.id('orderInfo').innerText);
+	mui.openWindow({
+		id: 'page/editOrderLinkmanInfo.html',
+		url: xyz.setUrlparam(xyz.getFullurl('page/editOrderLinkmanInfo.html'), {'orderNum':o.orderNum,'linkman':o.linkman,'linkPhone':o.linkPhone}),
+		styles: {
+			popGesture: "close"//启用侧滑关闭
+		},
+		show: {
+			aniShow: 'slide-in-right'//采用从右边滑入的动画效果
+		},
+		waiting: {
+			autoShow: true,//自动显示等待框
+			title:'加载中...'//等待框标题
+		}
+	});
+});
+
+//支付按钮
+xyz.id('payBtn').addEventListener('tap', function() {
+	//alert('支付功能集成中。^_^');
+	var o = JSON.parse(xyz.id('orderInfo').innerText);
+	var productNameCn = o.productNameCn;
+	var money = xyz.id('moneyShow').innerText;
+	if(xyz.isNull(orderNum)){
+		alert('订单编号不存在无法发起支付');
+		return;
+	}
+	if(xyz.isNull(money) || money<=0.00){
+		alert('订单金额异常无法发起支付');
+		return;
+	}
+
+	
+	xyz.ajax({
+		url:'BuyerOrderWS/decideOrder.cus',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNum:orderNum,
+			money:money
+		},
+		success:function(data){
+			if(data.status==1){
+				// 获取支付通道
+				plus.payment.getChannels(function(channels){
+					//alert(JSON.stringify(channels));
+					
+					wxPay(orderNum, money, productNameCn, channels);
+					//aliPay(orderNum, money, productNameCn, channels);
+				});
+
+
+/* 				var param = 'order_no='+orderNum;
+				param += '&order_subject='+productNameCn;
+				param += '&order_amount='+money;
+				param += '&order_body='+productNameCn;
+				param += '&back_url='+xyz.getFullurl('page/payCancel.html');
+				param += '&fail_url='+xyz.getFullurl('page/payFailure.html');
+				param += '&success_url='+xyz.getFullurl('page/paySuccess.html');
+				//param = encodeURIComponent(param);
+
+				request(xyz.config.server+'pay','post',param,function(flag,res){
+					mui.openWindow({
+						id: 'pay/payPage.html',
+						url: res,
+						styles: {
+							popGesture: "close"//启用侧滑关闭
+						},
+						show: {
+							aniShow: 'none'//采用从右边滑入的动画效果
+						},
+						waiting: {
+							autoShow: true,//自动显示等待框
+							title:'加载中...'//等待框标题
+						}
+					});
+				}); */
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					if(window.plus){
+						var loginWebview = plus.webview.getWebviewById('page/login.html');
+						loginWebview.evalJS('webviewId="page/orderDetail.html";method="pageInit()"');
+						loginWebview.show("slide-in-right", 300);
+					}else{
+						alert('该功能需要下载APP才能使用哦！^_^');
+					}
+				}else{
+					alert(data.msg);
+				}
+			}
+		}
+	});
+
+});
+
+
+function wxPay(orderNum, money, productNameCn, channels){
+	xyz.ajax({
+		url:'/PayWS/getWxPayOrderInfo.cus',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNo:orderNum,
+			totalFee:money,
+			body:productNameCn
+		},
+		success:function(data){
+			if(data.status==1){
+				var order = data.content;
+				//alert(JSON.stringify(data));
+				//alert(JSON.stringify(order));
+				plus.payment.request(channels[1],order,function(result){//根据支付通道调用对应客户端
+					alert("SUCCESS");
+				},function(e){
+					alert("FAIL="+JSON.stringify(e));
+				});
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					if(window.plus){
+						var loginWebview = plus.webview.getWebviewById('page/login.html');
+						loginWebview.evalJS('webviewId="page/orderDetail.html";method="pageInit()"');
+						loginWebview.show("slide-in-right", 300);
+					}else{
+						alert('该功能需要下载APP才能使用哦！^_^');
+					}
+				}else{
+					alert(data.msg);
+				}
+			}
+		}
+	});
+}
+
+function aliPay(orderNum, money, productNameCn, channels){
+	xyz.ajax({
+		url:'pay/alipayMobile.json',
+		data:{
+			apikey:window.localStorage.apikey,
+			order_no:orderNum,
+			order_amount:money,
+			order_subject:productNameCn,
+			order_body:productNameCn
+		},
+		success:function(data){
+			if(data.ResultCode==1){
+				var order = data.Content;
+				plus.payment.request(channels[0],order,function(result){//根据支付通道调用对应客户端
+					alert("SUCCESS");
+				},function(e){
+					alert("FAIL="+JSON.stringify(e));
+				});
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					if(window.plus){
+						var loginWebview = plus.webview.getWebviewById('page/login.html');
+						loginWebview.evalJS('webviewId="page/orderDetail.html";method="pageInit()"');
+						loginWebview.show("slide-in-right", 300);
+					}else{
+						alert('该功能需要下载APP才能使用哦！^_^');
+					}
+				}else{
+					alert(data.msg);
+				}
+			}
+		}
+	});
+}
+</script>
+</html>

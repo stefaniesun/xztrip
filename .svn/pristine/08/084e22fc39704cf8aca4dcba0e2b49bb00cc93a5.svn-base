@@ -1,0 +1,74 @@
+package xyz.svc.wechat.imp;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.dom4j.DocumentException;
+import org.springframework.stereotype.Service;
+
+import xyz.model.wechat.response.TextMessage;
+import xyz.svc.wechat.WeChatSvc;
+import xyz.util.MessageUtil;
+import xyz.util.WeixinUtil;
+
+@Service
+public class WeChatSvcImp implements WeChatSvc {
+	
+	@Override
+	public void doGet(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		String token="xztrip";	//标识符
+	    String signature =  request.getParameter("signature");		//微信加密签名
+	    String timestamp = request.getParameter("timestamp");	//时间戳
+	    String nonce = request.getParameter("nonce");		//随机数
+	    String echostr = request.getParameter("echostr");	//随机字符串
+	    
+        boolean result =  WeixinUtil.checkSignature(token, signature,timestamp,nonce);
+        PrintWriter out = response.getWriter();
+	    if(result)
+			out.write(echostr);
+	    else
+			out.write("");
+	    out.close();
+	}
+	
+	
+	@Override
+	public void doPost(HttpServletRequest request,HttpServletResponse response) throws DocumentException, IOException{
+		request.setCharacterEncoding("UTF-8");  
+		response.setCharacterEncoding("UTF-8");	//防止中文乱码
+		Map<String,String> requestMap = MessageUtil.parseXml(request);		//请求相关信息
+		String msgType = requestMap.get("MsgType");	//消息类型
+		if(MessageUtil.REQ_MESSAGE_TYPE_TEXT.equals(msgType)){		//文本信息
+			handleTextMessage(request,response,requestMap);
+		}
+	}
+	
+	/**
+	 * 响应用户发送的文本信息
+	 * @throws IOException 
+	 */
+	private void handleTextMessage(HttpServletRequest request,HttpServletResponse response,Map<String,String> requestMap) throws IOException{
+		String fromUserName = requestMap.get("FromUserName");	//发送方账号
+		String toUserName = requestMap.get("ToUserName");	//公众号账号
+		String msgType = requestMap.get("MsgType");	//消息类型
+		
+		PrintWriter out = response.getWriter();
+		
+		TextMessage textMessage = new TextMessage();
+		textMessage.setFromUserName(toUserName);
+		textMessage.setCreateTime(new Date().getTime());
+		textMessage.setToUserName(fromUserName);
+		textMessage.setMsgType(msgType);
+		textMessage.setContent("hello world");
+		textMessage.setFuncFlag(0);
+		
+		String responseMessgae = MessageUtil.textMessageToXml(textMessage);
+		out.write(responseMessgae);
+		out.close();
+	}
+}

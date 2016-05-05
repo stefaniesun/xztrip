@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title></title>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mtLjADOW3vrN8ppD7lIK2ubitHlyqGZk"></script>
+</head>
+<body>
+<div align="center" style="width:880px;height:560px;border:#ccc solid 1px;font-size:12px" id="map"></div>
+<div id="r-result">
+	城市名: <input id="cityName" type="text" style="width:100px; margin-right:10px;" />
+	<input type="button" value="查询" onclick="theLocation()" />
+</div>
+</body>
+</html>

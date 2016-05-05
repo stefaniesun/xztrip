@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>订单详情</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link href="../css/myorder.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/tibet-wx.js"></script>
+</head>
+<body>
+<header class="tibet-header">
+    <div class="back-left icon-left">
+        <img src="../images/icon-left.png"/>
+    </div>
+    <div class="center-name icon-left">
+        <h2>订单详情</h2>
+    </div>
+    <div class="go-right icon-right">
+        <img src="../images/icon-house.png" class="icon-house">
+    </div>
+</header>
+<div class="prop-height"></div>
+<main>
+    <div class="order-details">
+        <ul>
+            <li>
+                <p class="order-num-m">订单号：112131321554658533</p>
+                <span class="order-struts">未付款</span>
+            </li>
+            <li>
+                <div class="order-sp-img">
+                    <img src="../images/hotel.jpg" alt="">
+                </div>
+                <div class="order-sp-title">
+                    西藏酒店酒店酒店那西藏酒店酒店酒店那西藏酒店酒店酒店那
+                </div>
+                <div style="clear: both"></div>
+            </li>
+            <li>
+                <p class="order-num-m">支付方式：<label class="color-success">在线支付</label></p>
+                <span class="order-struts">¥1500*1</span>
+            </li>
+            <li>
+                <p class="order-num-m">总价：<label class="color-danger">¥1500</label></p>
+            </li>
+            <li>
+                <p class="order-num-m" >入住时间：2016-03-03</p>
+                <p class="order-num-m">退房时间：2016-03-03</p>
+                <p class="order-num-m">下单时间：2016-03-03</p>
+            </li>
+            <li>
+                <p class="order-num-m" style="font-weight: bold;">房间信息：</p>
+                <p class="order-num-m">房&nbsp;&nbsp;&nbsp;型：标准双人间</p>
+                <p class="order-num-m">床&nbsp;&nbsp;&nbsp;型：双人床</p>
+                <p class="order-num-m">房间数：1间</p>
+                <p class="order-num-m">早&nbsp;&nbsp;&nbsp;餐：双早</p>
+                <p class="order-num-m">网&nbsp;&nbsp;&nbsp;络：免费wifi</p>
+            </li>
+            <li>
+                <p class="order-num-m" style="font-weight: bold;">入住信息：</p>
+                <p class="order-num-m">预约人手机号：18302490669</p>
+                <p class="order-num-m">房间入住人姓名：张三</p>
+                <p class="order-num-m">备&nbsp;&nbsp;&nbsp;注：<span name="" id="" style="height: 1.5rem;font-size: 0.67rem">示例实例</span></p>
+            </li>
+        </ul>
+        <div style="width: 100%; height: auto;text-align: center;margin-top: 1rem; margin-bottom: 1rem;padding-top: 1rem">
+            <buttom style="background-color: #b31e23;color: #fff; padding: 0.5rem 1rem; border-radius: 0.3rem;margin-right: 0.7rem ">取消订单</buttom>
+            <buttom style="background-color: #b31e23;color: #fff; padding: 0.5rem 1rem; border-radius: 0.3rem;margin-right: 0.7rem ">立即付款</buttom>
+
+        </div>
+    </div>
+</main>
+</body>
+</html>

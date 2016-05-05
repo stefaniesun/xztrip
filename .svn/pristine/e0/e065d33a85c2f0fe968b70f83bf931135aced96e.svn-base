@@ -1,0 +1,289 @@
+.myorder,.myorder-main,.myorder-main ul{
+    width: 100%;
+    height: auto;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+.myorder-item ul{
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+    display: table;
+
+}
+.myorder-item ul li{
+    float: left;
+    width: 33.3%;
+    text-align: center;
+    font-size: 15px;
+    padding: 0.7rem 0;
+}
+.myorder-item .item-active{
+    color: #b31e23;
+    border-bottom: 2px solid #b31e23;
+}
+.num-ts{
+    background-color: #b31e23;
+    padding: 0rem 0.25rem;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 10px;
+    margin-left: 0.2rem;
+}
+.myorder-list{
+    width: 93%;
+    height: auto;
+    margin: 0 auto;
+    margin-top: 1rem;
+}
+.myorder-list-item{
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.4rem;
+}
+.myorder-list-item li{
+position: relative;
+}
+.order-num,.order-bz{
+    color: #6d6d72;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+}
+.order-bz,.order-btn{
+    padding: 0.7rem;
+}
+.order-struts{
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    font-size:13px;
+}
+.color-danger {
+    color: #f6383a;
+}
+.myorder-list-item{
+    margin-bottom: 1rem;
+}
+.myorder-list-item .list-item-link{
+    border-bottom: 1px solid #ddd;
+    padding-left: 0.75rem;
+    height:auto;
+    width: 100%;
+    display: table;
+}
+.list-item-link .order-img{
+    width: 4rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.5rem;
+    float: left;
+}
+.list-item-link .order-img img{
+    width: 4rem;
+    height: 4rem;
+}
+.myorder-list-item .order-inner{
+    padding: 0.5rem 1.5rem 0.5rem 1rem;
+    position: relative;
+    width: 64%;
+    display: block;
+    overflow: hidden;
+    float: left;
+}
+.order-title-row{
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+}
+.order-title{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+    width: 90%;
+    position: relative;
+    word-break: break-all;
+    word-wrap: break-word;
+    font-size: 15px;
+    color: #5f646e;
+}
+.order-title-after{
+    color: #b31e23;
+    float: right;
+    white-space: nowrap;
+    font-size: 14px;
+}
+.subtitle{
+    padding-top: 0.6rem;
+     position: relative;
+     overflow: hidden;
+     white-space: nowrap;
+     max-width: 100%;
+     text-overflow: ellipsis;
+    font-size: 12px;
+    color: #5f646e;
+}
+.icon-more{
+    position: absolute;
+    right: 0.2rem;
+    width: 1rem;
+    top: 40%;
+}
+.btn-reset{
+    border: 1px solid #0894ec;
+    color: #0894ec;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    padding: 0 1rem;
+    height: 1.8rem;
+}
+.orderpay-btn{
+    margin-left: 1rem;
+    color: #fff;
+    background: #b31e23;
+    border: 1px solid #b31e23;
+    padding: 0 1rem;
+    height: 1.8rem;
+    border-radius: 0.25rem;
+}
+.color-success{
+    color: #4cd964;
+}
+.all-order,.non-payment-order,.have-pay-order{
+    width: 100%;
+    height: auto;
+}
+
+/* 订单详情 */
+.order-details{
+    width: 100%;
+    height: auto;
+}
+.order-details ul{
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+.order-details ul li{
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+}
+.order-num-m{
+    padding: 0.6rem 0.5rem;
+    border-bottom: 0;
+    font-size: 13px;
+    margin: 0;
+}
+.order-details .order-struts{
+    position: absolute;
+    right: 0.4rem;
+    top: 0.6rem;
+    font-size: 13px;
+    color: #f6383a;
+}
+.order-sp-img{
+    width: 4rem;
+    height: 4rem;
+    float: left;
+    margin-left: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.order-sp-img img{
+    width: 4rem;
+    height:4rem;
+}
+.order-sp-title{
+    float: left;
+    height: 4rem;
+    line-height: 4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+    width: 70%;
+}
+
+/* 酒店预订 CSS */
+.hotel-reservation,.hotel-reservation-main{
+    width: 100%;
+    height: auto;
+}
+.hotel-reservation-main ul{
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    margin-bottom: 1rem;
+    border-top: 1px solid #ddd;
+}
+.hotel-reservation-main ul li{
+    width: 95%;
+    margin: 0 auto;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+}
+.hotel-reservation-main .icon-more{
+    position: absolute;
+    width: 0.5rem;
+    right: 0.3rem;
+    top: 0.8rem;
+}
+.num-box{
+    float: right;
+    background-color: #fff;
+    border: 1px solid #b31e23;
+    height: auto;
+    position: absolute;
+    top: 0.2rem;
+    right: 0;
+    border-radius: 0.3rem;
+}
+.num-reduce,.num-add{
+    width: 2rem;
+    height: 1.8rem;
+    display: block;
+    float: left;
+    position: relative;
+}
+.num-reduce .icon-reduce{
+    position: relative;
+    width: 0.6rem;
+    left: 40%;
+    top:0.1rem;
+}
+.num-add .icon-add{
+    position: relative;
+    width: 0.6rem;
+    left: 40%;
+    top:0.3rem;
+}
+.num-input{
+    float: left;
+    width: 2.3rem;
+    height: 1.8rem;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #b31e23;
+    border-bottom: 0;
+    border-top: 0;
+}
+.hotel-reservation-main .yd-info{
+    padding: 0.4rem;
+    border: 0;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0.3rem;
+    outline: none;
+}
+.yd-btn-box{
+    width: 100%; height: auto;text-align: center; margin: 1.5rem 0 1.5rem 0;
+}
+.yd-btn{
+    background-color: #b31e23; color: #fff;padding: 0.5rem 0.7rem;border-radius: 0.3rem;
+}

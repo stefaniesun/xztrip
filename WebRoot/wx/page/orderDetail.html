@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>订单详情</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link href="../css/index.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="../css/weui.min.css"/>
+<link href="../css/myorder.css" rel="stylesheet" type="text/css">
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="UTF-8" ></script>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/orderDetail.js"></script>
+<!-- <script type="text/javascript" src="../js/tibet-wx.js"></script> -->
+</head>
+<body>
+<header class="tibet-header">
+    <div class="back-left icon-left">
+        <img src="../images/icon-left.png"/>
+    </div>
+    <div class="center-name icon-left">
+        <h2>订单详情</h2>
+    </div>
+    <div class="go-right icon-right">
+        <img src="../images/icon-house.png" class="icon-house">
+    </div>
+</header>
+<div class="prop-height"></div>
+<main>
+    <div class="order-details">
+    	<p id="orderInfo" style="display: none;"></p>
+        <ul>
+            <li>
+                <p class="order-num-m">订单号：<span id="orderNumShow"></span></p>
+                <span class="order-struts" id="flagStatusShow"></span>
+            </li>
+            <li>
+<!--                 <div class="order-sp-img">
+                    <img src="../images/hotel.jpg" alt="">
+                </div> -->
+                <div class="order-sp-title" id="productNameCnShow">
+                </div>
+                <div style="clear: both"></div>
+            </li>
+            <!-- <li>
+                <p class="order-num-m">支付方式：<label class="color-success">在线支付</label></p>
+                <span class="order-struts">¥1500*1</span>
+            </li> -->
+            <li>
+                <p class="order-num-m">总价：<label class="color-danger">¥<span id="moneyShow"></span></label></p>
+            </li>
+            <li>
+                <p class="order-num-m">下单时间：<span id="addDateShow"></span></p>
+            </li>
+            <li id="infoContianer">
+                
+            </li>
+            <li>
+                <p class="order-num-m" style="font-weight: bold;">联系人信息：</p>
+                <p class="order-num-m">联系电话：<span id="linkPhoneShow"></span></p>
+                <p class="order-num-m">联系人：<span id="linkmanShow"></span></p>
+                <!-- <p class="order-num-m">备&nbsp;&nbsp;&nbsp;注：<span name="" id="" style="height: 1.5rem;font-size: 0.67rem">示例实例</span></p> -->
+            </li>
+        </ul>
+        <div style="width: 100%; height: auto;text-align: center;margin-top: 1rem; margin-bottom: 1rem;padding-top: 1rem">
+            <!-- <buttom style="background-color: #b31e23;color: #fff; padding: 0.5rem 1rem; border-radius: 0.3rem;margin-right: 0.7rem ">取消订单</buttom> -->
+            <buttom id="payBtn" style="background-color: #b31e23;color: #fff; padding: 0.5rem 1rem; border-radius: 0.3rem;margin-left: 0.7rem;margin-right: 0.7rem ">立即付款</buttom>
+
+        </div>
+    </div>
+</main>
+</body>
+<script type="text/javascript" src="../js/weui.js"></script>
+</html>

@@ -1,0 +1,56 @@
+$(document).ready(function(){
+	var username = getCookie("B2B_LOGIN_NAME");
+	if(!xyzIsNull(username)){
+		$('#username').val(username); 
+	}
+	deleteB2bCookie();
+	$("#loginButton").click(function(){
+		var username = $('#username').val().trim(); 
+		var password = $('#password').val().trim(); 
+		if(xyzIsNull(username))
+		{
+			layer.tips('请输入用户名', '#username');
+			$("#username").focus();
+			return false;
+		} 
+		if(xyzIsNull(password))
+		{ 
+			layer.tips('请输入密码', '#password');
+			$("#password").focus();
+			return false;
+		}
+		var password = $.md5(password).substr(8,16);
+		$("#loginButton").html("登陆中...");
+		setTimeout(function(){
+			$.ajax({
+				url : "SellerWS/loginOper.xyz",
+				type : "POST",
+				data : {
+					username : username,
+					password : password
+				},
+				async : false,
+				dataType : "json",
+				success : function(data) {
+					if(data.status==1){
+						addCookie("B2B_LOGIN_KEY",data.content.apikey,7);
+						addCookie("B2B_LOGIN_NAME",data.content.username,7);
+						location.href="jsp_seller/index/index.html";
+					}else{
+						layer.tips(data.msg, '#password');
+						$("#password").focus();
+						$("#loginButton").html("登陆");
+					}
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					new B2BAjaxError(textStatus);
+				}
+			});
+		},100);
+	});
+	document.onkeydown=function keyEnter(){
+		  if (event.keyCode == 13){  
+			  $("#loginButton").click();
+		  }
+	};
+});

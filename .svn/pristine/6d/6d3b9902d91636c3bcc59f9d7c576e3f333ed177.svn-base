@@ -1,0 +1,36 @@
+/**������ɫ����**/
+.mui-bar{
+	background-color:#099fde;
+}
+
+.mui-title {
+	color:#fff;
+}
+
+.mui-segmented-control{
+	border: 1px solid #fff;
+}
+.mui-segmented-control .mui-control-item{
+	color: #fff;
+	border-color: #ffffff;
+	border-left: 1px solid #ffffff;
+}
+.mui-segmented-control .mui-control-item.mui-active {
+	color: #099fde;
+	background-color: #ffffff;
+}
+
+a {
+	color: #fff;
+}
+a:active {
+color: #fff;
+}
+
+.mui-bar-tab{
+	background-color:#fff;
+}
+
+.mui-bar-tab .mui-tab-item.mui-active {
+	color: #099fde;
+}

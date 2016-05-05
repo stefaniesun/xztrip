@@ -1,0 +1,76 @@
+package xyz.svc.core.imp;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.ReturnUtil;
+import xyz.model.base.ExceptionLog;
+import xyz.svc.core.ExceptionLogSvc;
+import xyz.util.DateUtil;
+import xyz.util.UUIDUtil;
+
+@Service
+public class ExceptionLogSvcImp implements ExceptionLogSvc {
+
+	@Autowired
+	CommonDao commonDao;
+	
+	@Override
+	public Map<String, Object> queryExceptionLogList(int offset, int pagesize,
+			String orderNum, String type,Date dateStart,Date dateEnd) {
+
+		String hql=" from ExceptionLog where 1=1  ";
+		if(orderNum!=null&&!"".equals(orderNum)){
+			hql+=" and orderNum like'%"+orderNum+"%'";
+		}
+		if(type!=null&&!"".equals(type)){
+			hql+=" and type like '%"+type+"%' ";
+		}
+		if(dateStart!=null&&!"".equals(dateStart)){
+			hql+=" and addDate >= '"+DateUtil.dateToShortString(dateStart)+"' ";
+		}
+		if(dateEnd!=null&&!"".equals(dateEnd)){
+			hql+=" and addDate <= '"+DateUtil.getDateEndForQuery(dateEnd)+"' ";
+		}
+		
+		
+		String countHql = "select count(numberCode) "+hql;
+		Query countQuery = commonDao.getQuery(countHql);
+		Number countTemp = (Number)countQuery.uniqueResult();
+		int count = countTemp==null?0:countTemp.intValue();
+		
+		Query query = commonDao.getQuery(hql);
+		query.setMaxResults(pagesize);
+		query.setFirstResult(offset);
+		@SuppressWarnings("unchecked")
+		List<ExceptionLog> exceptionLogList=query.list();
+		Map<String,Object> mapContent=new HashMap<String, Object>();
+		mapContent.put("total", count);
+		mapContent.put("rows",exceptionLogList);
+		return ReturnUtil.returnMap(1, mapContent);
+	}
+
+	@Override
+	public Map<String, Object> addOrderException(String orderNum,
+			String type, String content) {
+		
+		commonDao.updateByHql("UPDATE OrderContent SET isException=1  WHERE orderNum ='"+orderNum+"'");
+		
+		ExceptionLog exceptionLog=new ExceptionLog();
+		exceptionLog.setAddDate(new Date());
+		exceptionLog.setNumberCode(UUIDUtil.getUUIDStringFor32());
+		exceptionLog.setOrderNum(orderNum);
+		exceptionLog.setType(type);
+		exceptionLog.setContent(content);
+		commonDao.save(exceptionLog);
+		
+		return ReturnUtil.returnMap(1, null);
+	}
+}

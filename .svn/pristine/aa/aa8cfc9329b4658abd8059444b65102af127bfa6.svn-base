@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<title></title>
+<link rel="stylesheet" type="text/css" href="../css/xieyaozhong.css"></link>
+<link rel="stylesheet" type="text/css" href="../js/library/easyui/themes/bootstrap/easyui.css"></link>
+<link rel="stylesheet" type="text/css" href="../js/library/easyui/themes/icon.css"></link>
+
+<link  href="../js/library/cropperjs/css/cropper.min.css" rel="stylesheet"/>
+<link  href="../js/library/cropperjs/css/main.css" rel="stylesheet"/>
+
+<script type="text/javascript" src="../js/library/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../js/library/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../js/library/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../js/library/common/common.js"></script>
+<script type="text/javascript" src="../js/library/common/customUi.js" defer="defer"></script>
+<script type="text/javascript" src="../js/library/layer/layer.js" defer="defer"></script>
+<script type="text/javascript" src="../js/library/cropperjs/cropper.min.js" defer="defer"></script>
+<script type='text/javascript' src='http://api.map.baidu.com/api?v=2.0&ak=mtLjADOW3vrN8ppD7lIK2ubitHlyqGZk' ></script>
+<script>
+</script>
+</head>
+<body>
+<center>
+	<div class="google-maps" align="center" style="width:880px;height:560px;border:#ccc solid 1px;font-size:12px" id="mapbaidu"></div>
+	<div class="google-maps" id="r-result">
+		城市名: <input id="cityName" type="text" style="width:100px; margin-right:10px;" />
+		<input type="button" value="查询" onclick="theLocation()" />
+		<input type="hidden" id="mapLaLo"></input>
+	</div>
+</center>
+<script>
+
+function initMap(){
+    createMap();//创建地图
+    setMapEvent();//设置地图事件
+    addMapControl();//向地图添加控件
+}
+function createMap(){
+	var mapLaLo=parent.$('#mapLaLoForm').val();
+	map = new BMap.Map("mapbaidu",{enableMapClick:false}); 
+	
+	if(!xyzIsNull(mapLaLo)){
+		var mapNum=mapLaLo.split(",");
+		//获取地图伸缩数值
+		var zoomSize=parent.$("#zoomSizeForm").val();
+		var x=mapNum[0];
+		var y=mapNum[1];
+		if(!xyzIsNull(zoomSize)){
+			map.centerAndZoom(new BMap.Point(x,y), zoomSize);
+		}else{
+			map.centerAndZoom(new BMap.Point(x,y), 19);
+		}
+		map.enableScrollWheelZoom(true);
+		var new_point = new BMap.Point(x,y);
+		var marker = new BMap.Marker(new_point);  // 创建标注
+		map.addOverlay(marker);              // 将标注添加到地图中
+		map.panTo(new_point);  
+	}else{
+		var point = new BMap.Point(116.331398,39.897445);
+		map.centerAndZoom(point,19);
+
+		function myFun(result){
+			var cityName = result.name;
+			map.setCenter(cityName);
+		}
+		var myCity = new BMap.LocalCity();
+		myCity.get(myFun);
+	}
+//单击获取点击的经纬度
+    var mapLoLo="";
+	map.addEventListener("click",function(e){
+		var zoomSize=	map.getZoom();
+		if(zoomSize<12){
+			top.$.messager.alert("提示","为了确保经纬度的精确性请放大地图至市级别以下后选择！","info");
+			return;
+		}else{
+			mapLoLo=e.point.lng + "," + e.point.lat;
+			$("#mapLaLoForm").val(mapLoLo);
+			parent.$('#mapLaLoForm').val(mapLoLo);
+			parent.$("#zoomSizeForm").val(zoomSize);
+			var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+			parent.layer.close(index);
+		}
+	});
+}
+function setMapEvent(){
+	map.enableScrollWheelZoom();
+	map.enableKeyboard();
+	map.enableDragging();
+	map.enableDoubleClickZoom();
+}
+//向地图添加控件
+function addMapControl(){
+	var scaleControl = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+	scaleControl.setUnit(BMAP_UNIT_IMPERIAL);
+	map.addControl(scaleControl);
+	var navControl = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
+	map.addControl(navControl);
+	var overviewControl = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:true});
+	map.addControl(overviewControl);
+}
+
+function theLocation(){
+	var city = document.getElementById("cityName").value;
+	if(city != ""){
+		map.centerAndZoom(city,19);      // 用城市名设置地图中心点
+	}
+} 
+initMap(); 
+</script>
+</body>
+</html>

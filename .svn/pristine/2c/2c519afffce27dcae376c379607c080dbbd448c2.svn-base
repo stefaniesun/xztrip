@@ -1,0 +1,71 @@
+package xyz.util;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alipay.util.json.JSONUtils;
+
+import xyz.filter.ReturnUtil;
+import xyz.filter.RmiUtil;
+import xyz.model.main.ProductStock;
+import xyz.svc.config.ConstantPms;
+
+@Component
+public class PmsStockPriceUtil {
+
+	@Autowired
+	RmiUtil rmiUtil;
+
+	public ProductStock getStockByDate(String product, Date dateInfo) {
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Map<String,String> accessoryParam = new HashMap<String, String>();
+		accessoryParam.put("product", product);
+		accessoryParam.put("dateInfo", format.format(dateInfo));
+		Map<String, Object> result= (Map<String, Object>)rmiUtil.loadData(ConstantPms.pms_getStockByDate,accessoryParam);
+		System.out.println( result.get("content").toString());
+		JSONObject jsStr = JSONObject.fromObject(result.get("content")).getJSONObject("content");
+		ProductStock productStock=new ProductStock();
+		productStock.setPrice(new BigDecimal(jsStr.getString("price")));
+		productStock.setCount(jsStr.getInt("count"));
+		productStock.setUseCount(jsStr.getInt("useCount"));
+		try {
+			productStock.setDateInfo(format.parse(jsStr.getString("dateInfo")));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return productStock;
+	}
+
+	public Map<String, Object> queryProductStockList(int page, int rows,
+			String product, Date dateStart, Date dateEnd) {
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Map<String,String> accessoryParam = new HashMap<String, String>();
+		accessoryParam.put("page", page+"");
+		accessoryParam.put("rows", rows+"");
+		accessoryParam.put("product", product);
+		accessoryParam.put("dateStart", format.format(dateStart));
+		accessoryParam.put("dateEnd", format.format(dateEnd));
+		return (Map<String, Object>) rmiUtil.loadData(ConstantPms.pms_queryProductStockList,accessoryParam);
+	}
+	
+	public Map<String, Object> createPmsOrder(String orderJsons) {
+		Map<String,String> accessoryParam = new HashMap<String, String>();
+		accessoryParam.put("orderJsons", orderJsons);
+		System.out.println("-------"+orderJsons);
+		return (Map<String, Object>) rmiUtil.loadData(ConstantPms.pms_createPmsOrder,accessoryParam);
+	}
+	
+	
+	
+	
+}

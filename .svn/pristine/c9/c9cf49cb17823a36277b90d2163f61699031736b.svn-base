@@ -1,0 +1,65 @@
+@charset "UTF-8";
+.usercenter,.usercenter-list,.usercenter-list ul{
+    width: 100%;
+    height: auto;
+}
+.usercenter-bg{
+    width: 100%;
+    height: 150px;
+    background:url("../images/lbg2-min.jpg") no-repeat center;
+    background-size: 100% 100%;
+    position: relative;
+}
+.head-box{
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    border-radius: 50%;
+    left: 50%;
+    margin-left: -35px;
+    top: 28px;
+    box-shadow: 0px 0px 16px #999;
+    background-color: #fff;
+}
+.head-box a{
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    line-height: 4.5;
+    color: #099FDE;
+}
+.usercenter-bg img{
+    width: 70px;
+    height: 70px;
+}
+.usercenter-list li{
+    padding: 10px;
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+    border-top: 1px solid #e6e6e6;
+    margin-bottom: 10px;
+    color: #333;
+
+}
+.usercenter-list .user-name{
+    font-size: 15px;
+    padding-bottom: 5px;
+}
+.usercenter-list .user-tel{
+    font-size: 12px;
+    color: #999;
+}
+.usercenter-list li .icon-you{
+    color: #999;
+}
+.usercenter-list li span{
+    font-size: 14px;
+    color: #333;
+}
+.color-grey{
+    color: #666;
+}
+.exit-login{
+    font-size: 16px;
+    text-align: center;
+}

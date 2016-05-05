@@ -1,0 +1,78 @@
+package xyz.svc.buyer.imp;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import xyz.dao.CommonDao;
+import xyz.filter.ReturnUtil;
+import xyz.model.main.Provider;
+import xyz.svc.buyer.BuyerProviderSvc;
+import xyz.svc.main.config.ConstantProduct;
+
+@Service
+public class BuyerProviderSvcImp implements BuyerProviderSvc {
+
+	@Autowired
+	CommonDao commonDao;
+	
+	@Override
+	public Map<String, Object> queryProviderList(String nameCn, String type,
+			String minPrice, String maxPrice,String orderBy, int offset, int pagesize) {
+
+
+		String hql=" from Provider where onlineFlag=1  ";
+		if(!"".equals(type)&&type!=null){
+			if(ConstantProduct.SCENIC.equals(type)){
+				hql+=" and isScenic =1 and scenic_price is not null ";
+			}else if (ConstantProduct.HOTEL.equals(type)) {
+				hql+=" and isHotel =1 and hotel_price is not null";
+			}else if (ConstantProduct.CAR.equals(type)) {
+				hql+=" and isCar =1 and car_price is not null";
+			}
+		}
+		if(!"".equals(minPrice)&&minPrice!=null){
+			hql+=" and price>="+minPrice;
+		}
+		if(!"".equals(maxPrice)&&maxPrice!=null){
+			hql+=" and price<="+maxPrice;
+		}
+		if(!"".equals(nameCn)&&nameCn!=null){
+			hql+=" and nameCn like '%"+nameCn+"%' ";
+		}
+		
+		String countHql = "select count(numberCode) "+hql;
+		Query countQuery = commonDao.getQuery(countHql);
+		Number countTemp = (Number)countQuery.uniqueResult();
+		int count = countTemp==null?0:countTemp.intValue();
+		
+		if(!"".equals(orderBy)&&orderBy!=null){
+			hql+=" ORDER BY "+orderBy+" ";
+		}
+		
+		Query query = commonDao.getQuery(hql);
+		query.setMaxResults(pagesize);
+		query.setFirstResult(offset);
+		@SuppressWarnings("unchecked")
+		List<Provider> providerList=query.list();
+		Map<String,Object> mapContent=new HashMap<String, Object>();
+		mapContent.put("total", count);
+		mapContent.put("rows",providerList);
+		return ReturnUtil.returnMap(1, mapContent);
+	
+	}
+
+	@Override
+	public Map<String, Object> getProvider(String numberCode) {
+		Provider provider=(Provider) commonDao.getObjectByUniqueCode("Provider", "numberCode", numberCode);
+		if(provider==null){
+			return ReturnUtil.returnMap(0, null);
+		}
+		return ReturnUtil.returnMap(1, provider);
+	}
+
+}

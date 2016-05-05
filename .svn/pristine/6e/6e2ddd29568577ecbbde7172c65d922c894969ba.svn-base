@@ -1,0 +1,13 @@
+package xyz.svc.scheduled;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public interface SaleSTSvc {
+
+	public int autoUpdateMonthSaleOper();
+	
+	
+	public int autoUpdateTotalSaleOper();
+
+}

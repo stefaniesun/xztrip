@@ -1,0 +1,338 @@
+
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background-color: #f2f2f2;
+    font-size: 14px;
+    font-family:"Microsoft yahei",Arial;
+}
+ul{
+    list-style: none;
+}
+a{
+    text-decoration: none;
+}
+.prop-height{
+    height: 2.7rem;
+    width: 100%;
+}
+.icon-left{
+    float: left;
+}
+.icon-right{
+    float: right;
+}
+.card{
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+}
+.tibet-header{
+    width: 100%;
+    height:2.7rem;
+    background: #b31e23;
+    position: fixed;
+    font-family: "Helvetica Neue", Helvetica, sans-serif;
+    z-index: 99999;
+}
+.back-left{
+    width: 20%;
+    margin-top: 0.4rem;
+}
+.go-right{
+    width: 20%;
+    margin-top: 0.6rem;
+    float: right;
+}
+
+.center-name{
+    width: 60%;
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.center-name h2{
+    font-weight: 100;
+    line-height: 2.7rem;
+    font-size: 19px;
+}
+
+/* Ê×Ò³ CSS*/
+.tibet-index{
+    width: 100%;
+    margin: 0 auto;
+}
+.tibet-index .tibet-index-logo{
+    font-size:1rem ;
+    color:#fff;
+    padding: 0.6rem;
+}
+.icon-menu{
+    position: absolute;
+    right: 7px;
+    top: 7px;
+}
+.menu-show{
+    width:26%;
+    height:auto;
+    background-color: #fff;
+    position: absolute;
+    right: 0px;
+    top:2.7rem;
+    display: none;
+    border-radius: 0  0 0.5rem 0.5rem ;
+    border: 1px solid #ccc;
+}
+.menu-show ul{
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+.menu-show-list{
+    border-bottom: 1px solid #ccc;
+}
+.menu-show-list:last-child{
+    border-bottom: 0px;
+}
+.menu-show-list, .menu-show-list a{
+    width: 100%;
+    height: 2.3rem;
+}
+.menu-show-list a{
+    display: block;
+    color: #000;
+    line-height: 2.3rem;
+    padding-left: 0.5rem;
+}
+
+
+.nav-box{
+    width: 100%;
+    height: 5rem;
+}
+.nav-a{
+    display: block;
+    color: #fff;
+    line-height: 2.4rem;
+    background: #b31e23;
+    border-radius: 0.25rem;
+}
+.nav-box-ul{
+    width: 90%;
+    text-align: center;
+    display: table;
+    margin: 0 auto;
+    margin-top: 1rem;
+}
+.nav-box-ul li{
+    width: 19%;
+    height: 2.4rem;
+    background: #fff;
+    text-align: center;
+    display: inline-block;
+    margin: 0 auto;
+    padding: 0 7px;
+}
+.index-content{
+    width: 100%;
+    height: auto;
+    margin-top:0.9rem;
+    border-top:1px solid #ddd;
+}
+.cont-search{
+    width: 100%;
+    height: 3rem;
+}
+.cont-search-box{
+    width: 90%;
+    height: 2rem;
+    margin: 0 auto;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+.icon-search-black{
+    width: 1.3rem;
+    height: 1.3rem;
+    margin-top: 0.4rem;
+}
+.icon-search-black,.icon-search{
+    float: right;
+    margin-right: 0.5rem;
+}
+.icon-search{
+    width: 1.5rem;
+}
+.cont-search-input{
+    float: left;
+    width: 79%;
+    padding:0.5rem ;
+    border: 0px;
+    outline:none;
+    margin-left: 0.3rem;
+    background-color: transparent;
+}
+.category-choice{
+    width: 100%;
+    height: 2.2rem;
+    background-color: #fff;
+}
+.category-choice-box{
+    width: 50%;
+    height: 2.2rem;
+    margin: 0 auto;
+}
+.category-choice-hotel,.category-choice-ticket{
+    width: 50%;
+    display: block;
+    height: 2.2rem;
+    float: left;
+    text-align: center;
+    vertical-align: bottom;
+    line-height: 2.5rem;
+    text-decoration: none;
+    font-size: 15px;
+}
+.category-choice-active{
+    border-bottom: 2px solid #b31e23;
+    color: #b31e23;
+}
+.content-list-wrap,.index-hotel-card,.index-ticket-card{
+    width: 100%;
+    height: auto;
+}
+.index-hotel-list,.index-ticket-list{
+    width:100%;
+    background: #fff;
+    height: 9.5rem;
+    margin-bottom: 1rem;
+}
+.index-hotel-img,.index-hotel-img img,
+.index-ticket-img,.index-ticket-img img{
+    width: 100%;
+    height: 7rem;
+    border: 0px;
+    background-image: url("../images/default.png");
+	background-size: 100% 100%;
+}
+.index-content .index-hotel-info{
+    width: 100%;
+    height: 2.5rem;
+}
+.index-hotel-name,.index-ticket-name{
+    width: 62%;
+    height: 2.5rem;
+    float: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: 2.5rem;
+    padding-left: 7px;
+    font-size:15px;
+}
+.index-hotel-name a,.index-ticket-name a{
+    color: #000;
+}
+.index-hotel-price,.index-ticket-price{
+    width: 35%;
+    height: 2.5rem;
+    float: right;
+    line-height: 2.5rem;
+    text-align: center;
+    font-size: 10px;
+    color: #b31e23;
+}
+.index-hotel-price i,
+.index-ticket-price i{
+    font-size: 19px;
+    font-style: normal;
+}
+
+/* ¾ÆµêÁÐ±íÒ³ CSS */
+.tibet-hotel,.hotel-content,.category-choice-wrap,.category-choice-box,.condition-choice,.category-item-list
+.hotel-content-list{
+    width: 100%;
+    height:auto;
+}
+.category-choice-wrap{
+    text-align: center;
+    background: #fff;
+}
+.search-show{
+    width: 100%;
+    height: auto;
+    background-color: #000;
+    padding: 1rem 0;
+    opacity: 0.9;
+    display: none;
+}
+.category-item-price,.category-item-sale{
+    width: 100%;
+    height: 2.3rem;
+    background: #b31e23;
+    border-top: 1px solid #fff;
+    color: #fff;
+}
+.screen{
+    font-size: 15px;
+    padding-left: 0.5rem;
+    line-height: 2.3rem;
+}
+.icon-down{
+    width: 1.5rem;
+}
+.icon-down,.icon-choice{
+    margin-top: 0.8rem;
+    margin-right: 0.5rem;
+}
+.icon-choice{
+    width: 1.3rem;
+}
+.category-choice-box,.category-price-list,.category-sale-list{
+    display: none;
+}
+.category-choice-box{
+    border-bottom: 1px solid #ddd;
+}
+.category-price-list ul,.category-sale-list ul{
+    width: 97%;
+    background: #fff;
+    height: auto;
+    display: table;
+    margin: 0;
+    padding-left:0.5rem;
+    padding-top: 0.5rem;
+
+}
+.category-price-list li,.category-sale-list li{
+    width:24%;
+    height: 2.1rem;
+    float: left;
+    text-align: center;
+    line-height: 2.1rem;
+    color:#b31e23;
+    border: 1px solid #b31e23;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.peice-choice{
+    font-size: 12px;
+}
+.choice-button{
+    padding:0.5rem 3rem;
+    font-size: 14px;
+    margin-top:0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: #b31e23;
+    color: #fff;
+    border: 0;
+    border-radius: 0.3rem;
+}
+
+

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>产品列表</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <link rel="stylesheet" href="../css/productList.css"/>
+    <link rel="stylesheet" href="../css/base.css"/>
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<link rel="stylesheet" href="../css/dropload.css"/>
+    <link rel="stylesheet" href="../css/iconfont.css"/>
+</head>
+
+<body>
+    <header>
+        <a href="" class="pull-left back-inner" onclick="window.history.back();">
+            <i class="iconfont icon-fanhui"></i>
+        </a>
+        <h1 class="header-title">
+            香格里拉酒店
+        </h1>
+    </header>
+    <div class="content-wrapper proup-height">
+        <div class="product-banner">
+            <img src="http://file.duanyi.com.cn/accessory/xztirp/20160411/small_201604111019004764812.png" />
+            <p class="product-name">香格里拉酒店</p>
+        </div>
+        <div class="list-block">
+            <div class="block-title">
+                <a href="" class="title-active">产品预订</a>
+                <a href="" class="">酒店介绍</a>
+            </div>
+        </div>
+        <div class="product-yd-list">
+            <ul>
+                <li class="book-list-item">
+                    <div class="book-item-img">
+                        <img src="http://file.duanyi.com.cn/accessory/xztirp/20160411/small_201604111019004764812.png">
+                    </div>
+                    <div class="book-item-info">
+                        <h3>仙女山一日游</h3>
+                        <p class="book-sp-decr">促销票紧张</p>
+                    </div>
+                    <div class="book-price">
+                        <span>¥98.00</span>
+                        <a href="order.html"><button>预 订</button></a>
+                    </div>
+                    <div style="clear: both"></div>
+                </li>
+                <li class="book-list-item">
+                    <div class="book-item-img">
+                        <img src="http://file.duanyi.com.cn/accessory/xztirp/20160411/small_201604111019004764812.png">
+                    </div>
+                    <div class="book-item-info">
+                        <h3>仙女山一日游</h3>
+                        <p class="book-sp-decr">促销票紧张</p>
+                    </div>
+                    <div class="book-price">
+                        <span>¥98.00</span>
+                        <button>预 订</button>
+                    </div>
+                    <div style="clear: both"></div>
+                </li>
+            </ul>
+        </div>
+        <div class="product-ms-block">
+            <ul>
+                <li class="product-ms-item">
+                    <i class="iconfont icon-address pull-left"></i>
+                    <p class="address-con pull-left">上海松江区新浜镇许村公路1200号路线</p>
+                    <i class="iconfont icon-you pull-right"></i>
+                    <div style="clear: both;"></div>
+                </li>
+                <li class="product-ms-item">
+                    <i class="iconfont icon-dianhua pull-left"></i>
+                    <p class="address-con pull-left">13524687954</p>
+                    <i class="iconfont icon-you pull-right"></i>
+                    <div style="clear: both;"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/dropload.min.js"></script>
+</html>

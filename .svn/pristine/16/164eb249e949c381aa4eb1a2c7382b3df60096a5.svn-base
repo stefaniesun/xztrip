@@ -1,0 +1,57 @@
+@charset "UTF-8";
+.pay-immediately{
+    display: block;
+    background-color: #ff6600;
+    color: #fff;
+    width: 100%;
+    height: 35px;
+    text-align: center;
+    border-radius: 3px;
+    line-height: 2.2;
+    font-weight: bold;
+    font-family: 黑体;
+    font-size: 16px;
+}
+.pay-ts{
+    font-size: 12px;
+    background-color: #fff;
+    font-family: 黑体;
+    padding: 7px 3px;
+    margin-bottom: 10px;
+    color: #ccc;
+    border-radius: 3px;
+}
+.orderDetail-list{
+
+    font-family: 黑体;
+}
+.orderDetail-list,.orderDetail-list ul{
+    width: 100%;
+    height: auto;
+
+}
+.orderDetail-list ul{
+    border-bottom: 1px solid #e6e6e6;
+    border-top: 1px solid #e6e6e6;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+.orderDetail-list li{
+    padding: 13px 10px;
+}
+.color-grey{
+    color: #999;
+}
+.color-red{
+    color: #f00;
+}
+.color-org{
+    color: #ff9a14;
+    font-size: 17px;
+}
+.orderDetail-list .xg-inner{
+    color: #099fde;
+}
+.orderDetail-list .iconfont{
+    margin-top: 3px;
+}

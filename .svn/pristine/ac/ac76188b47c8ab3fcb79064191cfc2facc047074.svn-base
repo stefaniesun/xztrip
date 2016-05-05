@@ -1,0 +1,118 @@
+package xyz.util;
+
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 微信通用常量信息包
+ * @author Administrator
+ *
+ */
+public class WeixinUtil {
+
+	//动态变更非固定值
+	public static String access_token = "";
+	//这个由自己定义，可以到MP上修改
+	public static final String Token = "WeixinServerToken20150814";
+	public static final String appid = "wx8cf61a46a7745beb";
+	public static final String appsecret = "e5d09d32846ce9f1a3a0c094fd93f39f";
+	
+	/**
+	 * 获取access_token
+	 * https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+	 * get方式
+	 */
+	public static final String urlAccessToken = "https://api.weixin.qq.com/cgi-bin/token";
+	/**
+	 * 获取微信服务器ip列表
+	 * https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
+	 * get方式
+	 */
+	public static final String urlWeixinServerIps = "https://api.weixin.qq.com/cgi-bin/getcallbackip";
+	/**
+	 * 获取模板消息的模板id
+	 * https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN
+	 * post方式
+	 */
+	public static final String urlGetTemplateId = "https://api.weixin.qq.com/cgi-bin/template/api_add_template";
+	/**
+	 * 发送模板消息
+	 * https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN
+	 * post方式
+	 */
+	public static final String urlSendTemplateMsg = "https://api.weixin.qq.com/cgi-bin/message/template/send";
+	
+	
+    /**
+     * 加密/校验流程如下：
+     *
+     * 1. 将token、timestamp、nonce三个参数进行字典序排序
+     * 2.将三个参数字符串拼接成一个字符串进行sha1加密
+     * 3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+     *
+     * @param token Token验证密钥
+     * @param signature 微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数，nonce参数
+     * @param timestamp 时间戳
+     * @param nonce 随机数
+     * @return 验证成功返回true,否则返回false
+     */
+    public static boolean checkSignature(String token, String signature, String timestamp, String nonce) {
+    	if(token==null || token=="" || signature==null || signature=="" || timestamp==null || timestamp=="" || nonce==null || nonce==""){
+    		return false;
+    	}
+        List<String> params = new ArrayList<String>();
+        params.add(token);
+        params.add(timestamp);
+        params.add(nonce);
+        //1. 将token、timestamp、nonce三个参数进行字典序排序
+        Collections.sort(params, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        //2. 将三个参数字符串拼接成一个字符串进行sha1加密
+        String temp = SHA1encode(params.get(0) + params.get(1) + params.get(2));
+        //3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+        return temp.equals(signature);
+    }
+
+
+	private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    /**
+     * Takes the raw bytes from the digest and formats them correct.
+     *
+     * @param bytes the raw bytes from the digest.
+     * @return the formatted bytes.
+     */
+    private static String getFormattedText(byte[] bytes) {
+        int len = bytes.length;
+        StringBuilder buf = new StringBuilder(len * 2);
+        // 把密文转换成十六进制的字符串形式
+        for (int j = 0; j < len; j++) {
+            buf.append(HEX_DIGITS[(bytes[j] >> 4) & 0x0f]);
+            buf.append(HEX_DIGITS[bytes[j] & 0x0f]);
+        }
+        return buf.toString();
+    }
+
+    public static String SHA1encode(String str) {
+        if (str == null) {
+            return null;
+        }
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+            messageDigest.update(str.getBytes());
+            return getFormattedText(messageDigest.digest());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+	
+}

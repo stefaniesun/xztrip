@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>畅行西藏</title>
+<meta name="description" content=" ">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link href="css/index.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/weui.min.css"/>
+<link href="css/dropload.css" rel="stylesheet" type="text/css">
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="UTF-8" ></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/dropload.js"></script>
+<script type="text/javascript" src="js/xyzCommon.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+
+</head>
+
+<body>
+<div class="tibet-index">
+    <header class="tibet-header">
+        <div class="tibet-index-logo icon-left">
+            <a>畅行西藏</a>
+        </div>
+        <div class="tibet-index-logo icon-right" id="showBtn">
+            <img class="icon-menu" src="images/menu.png"/>
+        </div>
+        <div class="menu-show">
+            <ul>
+                <li class="menu-show-list"><a href="javascript:window.location.href=xyz.getFullurl('page/order.html');">我的订单</a></li>
+                <li class="menu-show-list"><a href="javascript:window.location.href=xyz.getFullurl('page/me.html');">个人中心</a></li>
+                <li class="menu-show-list"><a href="javascript:window.location.href=xyz.getFullurl('page/login.html');">登录/注册</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="prop-height" ></div>
+    <nav class="nav-box card">
+        <ul class="nav-box-ul">
+            <li>
+                <a class="nav-a" href="javascript:void(0);">热门</a>
+            </li>
+            <li>
+                <a class="nav-a" href="javascript:window.location.href=xyz.getFullurl('page/providerHotelList.html');">酒店</a>
+            </li>
+            <li>
+                <a class="nav-a" href="javascript:window.location.href=xyz.getFullurl('page/providerScenicList.html');">门票</a>
+            </li>
+            <li>
+                <a class="nav-a" href="javascript:alert('功能正在开发中...');">租车</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="index-content ">
+        <div class="cont-search">
+           <form class="cont-search-box" action="?" method="get" onsubmit="queryList(page=1);return false;">
+               <img id="searchBtn" class="icon-search" src="images/search-icon-black.png"  />
+               <input id="nameCnForm" class="cont-search-input" type="text" placeholder="请输入酒店名称"/>
+           </form>
+        </div>
+        <div class="category-choice">
+            <div class="category-choice-box" id="chooseTab">
+                <a class="category-choice-hotel category-choice-active" data-ext="HO" >热门酒店</a>
+                <a class="category-choice-ticket" data-ext="SC">热门景点</a>
+            </div>
+        </div>
+
+        <!-- 热门内容列表 -->
+        <div class="content-list-wrap">
+            <!--热门酒店列表-->
+            <div id="listContianer" class="index-hotel-card">
+                <ul id="orderList">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div align="center" style="margin: 30px;font-size: 12px;">藏ICP备16000018号</div>
+</body>
+<script type="text/javascript" src="js/weui.js"></script>
+
+</html>

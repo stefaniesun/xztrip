@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>编辑联系人信息</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css" />
+	<link rel="stylesheet" href="../css/customer.mui.theme.css">
+	<link rel="stylesheet" href="../css/weui.min.css"/>
+	<style>
+	/**重写**/
+.mui-card{
+	margin: 0 10px;
+}
+.title {
+	margin: 10px 15px 2px;
+	color: #6d6d72;
+	font-size: 15px;
+}
+.edit-btn{
+	line-height: 1.0;
+	font-size: 12px;
+	margin-left: 15px;
+}
+.mui-btn-primary{
+	border: 1px solid #099fde;
+	background-color: #099fde;
+}
+	</style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">编辑联系人信息</h1>
+	</header>
+	<div class="mui-content">
+		<div class="mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<div style="height: 50px;"></div>
+				<div class="mui-card" style="padding: 5px;margin-top: 20px;background-color: aliceblue;">
+					<p style="text-align: center;font-size: 14px;margin-bottom: 0;">
+						提供准确有效的联系人信息对您订单的后续跟进服务非常重要，请务必仔细核对。
+					</p>
+				</div>
+				<div class="mui-card">
+					<form class="mui-input-group">
+						<div class="mui-input-row">
+							<label>联系人</label>
+							<input id='linkmanForm' type="text" class="mui-input-clear mui-input" placeholder="请填写联系人">
+						</div>
+						<div class="mui-input-row">
+							<label>联系电话</label>
+							<input id="linkPhoneForm" type="tel" class="mui-input-clear mui-input" placeholder="请填写联系电话">
+						</div>
+					</form>
+				</div>
+				<div class="mui-content-padded">
+					<button id='submitBtn' class="mui-btn mui-btn-block mui-btn-primary">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="../js/mui_20151228.min.js"></script>
+<script type="text/javascript" src="../js/xyzCommon.js"></script>
+<script type="text/javascript" src="../js/weui.js"></script>
+<script type="text/javascript">
+mui('.mui-scroll-wrapper').scroll();
+var o = xyz.getUrlparam();
+var orderNum = o?o.orderNum:o;
+if(mui.os.plus){
+	mui.plusReady(function() {
+		setTimeout(function() {
+			pageInit();
+		}, 100);
+	});
+}else{
+	mui.ready(function() {
+		pageInit();
+	});
+}
+
+/**
+ * 初始化页面信息
+ */
+function pageInit(){
+	if(!orderNum){
+		mui.toast('缺少必要参数，刷新列表后重试');
+		mui.back();
+		return;
+	}
+	xyz.id('linkmanForm').value = o.linkman;
+	xyz.id('linkPhoneForm').value = o.linkPhone;
+}
+
+//编辑订单联系人信息
+xyz.id('submitBtn').addEventListener('tap', function() {
+	var linkman = xyz.id('linkmanForm').value;
+	var linkPhone = xyz.id('linkPhoneForm').value;
+	if(xyz.isNull(linkman)){
+		weui.alert('请填写联系人');
+		return ;
+	}
+	if(xyz.isNull(linkPhone)){
+		weui.alert('请填写联系电话');
+		return ;
+	}
+	xyz.ajax({
+		url:'BuyerOrderWS/editOrder.cus',
+		data:{
+			apikey:window.localStorage.apikey,
+			orderNum:orderNum,
+			linkman:linkman,
+			linkPhone:linkPhone
+		},
+		success:function(data){
+			console.log(data);
+			if(data.status==1){
+				if(window.plus){
+					plus.webview.getWebviewById('page/orderDetail.html').evalJS('pageInit()');
+				}
+				mui.toast('保存成功');
+				mui.back();
+			}else{
+				if(data.msg.indexOf('重新登录')>-1){
+					if(window.plus){
+						var loginWebview = plus.webview.getWebviewById('page/login.html');
+						loginWebview.evalJS('webviewId="";method=""');
+						loginWebview.show("slide-in-right", 300);
+					}else{
+						weui.alert('该功能需要下载APP才能使用哦！^_^');
+					}
+				}else{
+					weui.alert(data.msg);
+				}
+			}
+		}
+	});
+});
+
+</script>
+</html>

@@ -1,0 +1,153 @@
+var o = xyz.getUrlparam();
+//registerWxPay();
+$(function(){
+	$('.back-left').click(function(){
+		xyz.back();
+	});
+	$('.go-right').click(function(){
+		window.location.href=xyz.setUrlparam(xyz.getFullurl('index.html'), {"openid":window.localStorage.openid?window.localStorage.openid:''});
+	});
+	loadData();
+	queryList(1);
+});
+wx.ready(function(){
+	//注册微信jsapi成功
+	//alert("注册微信jsapi成功");
+});
+
+wx.error(function(res){
+    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+	//alert(JSON.stringify(res));
+});
+/*
+function pay(){
+	xyz.ajax({
+		url:'PayWS/getWxJsPayOrderInfo.xyz',
+		progress:false,
+		data : {
+			orderNo:'ts12345674848',
+			totalFee:'0.01',
+			body:'这是一个测试商品'
+		},
+		success : function(data) {
+			if(data.status==1){
+				alert(JSON.stringify(data));
+				wx.chooseWXPay({    
+					timestamp: data.content.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+					nonceStr: data.content.nonceStr, // 支付签名随机串，不长于 32 位
+					package: data.content.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+					signType: data.content.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+					paySign: data.content.paySign, // 支付签名
+					success: function (res) {
+						alert(JSON.stringify(res));
+					}
+				});
+			}else{
+				alert(data.msg);
+			}
+		}
+	});
+}*/
+
+function loadData(){
+	xyz.ajax({
+		url:'BuyerProviderWS/getProvider.app',
+		progress:false,
+		data : {
+			numberCode:o.numberCode
+		},
+		success : function(data) {
+			if(data.status==1){
+				document.querySelector('#headerImg').src = xyz.getMiddleImageUrl(data.content.imageUrl);
+				document.querySelector('#headerTitle').innerText = data.content.nameCn;
+				if(!xyz.isNull(data.content.address)){
+					document.querySelector('#hotelLinkaddress').innerText = data.content.address;
+				}
+				if(!xyz.isNull(data.content.phone)){
+					document.querySelector('#hotelLinkphone').innerText = data.content.phone;
+				}
+			}else{
+				alert(data.msg);
+			}
+		}
+	});
+}
+
+function queryList(){
+	var rows = 0; //记录条数
+	var page = 0; //每页数
+	$('#show_content_1').dropload({
+		scrollArea : window,
+		loadDownFn : function(me){
+			rows += 5; //记录以及加载的条数
+			page++ ; //没调用一次  页数加1
+			xyz.ajax({
+				url:'BuyerHotelWS/queryHotelList.app',
+				progress:false,
+				data : {
+					page : page,
+					rows : 5,
+					provider : o.numberCode
+				},
+				success : function(data) {
+					if(data.status==1){
+						var total = data.content.total; 
+						var result = data.content;
+						var table = document.body.querySelector('#tableList');
+    					if(page==1){
+    						table.innerHTML = '';
+    					}
+    					createHtml(table , result.rows);
+						if(rows >= total){ //每页数据
+							me.lock();
+							me.noData();
+						}
+						me.resetload();
+					}else{
+						alert(data.msg);
+					}
+				}
+			});
+		}
+	});
+}
+
+function createHtml(table , list){
+	for(var i=0; i<list.length; i++){
+		var o = list[i];
+		var div = document.createElement('div');
+		div.className = 'room-list-item default-width';
+		var url = xyz.setUrlparam(xyz.getFullurl('page/orderHotel.html'),{numberCode:o.numberCode});
+		var btnDisabled = 'disabled="disabled"';
+		var btnStyle = 'background:#D4D4D4;';
+		var html = '<div class="room-item-name">'+o.nameCn+'</div>';
+        html +='<div class="room-item-peice">';
+        if(o.price && !isNaN(o.price)){
+        	html +='<i>¥'+o.price+'</i>起';
+        	btnDisabled = '';
+        	btnStyle = '';
+        }else{
+        	html +='<i><font color="#ccc" size="1">暂无报价</font></i>';
+        	btnDisabled = 'disabled="disabled"';
+        	btnStyle = 'background:#D4D4D4;';
+        }
+        html +='</div>';
+        
+        html +='<div class="ticket-item-btn"><button '+btnDisabled+' class="order-btn" style="'+btnStyle+'" onclick="window.location.href=\''+url+'\'">预订</button></div>';
+		//html += '<span id="json_'+o.numberCode+'" style="display:none;">'+JSON.stringify(o)+'</span>';
+		div.innerHTML = html;
+		table.appendChild(div);
+	}
+}
+
+
+function showContent(index){
+	$("a[id^='show_title").each(function(){
+		$(this).removeAttr("class");
+	});
+	$(event.target).attr("class","order-active");
+	$("div[id^='show_content_']").each(function(){
+		$(this).hide();
+	});
+	$("#show_content_"+index).show();	
+}
